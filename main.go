@@ -29,7 +29,7 @@ func main() {
 	}
 
 	//get env
-	port := os.Getenv("PORT")
+	// port := os.Getenv("PORT")
 	dbUrl := os.Getenv("DATABASE_URL")
 	db, ormErr := gorm.Open(postgres.Open(dbUrl), &gorm.Config{})
 	if ormErr != nil {
@@ -48,7 +48,7 @@ func main() {
 		})
 	})
 	config.RouteUsers(app)
-	err := app.Run(":" + port)
+	err := app.Run()
 	if err != nil {
 		panic(err)
 	}

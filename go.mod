@@ -1,6 +1,6 @@
 module thundermeet_backend
 
-// +heroku goVersion go1.11
+// +heroku goVersion go1.14
 go 1.14
 
 require (

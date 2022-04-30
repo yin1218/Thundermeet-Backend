@@ -6,7 +6,8 @@ package config
 import (
 	// "backend/app"
 
-	"thundermeet_backend/app"
+	"fmt"
+	"thundermeet_backend/app/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +15,10 @@ import (
 func RouteUsers(r *gin.Engine) {
 	posts := r.Group("/v1/users")
 	{
-		posts.POST("/", app.NewUsersController().CreateUser)
-		posts.GET("/", app.QueryUsersController().GetUser)
+		fmt.Print("in router")
+		posts.POST("/", controller.NewUsersController().CreateUser)
+		posts.POST("/login", controller.NewUsersController().Login)
+		// posts.GET("/", app.QueryUsersController().GetUser)
+
 	}
 }

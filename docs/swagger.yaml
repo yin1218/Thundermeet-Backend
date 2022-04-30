@@ -1,0 +1,85 @@
+definitions:
+  Login:
+    properties:
+      password:
+        example: password
+        type: string
+      userName:
+        example: christineWang
+        type: string
+    required:
+    - password
+    - userName
+    type: object
+  Register:
+    properties:
+      password:
+        example: password
+        type: string
+      passwordAnswer:
+        example: NTU
+        type: string
+      userName:
+        example: christineWang
+        type: string
+    required:
+    - password
+    - passwordAnswer
+    - userName
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: Wu, Chien Yin and Yeh, Hsiao Li
+  description: This is the backend server for the Thundermeet App.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: ThunderMeet APIs
+  version: "1.0"
+paths:
+  /v1/users:
+    post:
+      parameters:
+      - description: The body to create a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - user
+  /v1/users/login:
+    post:
+      parameters:
+      - description: The body to login a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - user
+swagger: "2.0"

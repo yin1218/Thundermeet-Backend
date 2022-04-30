@@ -98,16 +98,16 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "password",
-                "userName"
+                "userId"
             ],
             "properties": {
                 "password": {
                     "type": "string",
                     "example": "password"
                 },
-                "userName": {
+                "userId": {
                     "type": "string",
-                    "example": "christineWang"
+                    "example": "christine891225"
                 }
             }
         },
@@ -116,7 +116,7 @@ const docTemplate = `{
             "required": [
                 "password",
                 "passwordAnswer",
-                "userName"
+                "userId"
             ],
             "properties": {
                 "password": {
@@ -127,9 +127,13 @@ const docTemplate = `{
                     "type": "string",
                     "example": "NTU"
                 },
+                "userId": {
+                    "type": "string",
+                    "example": "christine891225"
+                },
                 "userName": {
                     "type": "string",
-                    "example": "christineWang"
+                    "example": "Christine Wang"
                 }
             }
         }

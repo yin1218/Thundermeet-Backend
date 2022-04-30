@@ -4,12 +4,12 @@ definitions:
       password:
         example: password
         type: string
-      userName:
-        example: christineWang
+      userId:
+        example: christine891225
         type: string
     required:
     - password
-    - userName
+    - userId
     type: object
   Register:
     properties:
@@ -19,13 +19,16 @@ definitions:
       passwordAnswer:
         example: NTU
         type: string
+      userId:
+        example: christine891225
+        type: string
       userName:
-        example: christineWang
+        example: Christine Wang
         type: string
     required:
     - password
     - passwordAnswer
-    - userName
+    - userId
     type: object
 host: localhost:8080
 info:

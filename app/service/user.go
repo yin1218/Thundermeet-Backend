@@ -24,10 +24,10 @@ func SelectOneUser(id int64) (*model.User, error) {
 	}
 }
 
-func RegisterOneUser(userName string, password string, passwordAnswer string) error {
+func RegisterOneUser(userId string, userName string, password string, passwordAnswer string) error {
 	fmt.Print("registering user")
 	fmt.Print(userName, password, passwordAnswer)
-	if !CheckOneUser(userName) {
+	if !CheckOneUser(userId) {
 		return fmt.Errorf("User exists.")
 	}
 
@@ -38,6 +38,7 @@ func RegisterOneUser(userName string, password string, passwordAnswer string) er
 	}
 
 	user := model.User{
+		UserId:         userId,
 		UserName:       userName,
 		PasswordHash:   hash,
 		PasswordAnswer: passwordAnswer,
@@ -49,11 +50,11 @@ func RegisterOneUser(userName string, password string, passwordAnswer string) er
 	return insertErr
 }
 
-func CheckOneUser(userName string) bool {
+func CheckOneUser(userId string) bool {
 	result := false
 	var user model.User
 	fmt.Print(result)
-	dbResult := dao.SqlSession.Where("user_name = ?", userName).Find(&user)
+	dbResult := dao.SqlSession.Where("user_id = ?", userId).Find(&user)
 	fmt.Print(dbResult)
 	if dbResult.Error != nil {
 		fmt.Printf("Get User Info Failed:%v\n", dbResult.Error)
@@ -64,16 +65,16 @@ func CheckOneUser(userName string) bool {
 	return result
 }
 
-func GetOneUserUsernamePasswordHash(userName string) (int64, string, error) {
+func GetOneUserUsernamePasswordHash(userId string) (string, string, error) {
 	var user model.User
 
-	dbResult := dao.SqlSession.Where("user_name = ?", userName).Find(&user)
+	dbResult := dao.SqlSession.Where("user_id = ?", userId).Find(&user)
 
 	if dbResult.Error != nil {
 		fmt.Printf("Get User Info Failed:%v\n", dbResult.Error)
-		return 0, "", errors.New("Can't find user")
+		return "", "", errors.New("Can't find user")
 	} else {
-		userId, passwordHash := user.ID, user.PasswordHash
+		userId, passwordHash := user.UserId, user.PasswordHash
 		return userId, passwordHash, nil
 	}
 }

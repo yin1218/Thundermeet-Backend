@@ -31,8 +31,8 @@ func QueryUsersController() UsersController {
 }
 
 type Login struct {
-	User_name string `json:"userName" binding:"required" example:"christineWang"`
-	Password  string `json:"password" binding:"required" example:"password"`
+	User_id  string `json:"userId" binding:"required" example:"christine891225"`
+	Password string `json:"password" binding:"required" example:"password"`
 } // @name Login
 
 // LoginUser LoginUser @Summary
@@ -56,11 +56,11 @@ func (u UsersController) Login(c *gin.Context) {
 		})
 	}
 
-	userId, passwordHash, err := service.GetOneUserUsernamePasswordHash(form.User_name)
+	userId, passwordHash, err := service.GetOneUserUsernamePasswordHash(form.User_id)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": fmt.Sprintf("user %s not found", form.User_name),
+			"error": fmt.Sprintf("user %s not found", form.User_id),
 		})
 		return
 	}
@@ -87,7 +87,8 @@ func (u UsersController) Login(c *gin.Context) {
 }
 
 type Register struct {
-	User_name       string `json:"userName" binding:"required" example:"christineWang"`
+	User_id         string `json:"userId" binding:"required" example:"christine891225"`
+	User_name       string `json:"userName" example:"Christine Wang"`
 	Password        string `json:"password" binding:"required" example:"password"`
 	Password_answer string `json:"passwordAnswer" binding:"required" example:"NTU"`
 } // @name Register
@@ -105,7 +106,7 @@ func (u UsersController) CreateUser(c *gin.Context) {
 	bindErr := c.BindJSON(&form)
 	if bindErr == nil {
 
-		err := service.RegisterOneUser(form.User_name, form.Password, form.Password_answer)
+		err := service.RegisterOneUser(form.User_id, form.User_name, form.Password, form.Password_answer)
 		if err == nil {
 			fmt.Println("Good register!")
 			c.JSON(http.StatusOK, gin.H{

@@ -11,11 +11,11 @@ import (
 
 type authClaims struct {
 	jwt.StandardClaims
-	UserID int64 `json:"userId"`
+	UserID string `json:"userId"`
 }
 
 // GenToken Create a new token
-func GenToken(userId int64) (string, error) {
+func GenToken(userId string) (string, error) {
 	// load secret key
 	jwtKeyString := os.Getenv("JWT_SECRET")
 	jwtKey := []byte(jwtKeyString)
@@ -34,7 +34,7 @@ func GenToken(userId int64) (string, error) {
 	return tokenString, nil
 }
 
-func validateToken(tokenString string) (int64, error) {
+func validateToken(tokenString string) (string, error) {
 	jwtKeyString := os.Getenv("JWT_SECRET")
 	jwtKey := []byte(jwtKeyString)
 	var claims authClaims
@@ -46,10 +46,10 @@ func validateToken(tokenString string) (int64, error) {
 		return jwtKey, nil
 	})
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 	if !token.Valid {
-		return 0, errors.New("invalid token")
+		return "", errors.New("invalid token")
 	}
 	id := claims.UserID
 	return id, nil

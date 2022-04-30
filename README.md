@@ -49,3 +49,6 @@ go install github.com/swaggo/swag/cmd/swag@latest
 After writing relevant documentation, do:
 `swag init` to update doc, then
 `go run main.go`
+
+Go to below link to use swagger website
+http://localhost:8080/swagger/index.html#

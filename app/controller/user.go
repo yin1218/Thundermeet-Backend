@@ -12,7 +12,6 @@ import (
 
 	"fmt"
 	"net/http"
-	"strings"
 
 	// "strings"
 	"thundermeet_backend/app/middleware/crypto"
@@ -29,6 +28,10 @@ func NewUsersController() UsersController {
 }
 
 func QueryUsersController() UsersController {
+	return UsersController{}
+}
+
+func UpdateUsersController() UsersController {
 	return UsersController{}
 }
 
@@ -95,6 +98,12 @@ type Register struct {
 	Password_answer string `json:"passwordAnswer" binding:"required" example:"NTU"`
 } // @name Register
 
+type Update struct {
+	User_name       string `json:"userName" example:"Christine Wang"`
+	Password        string `json:"password" example:"password"`
+	Password_answer string `json:"passwordAnswer" example:"NTU"`
+} //@name Update
+
 // CreateUser CreateUser @Summary
 // @Tags user
 // @version 1.0
@@ -144,17 +153,6 @@ func (u UsersController) CheckUser(c *gin.Context) {
 
 	//get and check token format
 	token := c.Request.Header.Get("Authorization")
-	splitToken := strings.Split(token, "Bearer")
-	// check if it is beaer format
-	if len(splitToken) != 2 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": -1,
-			"msg":    "The token format is not bearer",
-			"data":   nil,
-		})
-	}
-	token = strings.TrimSpace(splitToken[1])
-	fmt.Println(token) // <YOUR_TOKEN_HERE>
 
 	//validate token
 	id, err := jwt.ValidateToken(token)
@@ -182,5 +180,56 @@ func (u UsersController) CheckUser(c *gin.Context) {
 			"password_answer": userOne.PasswordAnswer,
 		})
 	}
+}
+
+// UpdateUserInfo UpdateUserInfo @Summary
+// @Tags user
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param Body body Update true "The body to create a user"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @Router /v1/users [patch]
+func (u UsersController) UpdateUserInfo(c *gin.Context) {
+	//validate jwt token
+	token := c.Request.Header.Get("Authorization")
+	userId, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	//update user info through user id
+	var form Update
+	bindErr := c.BindJSON(&form)
+	if bindErr == nil {
+		err := service.UpdateOneUser(userId, form.User_name, form.Password, form.Password_answer)
+		if err == nil {
+			fmt.Println("Successfully update info")
+			c.JSON(http.StatusOK, gin.H{
+				"status": 1,
+				"msg":    "success Update",
+				"data":   nil,
+			})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"status": -1,
+				"msg":    "Update Failed : " + err.Error(),
+				"data":   nil,
+			})
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to Update User Info" + bindErr.Error(),
+			"data":   nil,
+		})
+	}
+	//Question: Should we add "Else" statement? I can't imagine which situation would lead to this result
 
 }
+
+// ForgotPassword

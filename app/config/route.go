@@ -19,7 +19,8 @@ func RouteUsers(r *gin.Engine) {
 		posts.POST("/", controller.NewUsersController().CreateUser)
 		posts.POST("/login", controller.NewUsersController().Login)
 		posts.GET("/", controller.QueryUsersController().CheckUser)
-		// posts.PATCH("/", controller.QueryUsersController().CheckUser)
+		posts.PATCH("/", controller.UpdateUsersController().UpdateUserInfo)
+		// posts.PATCH("/forgotPwd", controller.UpdateUsersController().ForgotPassword)
 
 	}
 }

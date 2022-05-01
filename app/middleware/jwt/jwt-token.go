@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	jwt "github.com/golang-jwt/jwt"
@@ -39,6 +40,12 @@ func ValidateToken(tokenString string) (string, error) {
 	jwtKey := []byte(jwtKeyString)
 	var claims authClaims
 
+	//split token
+	splitToken := strings.Split(tokenString, "Bearer")
+	if len(splitToken) != 2 {
+		return "", errors.New("invalid token format")
+	}
+	tokenString = strings.TrimSpace(splitToken[1])
 	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

@@ -42,6 +42,22 @@ definitions:
         example: Christine Wang
         type: string
     type: object
+  controller.ForgotInfo:
+    properties:
+      password:
+        example: password
+        type: string
+      passwordAnswer:
+        example: NTU
+        type: string
+      userId:
+        example: christine891225
+        type: string
+    required:
+    - password
+    - passwordAnswer
+    - userId
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -131,6 +147,28 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - user
+  /v1/users/resetPassword:
+    patch:
+      parameters:
+      - description: The body to create a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.ForgotInfo'
       produces:
       - application/json
       responses:

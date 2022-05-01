@@ -89,6 +89,7 @@ func UpdateOneUser(userId string, userName string, password string, passwordAnsw
 	hash, err := crypto.Generate(password)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
 	user := model.User{
 		UserName:       userName,
@@ -99,4 +100,40 @@ func UpdateOneUser(userId string, userName string, password string, passwordAnsw
 	log.Print("user = ", user)
 	updateErr := dao.SqlSession.Model(&model.User{}).Where("user_id = ?", userId).Updates(map[string]interface{}{"UserName": userName, "PasswordHash": hash, "PasswordAnswer": passwordAnswer}).Error
 	return updateErr
+}
+
+func ResetUserPassword(userId string, password string, passwordAnswer string) error {
+	//Check whether user exist
+	if !CheckOneUser(userId) {
+		return fmt.Errorf("User Not exists.")
+	}
+	//Check whether the answer is correct
+
+	type pwdField struct {
+		PasswordAnswer string `gorm:"size:100;not null" json:"passwordAnswer"`
+	}
+	userOne := &model.User{}
+	err := dao.SqlSession.Select(UserFields).Where("User_Id=?", userId).First(&userOne).Error
+	if err != nil {
+		return err
+	}
+
+	fmt.Print("Correct Pwd = ", userOne.PasswordAnswer)
+	fmt.Print("Correct Pwd = ", passwordAnswer)
+
+	if userOne.PasswordAnswer != passwordAnswer {
+		return fmt.Errorf("Incorrect answer")
+	}
+
+	//hash password
+	hash, err := crypto.Generate(password)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	//update password
+	updateErr := dao.SqlSession.Model(&model.User{}).Where("user_id = ?", userId).Update("password_hash", hash).Error
+	return updateErr
+
 }

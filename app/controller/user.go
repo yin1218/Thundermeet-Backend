@@ -104,6 +104,12 @@ type Update struct {
 	Password_answer string `json:"passwordAnswer" example:"NTU"`
 } //@name Update
 
+type ForgotInfo struct {
+	User_id         string `json:"userId" binding:"required" example:"christine891225"`
+	Password        string `json:"password" binding:"required" example:"password"`
+	Password_answer string `json:"passwordAnswer" binding:"required" example:"NTU"`
+}
+
 // CreateUser CreateUser @Summary
 // @Tags user
 // @version 1.0
@@ -232,4 +238,38 @@ func (u UsersController) UpdateUserInfo(c *gin.Context) {
 
 }
 
-// ForgotPassword
+// ResetPassword ResetPassword @Summary
+// @Tags user
+// @version 1.0
+// @produce application/json
+// @Param Body body ForgotInfo true "The body to create a user"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @Router /v1/users/resetPassword [patch]
+func (u UsersController) ResetPassword(c *gin.Context) {
+	var form ForgotInfo
+	bindErr := c.BindJSON(&form)
+	if bindErr == nil {
+		err := service.ResetUserPassword(form.User_id, form.Password, form.Password_answer)
+		if err == nil {
+			fmt.Println("Successfully reset password")
+			c.JSON(http.StatusOK, gin.H{
+				"status": 1,
+				"msg":    "success Update",
+				"data":   nil,
+			})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"status": -1,
+				"msg":    "Password Reset Failed : " + err.Error(),
+				"data":   nil,
+			})
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Failed to reset password : " + bindErr.Error(),
+			"data":   nil,
+		})
+	}
+}

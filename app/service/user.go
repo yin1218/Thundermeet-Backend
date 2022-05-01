@@ -2,8 +2,6 @@
 package service
 
 import (
-	// "backend/app/dao"
-	// "backend/app/model"
 	"errors"
 	"fmt"
 	"log"
@@ -12,11 +10,11 @@ import (
 	"thundermeet_backend/app/model"
 )
 
-var UserFields = []string{"userId", "userName", "passwordHash", "passwordAnswer"}
+var UserFields = []string{"user_Id", "user_Name", "password_Hash", "password_Answer"}
 
-func SelectOneUser(id int64) (*model.User, error) {
+func SelectOneUser(id string) (*model.User, error) {
 	userOne := &model.User{}
-	err := dao.SqlSession.Select(UserFields).Where("id=?", id).First(&userOne).Error
+	err := dao.SqlSession.Select(UserFields).Where("User_Id=?", id).First(&userOne).Error
 	if err != nil {
 		return nil, err
 	} else {

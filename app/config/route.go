@@ -18,7 +18,8 @@ func RouteUsers(r *gin.Engine) {
 		fmt.Print("in router")
 		posts.POST("/", controller.NewUsersController().CreateUser)
 		posts.POST("/login", controller.NewUsersController().Login)
-		// posts.GET("/", app.QueryUsersController().GetUser)
+		posts.GET("/", controller.QueryUsersController().CheckUser)
+		// posts.PATCH("/", controller.QueryUsersController().CheckUser)
 
 	}
 }

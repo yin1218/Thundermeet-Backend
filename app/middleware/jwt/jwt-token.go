@@ -34,7 +34,7 @@ func GenToken(userId string) (string, error) {
 	return tokenString, nil
 }
 
-func validateToken(tokenString string) (string, error) {
+func ValidateToken(tokenString string) (string, error) {
 	jwtKeyString := os.Getenv("JWT_SECRET")
 	jwtKey := []byte(jwtKeyString)
 	var claims authClaims

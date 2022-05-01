@@ -12,7 +12,9 @@ import (
 
 	"fmt"
 	"net/http"
-	"strconv"
+	"strings"
+
+	// "strings"
 	"thundermeet_backend/app/middleware/crypto"
 	"thundermeet_backend/app/middleware/jwt"
 	"thundermeet_backend/app/service"
@@ -130,30 +132,55 @@ func (u UsersController) CreateUser(c *gin.Context) {
 	}
 }
 
-func (u UsersController) GetUser(c *gin.Context) {
-	id := c.Params.ByName("ID")
+// CheckUser CheckUser @Summary
+// @Tags user
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @Router /v1/users/ [get]
+func (u UsersController) CheckUser(c *gin.Context) {
 
-	userId, err := strconv.ParseInt(id, 10, 64)
-	if err != nil {
+	//get and check token format
+	token := c.Request.Header.Get("Authorization")
+	splitToken := strings.Split(token, "Bearer")
+	// check if it is beaer format
+	if len(splitToken) != 2 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": -1,
-			"msg":    "Failed to parse params" + err.Error(),
+			"msg":    "The token format is not bearer",
 			"data":   nil,
 		})
 	}
+	token = strings.TrimSpace(splitToken[1])
+	fmt.Println(token) // <YOUR_TOKEN_HERE>
 
-	userOne, err := service.SelectOneUser(userId)
+	//validate token
+	id, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	//check id and return needed data
+	userOne, err := service.SelectOneUser(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status": -1,
-			"msg":    "User not found" + err.Error(),
+			"msg":    "User not found : " + err.Error(),
 			"data":   nil,
 		})
 	} else {
+
 		c.JSON(http.StatusOK, gin.H{
-			"status": 0,
-			"msg":    "Successfully get user data",
-			"user":   &userOne,
+			"status":          0,
+			"user_id":         userOne.UserId,
+			"username":        userOne.UserName,
+			"password_answer": userOne.PasswordAnswer,
 		})
 	}
+
 }

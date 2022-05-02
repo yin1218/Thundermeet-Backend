@@ -30,6 +30,18 @@ definitions:
     - passwordAnswer
     - userId
     type: object
+  Update:
+    properties:
+      password:
+        example: password
+        type: string
+      passwordAnswer:
+        example: NTU
+        type: string
+      userName:
+        example: Christine Wang
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -42,6 +54,32 @@ info:
   version: "1.0"
 paths:
   /v1/users:
+    patch:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to create a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Update'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - user
     post:
       parameters:
       - description: The body to create a user

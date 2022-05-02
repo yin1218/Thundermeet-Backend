@@ -55,6 +55,46 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to create a user",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Update"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "/v1/users/": {
@@ -163,6 +203,23 @@ const docTemplate = `{
                 "userId": {
                     "type": "string",
                     "example": "christine891225"
+                },
+                "userName": {
+                    "type": "string",
+                    "example": "Christine Wang"
+                }
+            }
+        },
+        "Update": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "password"
+                },
+                "passwordAnswer": {
+                    "type": "string",
+                    "example": "NTU"
                 },
                 "userName": {
                     "type": "string",

@@ -1,19 +1,13 @@
 package main
 
 import (
-	// "backend/app/config"
-	// "backend/app/model"
 	"fmt"
+	"log"
 	"os"
 	"thundermeet_backend/app/config"
 	"thundermeet_backend/app/dao"
+	"thundermeet_backend/app/middleware/cors"
 	"thundermeet_backend/app/model"
-
-	// "github.com/gin-gonic/gin"
-
-	// "github.com/joho/godotenv"
-
-	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -60,6 +54,7 @@ func main() {
 
 	//init server
 	app := gin.Default()
+	app.Use(cors.CORSMiddleware())
 
 	// set swagger docs
 	url := ginSwagger.URL("https://thundermeet-backend.herokuapp.com/swagger/doc.json")

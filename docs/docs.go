@@ -164,6 +164,41 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/users/resetPassword": {
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "description": "The body to create a user",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.ForgotInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -224,6 +259,28 @@ const docTemplate = `{
                 "userName": {
                     "type": "string",
                     "example": "Christine Wang"
+                }
+            }
+        },
+        "controller.ForgotInfo": {
+            "type": "object",
+            "required": [
+                "password",
+                "passwordAnswer",
+                "userId"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "password"
+                },
+                "passwordAnswer": {
+                    "type": "string",
+                    "example": "NTU"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "christine891225"
                 }
             }
         }

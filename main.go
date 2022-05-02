@@ -62,7 +62,7 @@ func main() {
 	app := gin.Default()
 
 	// set swagger docs
-	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
+	url := ginSwagger.URL("https://thundermeet-backend.herokuapp.com/swagger/doc.json")
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	app.GET("/hc", func(c *gin.Context) {

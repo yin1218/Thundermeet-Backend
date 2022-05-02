@@ -8,7 +8,7 @@ import (
 	"thundermeet_backend/app/dao"
 	"thundermeet_backend/app/model"
 
-	"github.com/gin-contrib/cors"
+	"thundermeet_backend/app/middleware/cors"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -30,7 +30,7 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host localhost:8080
+// @host https://thundermeet-backend.herokuapp.com/
 // schemes http
 func main() {
 	fmt.Println("Good Morning!")
@@ -55,9 +55,8 @@ func main() {
 
 	//init server
 	app := gin.Default()
-	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowAllOrigins = true
-	app.Use(cors.New(corsConfig))
+
+	app.Use(cors.CORSMiddleware())
 
 	// set swagger docs
 	url := ginSwagger.URL("https://thundermeet-backend.herokuapp.com/swagger/doc.json")

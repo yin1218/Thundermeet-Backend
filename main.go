@@ -55,7 +55,7 @@ func main() {
 
 	//init server
 	app := gin.Default()
-
+	app.Use(cors.Default())
 	// set swagger docs
 	url := ginSwagger.URL("https://thundermeet-backend.herokuapp.com/swagger/doc.json")
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
@@ -67,7 +67,6 @@ func main() {
 		})
 	})
 	config.RouteUsers(app)
-	app.Use(cors.Default())
 	err := app.Run()
 	if err != nil {
 		panic(err)

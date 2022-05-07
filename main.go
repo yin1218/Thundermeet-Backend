@@ -8,7 +8,7 @@ import (
 	"thundermeet_backend/app/dao"
 	"thundermeet_backend/app/model"
 
-	"thundermeet_backend/app/middleware/cors"
+	"github.com/gin-contrib/cors"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -56,8 +56,6 @@ func main() {
 	//init server
 	app := gin.Default()
 
-	app.Use(cors.CORSMiddleware())
-
 	// set swagger docs
 	url := ginSwagger.URL("https://thundermeet-backend.herokuapp.com/swagger/doc.json")
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
@@ -69,6 +67,7 @@ func main() {
 		})
 	})
 	config.RouteUsers(app)
+	app.Use(cors.Default())
 	err := app.Run()
 	if err != nil {
 		panic(err)

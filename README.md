@@ -23,6 +23,13 @@ Install docker and make sure docker desktop is running first!
 
 ## How to publish new image to Heroku
 
+- To deploy 
+`git add .`
+`git commit -m "message"`
+`git push heroku heroku-deploy:main`
+
+if we see "404 not found" at https://thundermeet-backend.herokuapp.com/, then the deployment is successful.
+
 - If you want to test your {test-branch} on heroku
   `git push heroku {test-branch}:main`
 

@@ -58,7 +58,7 @@ definitions:
     - passwordAnswer
     - userId
     type: object
-host: http://localhost:8080/swagger/index.html#
+host: https://thundermeet-backend.herokuapp.com/
 info:
   contact:
     name: Wu, Chien Yin and Yeh, Hsiao Li

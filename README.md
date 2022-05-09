@@ -59,4 +59,5 @@ After writing relevant documentation, do:
 2. `go run main.go` to run the backend
 
 Go to below link to use swagger website
-http://localhost:8080/swagger/index.html#
+1. Localhost: http://localhost:8080/swagger/index.html#
+2. Deployed on heroku: https://thundermeet-backend.herokuapp.com/

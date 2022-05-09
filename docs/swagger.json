@@ -12,7 +12,7 @@
         },
         "version": "1.0"
     },
-    "host": "thundermeet-backend.herokuapp.com/",
+    "host": "http://localhost:8080/swagger/index.html#",
     "paths": {
         "/v1/users": {
             "post": {

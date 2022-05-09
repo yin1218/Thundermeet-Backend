@@ -22,7 +22,9 @@ Install docker and make sure docker desktop is running first!
 `docker run --rm -p 8080:8080 thundermeet-be`
 
 ## How to publish new image to Heroku
-
+- first time
+  - download `heroku CLI`
+  - In your terminal, type `heroku login`
 - The whole deployment process 
   -  `git add .`
   - `git commit -m "message"`
@@ -59,4 +61,5 @@ After writing relevant documentation, do:
 2. `go run main.go` to run the backend
 
 Go to below link to use swagger website
-http://localhost:8080/swagger/index.html#
+1. Localhost: http://localhost:8080/swagger/index.html#
+2. Deployed on heroku: https://thundermeet-backend.herokuapp.com/

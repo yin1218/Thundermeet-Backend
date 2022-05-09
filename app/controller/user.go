@@ -47,7 +47,7 @@ type Login struct {
 // @Param Body body Login true "The body to login a user"
 // @Success 200 string string successful return data
 // @Failure 500 string string ErrorResponse
-// @Router /v1/users/login [post]
+// @Router /v1/users/login/ [post]
 func (u UsersController) Login(c *gin.Context) {
 	var form Login
 	bindErr := c.BindJSON(&form)
@@ -117,7 +117,7 @@ type ForgotInfo struct {
 // @Param Body body Register true "The body to create a user"
 // @Success 200 string string successful return data
 // @Failure 500 string string ErrorResponse
-// @Router /v1/users [post]
+// @Router /v1/users/ [post]
 func (u UsersController) CreateUser(c *gin.Context) {
 	var form Register
 	bindErr := c.BindJSON(&form)

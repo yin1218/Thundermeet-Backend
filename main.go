@@ -68,6 +68,7 @@ func main() {
 			"message": "health check",
 		})
 	})
+
 	config.RouteUsers(app)
 	err := app.Run()
 	if err != nil {

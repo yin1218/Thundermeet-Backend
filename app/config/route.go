@@ -21,6 +21,10 @@ func RouteUsers(r *gin.Engine) {
 		posts.GET("/", controller.QueryUsersController().CheckUser)
 		posts.PATCH("/", controller.UpdateUsersController().UpdateUserInfo)
 		posts.PATCH("/resetPassword", controller.UpdateUsersController().ResetPassword)
+	}
 
+	events := r.Group("/v1/events")
+	{
+		events.POST("/", controller.CreateEventsController().CreateEvent)
 	}
 }

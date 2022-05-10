@@ -137,3 +137,7 @@ func ResetUserPassword(userId string, password string, passwordAnswer string) er
 	return updateErr
 
 }
+
+func createEvent(eventTime string, isPriorityEnabled bool, startTime string, endTime string, dateOrDays bool, startDay string, endDay string, startDate string, endDate string, adminId string) error {
+
+}

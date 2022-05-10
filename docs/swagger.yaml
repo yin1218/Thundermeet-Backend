@@ -58,7 +58,7 @@ definitions:
     - passwordAnswer
     - userId
     type: object
-host: https://thundermeet-backend.herokuapp.com/
+host: thundermeet-backend.herokuapp.com/
 info:
   contact:
     name: Wu, Chien Yin and Yeh, Hsiao Li
@@ -96,27 +96,6 @@ paths:
             type: string
       tags:
       - user
-    post:
-      parameters:
-      - description: The body to create a user
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/Register'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      tags:
-      - user
   /v1/users/:
     get:
       parameters:
@@ -138,7 +117,28 @@ paths:
             type: string
       tags:
       - user
-  /v1/users/login:
+    post:
+      parameters:
+      - description: The body to create a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - user
+  /v1/users/login/:
     post:
       parameters:
       - description: The body to login a user

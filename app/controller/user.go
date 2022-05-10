@@ -245,6 +245,7 @@ func (u UsersController) UpdateUserInfo(c *gin.Context) {
 // @Param Body body ForgotInfo true "The body to create a user"
 // @Success 200 string string successful return data
 // @Failure 500 string string ErrorResponse
+// @Failure 400 string string ErrorResponse
 // @Router /v1/users/resetPassword [patch]
 func (u UsersController) ResetPassword(c *gin.Context) {
 	var form ForgotInfo
@@ -259,7 +260,7 @@ func (u UsersController) ResetPassword(c *gin.Context) {
 				"data":   nil,
 			})
 		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{
+			c.JSON(http.StatusBadRequest, gin.H{
 				"status": -1,
 				"msg":    "Password Reset Failed : " + err.Error(),
 				"data":   nil,

@@ -58,5 +58,22 @@ After writing relevant documentation, do:
 1. `swag init` to update doc
 2. `go run main.go` to run the backend
 
-Go to below link to use swagger website
-http://localhost:8080/swagger/index.html#
+
+Localhost
+1. change some code in `main.go`
+    - `url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")`
+    - `// @host localhost:8080/`
+2. `swag init`
+3. `go run main.go`
+4. go to http://localhost:8080/swagger/index.html# 
+
+Deployment
+1. change some code in `main.go`
+    - `url := ginSwagger.URL("https://thundermeet-backend.herokuapp.com/swagger/doc.json")`
+    - `// @host thundermeet-backend.herokuapp.com/`
+2. `swag init`
+3. Start the deployment process
+4. go to https://thundermeet-backend.herokuapp.com/swagger/index.html#/
+
+
+

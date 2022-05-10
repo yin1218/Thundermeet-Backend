@@ -31,7 +31,7 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host http://localhost:8080/swagger/index.html#
+// @host localhost:8080/
 // schemes http
 func main() {
 	fmt.Println("Good Morning!")
@@ -59,7 +59,7 @@ func main() {
 	app.Use(cors.CORSMiddleware())
 	// app.Use(cors.Default())
 	// set swagger docs
-	url := ginSwagger.URL("https://thundermeet-backend.herokuapp.com/swagger/doc.json")
+	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	app.GET("/hc", func(c *gin.Context) {

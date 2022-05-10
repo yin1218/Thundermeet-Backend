@@ -22,7 +22,9 @@ Install docker and make sure docker desktop is running first!
 `docker run --rm -p 8080:8080 thundermeet-be`
 
 ## How to publish new image to Heroku
-
+- first time
+  - download `heroku CLI`
+  - In your terminal, type `heroku login`
 - The whole deployment process 
   -  `git add .`
   - `git commit -m "message"`

@@ -46,7 +46,8 @@ type Login struct {
 // @produce application/json
 // @Param Body body Login true "The body to login a user"
 // @Success 200 string string successful return data
-// @Failure 500 string string ErrorResponse
+// @Failure 500 string ErrorResponse
+// @Failure 401 string ErrorResponse
 // @Router /v1/users/login/ [post]
 func (u UsersController) Login(c *gin.Context) {
 	var form Login
@@ -63,7 +64,7 @@ func (u UsersController) Login(c *gin.Context) {
 
 	userId, passwordHash, err := service.GetOneUserUsernamePasswordHash(form.User_id)
 
-	if err != nil {
+	if err != nil || userId == "" {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": fmt.Sprintf("user %s not found", form.User_id),
 		})

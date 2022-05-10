@@ -29,12 +29,7 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-<<<<<<< HEAD
 // @host localhost:8080/
-=======
-// @host thundermeet-backend.herokuapp.com/
-
->>>>>>> a7b5fd8 (fix: swag issue)
 // schemes http
 func main() {
 	fmt.Println("Good Morning!")

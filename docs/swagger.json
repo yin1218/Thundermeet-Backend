@@ -12,7 +12,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8080/",
+    "host": "thundermeet-backend.herokuapp.com/",
     "paths": {
         "/v1/users": {
             "patch": {

@@ -65,7 +65,7 @@ func (u UsersController) Login(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": fmt.Sprintf("user %s not found", form.User_id),
+			"error": "user ID doesn't exist!",
 		})
 		return
 	}
@@ -73,7 +73,7 @@ func (u UsersController) Login(c *gin.Context) {
 	passErr := crypto.Compare(passwordHash, form.Password)
 	if passErr != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": "incorrect password",
+			"error": "password is incorrect!",
 		})
 		return
 	}
@@ -88,6 +88,7 @@ func (u UsersController) Login(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"token": token,
+		"msg":   "login successfully!",
 	})
 }
 
@@ -124,6 +125,7 @@ type ForgotInfo struct {
 // @Param Body body Register true "The body to create a user"
 // @Success 200 string string successful return data
 // @Failure 500 string string ErrorResponse
+// @Failure 400 string string ErrorResponse
 // @Router /v1/users/ [post]
 func (u UsersController) CreateUser(c *gin.Context) {
 	var form Register
@@ -135,13 +137,13 @@ func (u UsersController) CreateUser(c *gin.Context) {
 			fmt.Println("Good register!")
 			c.JSON(http.StatusOK, gin.H{
 				"status": 1,
-				"msg":    "success Register",
+				"msg":    "user signed up successfully!",
 				"data":   nil,
 			})
 		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{
+			c.JSON(http.StatusBadRequest, gin.H{
 				"status": -1,
-				"msg":    "Register Failed" + err.Error(),
+				"msg":    "user ID has already existed!",
 				"data":   nil,
 			})
 		}

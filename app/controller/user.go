@@ -195,6 +195,7 @@ func (u UsersController) CheckUser(c *gin.Context) {
 // @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
 // @Param Body body Update true "The body to create a user"
 // @Success 200 string string successful return data
+// @Failure 401 string string ErrorResponse
 // @Failure 500 string string ErrorResponse
 // @Router /v1/users [patch]
 func (u UsersController) UpdateUserInfo(c *gin.Context) {

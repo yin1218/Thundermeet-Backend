@@ -65,6 +65,14 @@ Localhost
 1. change some code in `main.go`
     - `url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")`
     - `// @host localhost:8080/`
+
+把這三行打開
+```
+// envErr := godotenv.Load()
+ // if envErr != nil {
+ //  log.Fatal("Error loading .env file")
+ // }
+```
 2. `swag init`
 3. `go run main.go`
 4. go to http://localhost:8080/swagger/index.html# 
@@ -73,6 +81,14 @@ Deployment
 1. change some code in `main.go`
     - `url := ginSwagger.URL("https://thundermeet-backend.herokuapp.com/swagger/doc.json")`
     - `// @host thundermeet-backend.herokuapp.com/`
+
+把這三行關掉
+```
+envErr := godotenv.Load()
+ if envErr != nil {
+  log.Fatal("Error loading .env file")
+}
+```
 2. `swag init`
 3. Start the deployment process
 4. go to https://thundermeet-backend.herokuapp.com/swagger/index.html#/

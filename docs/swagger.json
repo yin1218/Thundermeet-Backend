@@ -14,6 +14,48 @@
     },
     "host": "localhost:8080/",
     "paths": {
+        "/v1/events/": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "event"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to create an event",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/EventFormat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users": {
             "patch": {
                 "produces": [
@@ -194,6 +236,63 @@
         }
     },
     "definitions": {
+        "EventFormat": {
+            "type": "object",
+            "required": [
+                "dateOrDays",
+                "endTime",
+                "eventName",
+                "isPriorityEnabled",
+                "startTime"
+            ],
+            "properties": {
+                "dateOrDays": {
+                    "description": "required",
+                    "type": "boolean",
+                    "example": true
+                },
+                "endDate": {
+                    "description": "optional",
+                    "type": "string",
+                    "example": "2021-01-10T11:00:00.000Z"
+                },
+                "endDay": {
+                    "description": "optional",
+                    "type": "string",
+                    "example": "7"
+                },
+                "endTime": {
+                    "description": "required",
+                    "type": "string",
+                    "example": "1975-08-19T23:00:00.000Z"
+                },
+                "eventName": {
+                    "description": "required",
+                    "type": "string",
+                    "example": "OR first meet"
+                },
+                "isPriorityEnabled": {
+                    "description": "required",
+                    "type": "boolean",
+                    "example": true
+                },
+                "startDate": {
+                    "description": "optional",
+                    "type": "string",
+                    "example": "2021-01-01T11:00:00.000Z"
+                },
+                "startDay": {
+                    "description": "optional",
+                    "type": "string",
+                    "example": "1"
+                },
+                "startTime": {
+                    "description": "required",
+                    "type": "string",
+                    "example": "1975-08-19T11:00:00.000Z"
+                }
+            }
+        },
         "Login": {
             "type": "object",
             "required": [

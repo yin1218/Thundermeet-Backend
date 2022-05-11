@@ -1,4 +1,49 @@
 definitions:
+  EventFormat:
+    properties:
+      dateOrDays:
+        description: required
+        example: true
+        type: boolean
+      endDate:
+        description: optional
+        example: "2021-01-10T11:00:00.000Z"
+        type: string
+      endDay:
+        description: optional
+        example: "7"
+        type: string
+      endTime:
+        description: required
+        example: "1975-08-19T23:00:00.000Z"
+        type: string
+      eventName:
+        description: required
+        example: OR first meet
+        type: string
+      isPriorityEnabled:
+        description: required
+        example: true
+        type: boolean
+      startDate:
+        description: optional
+        example: "2021-01-01T11:00:00.000Z"
+        type: string
+      startDay:
+        description: optional
+        example: "1"
+        type: string
+      startTime:
+        description: required
+        example: "1975-08-19T11:00:00.000Z"
+        type: string
+    required:
+    - dateOrDays
+    - endTime
+    - eventName
+    - isPriorityEnabled
+    - startTime
+    type: object
   Login:
     properties:
       password:
@@ -69,6 +114,33 @@ info:
   title: ThunderMeet APIs
   version: "1.0"
 paths:
+  /v1/events/:
+    post:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to create an event
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/EventFormat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - event
   /v1/users:
     patch:
       parameters:

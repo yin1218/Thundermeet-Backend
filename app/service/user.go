@@ -8,6 +8,7 @@ import (
 	"thundermeet_backend/app/dao"
 	"thundermeet_backend/app/middleware/crypto"
 	"thundermeet_backend/app/model"
+	"time"
 )
 
 var UserFields = []string{"user_Id", "user_Name", "password_Hash", "password_Answer"}
@@ -138,6 +139,22 @@ func ResetUserPassword(userId string, password string, passwordAnswer string) er
 
 }
 
-func createEvent(eventTime string, isPriorityEnabled bool, startTime string, endTime string, dateOrDays bool, startDay string, endDay string, startDate string, endDate string, adminId string) error {
+func CreateEvent(eventName string, isPriorityEnabled bool, startTime time.Time, endTime time.Time, dateOrDays bool, startDay string, endDay string, startDate time.Time, endDate time.Time, adminId string) error {
 
+	event := model.Event{
+		EventName:         eventName,
+		IsPriorityEnabled: isPriorityEnabled,
+		IsConfirmed:       false,
+		StartTime:         startTime,
+		EndTime:           endTime,
+		DateOrDays:        dateOrDays,
+		StartDay:          startDay,
+		EndDay:            endDay,
+		StartDate:         startDate,
+		EndDate:           endDate,
+		AdminId:           adminId,
+	}
+
+	insertErr := dao.SqlSession.Model(&model.Event{}).Create(&event).Error
+	return insertErr
 }

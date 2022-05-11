@@ -68,11 +68,11 @@ func (u EventController) CreateEvent(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println(userOne)
+	// fmt.Println(userOne)
 
 	// 利用userOne抓userId -> 作為admin id
 	var adminId string = userOne.UserId
-	fmt.Println(adminId)
+	// fmt.Println(adminId)
 
 	//get request body
 	var form createEventFormat
@@ -115,8 +115,8 @@ func (u EventController) CreateEvent(c *gin.Context) {
 		var start_day string = ""
 		var end_day string = ""
 
-		fmt.Println("start date = ", start_date)
-		fmt.Println("start date = ", end_date)
+		// fmt.Println("start date = ", start_date)
+		// fmt.Println("start date = ", end_date)
 
 		// check if needed information is in the json: start/end day || start/end date
 		if form.Date_or_days {
@@ -129,7 +129,7 @@ func (u EventController) CreateEvent(c *gin.Context) {
 				return
 			}
 			// change time format
-			start_date, err := time.Parse(time.RFC3339, form.Start_date)
+			temp_start_date, err := time.Parse(time.RFC3339, form.Start_date)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": -1,
@@ -138,7 +138,7 @@ func (u EventController) CreateEvent(c *gin.Context) {
 				})
 				return
 			}
-			end_date, err := time.Parse(time.RFC3339, form.End_date)
+			temp_end_date, err := time.Parse(time.RFC3339, form.End_date)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": -1,
@@ -156,6 +156,8 @@ func (u EventController) CreateEvent(c *gin.Context) {
 				})
 				return
 			}
+			start_date = temp_start_date
+			end_date = temp_end_date
 		} else {
 			if form.Start_day == "" || form.End_day == "" {
 				c.JSON(http.StatusBadRequest, gin.H{
@@ -193,6 +195,8 @@ func (u EventController) CreateEvent(c *gin.Context) {
 		//========== 到這邊檢查都沒有問題 ================
 
 		//================ complete checking process, start to add things to db ================
+
+		fmt.Println("Before go into loop")
 		createErr := service.CreateEvent(form.Event_name, form.Is_priority_enabled, start_time, end_time, form.Date_or_days, start_day, end_day, start_date, end_date, adminId)
 		if createErr == nil {
 			fmt.Println("Successfully reset password")
@@ -204,7 +208,7 @@ func (u EventController) CreateEvent(c *gin.Context) {
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"status": -1,
-				"msg":    "Password Reset Failed : " + err.Error(),
+				"msg":    "Event Create Failed : " + createErr.Error(),
 				"data":   nil,
 			})
 			return

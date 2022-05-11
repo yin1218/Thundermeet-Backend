@@ -18,7 +18,7 @@ type User struct {
 
 // 13 column
 type Event struct {
-	gorm.Model
+	// gorm.Model
 	EventId             int64     `gorm:"primary_key;auto_increment" json:"event_id"`
 	EventName           string    `gorm:"size:100;not null" json:"event_name"`
 	IsPriorityEnabled   bool      `gorm:"size:100;not null" json:"event_nameis_priority_enabled"`

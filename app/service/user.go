@@ -141,6 +141,7 @@ func ResetUserPassword(userId string, password string, passwordAnswer string) er
 
 func CreateEvent(eventName string, isPriorityEnabled bool, startTime time.Time, endTime time.Time, dateOrDays bool, startDay string, endDay string, startDate time.Time, endDate time.Time, adminId string) error {
 
+	fmt.Println("Here")
 	event := model.Event{
 		EventName:         eventName,
 		IsPriorityEnabled: isPriorityEnabled,

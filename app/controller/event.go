@@ -23,10 +23,10 @@ type EventController struct{}
 
 type createEventFormat struct {
 	Event_name          string `json:"eventName" example:"OR first meet" binding:"required"`            //required
-	Is_priority_enabled bool   `json:"isPriorityEnabled" example:"true" binding:"required"`             //required
+	Is_priority_enabled *bool  `json:"isPriorityEnabled" example:"true" binding:"required"`             //required
 	Start_time          string `json:"startTime" example:"1975-08-19T11:00:00.000Z" binding:"required"` //required
 	End_time            string `json:"endTime" example:"1975-08-19T23:00:00.000Z" binding:"required"`   //required
-	Date_or_days        bool   `json:"dateOrDays" example:"true" binding:"required"`                    //required
+	Date_or_days        *bool  `json:"dateOrDays" example:"true" binding:"required"`                    //required
 	Start_day           string `json:"startDay" example:"1" `                                           //optional
 	End_day             string `json:"endDay" example:"7"`                                              //optional
 	Start_date          string `json:"startDate" example:"2021-01-01T11:00:00.000Z"`                    //optional
@@ -119,7 +119,7 @@ func (u EventController) CreateEvent(c *gin.Context) {
 		// fmt.Println("start date = ", end_date)
 
 		// check if needed information is in the json: start/end day || start/end date
-		if form.Date_or_days {
+		if *form.Date_or_days {
 			if form.Start_date == "" || form.End_date == "" {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": -1,

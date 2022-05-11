@@ -8,16 +8,16 @@ import (
 	"time"
 )
 
-func CreateEvent(eventName string, isPriorityEnabled bool, startTime time.Time, endTime time.Time, dateOrDays bool, startDay string, endDay string, startDate time.Time, endDate time.Time, adminId string) error {
+func CreateEvent(eventName string, isPriorityEnabled *bool, startTime time.Time, endTime time.Time, dateOrDays *bool, startDay string, endDay string, startDate time.Time, endDate time.Time, adminId string) error {
 
 	fmt.Println("Here")
 	event := model.Event{
 		EventName:         eventName,
-		IsPriorityEnabled: isPriorityEnabled,
+		IsPriorityEnabled: *isPriorityEnabled,
 		IsConfirmed:       false,
 		StartTime:         startTime,
 		EndTime:           endTime,
-		DateOrDays:        dateOrDays,
+		DateOrDays:        *dateOrDays,
 		StartDay:          startDay,
 		EndDay:            endDay,
 		StartDate:         startDate,

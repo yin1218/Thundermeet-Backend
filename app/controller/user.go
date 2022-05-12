@@ -46,7 +46,9 @@ type Login struct {
 // @produce application/json
 // @Param Body body Login true "The body to login a user"
 // @Success 200 string string successful return data
-// @Failure 500 string string ErrorResponse
+// @Failure 500 string ErrorResponse
+// @Failure 401 string ErrorResponse
+// @Failure 404 string ErrorResponse
 // @Router /v1/users/login/ [post]
 func (u UsersController) Login(c *gin.Context) {
 	var form Login
@@ -63,9 +65,9 @@ func (u UsersController) Login(c *gin.Context) {
 
 	userId, passwordHash, err := service.GetOneUserUsernamePasswordHash(form.User_id)
 
-	if err != nil {
+	if err != nil || userId == "" {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": fmt.Sprintf("user %s not found", form.User_id),
+			"error": "user ID doesn't exist!",
 		})
 		return
 	}
@@ -73,7 +75,7 @@ func (u UsersController) Login(c *gin.Context) {
 	passErr := crypto.Compare(passwordHash, form.Password)
 	if passErr != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": "incorrect password",
+			"error": "password is incorrect!",
 		})
 		return
 	}
@@ -88,6 +90,7 @@ func (u UsersController) Login(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"token": token,
+		"msg":   "login successfully!",
 	})
 }
 
@@ -104,6 +107,13 @@ type Update struct {
 	Password_answer string `json:"passwordAnswer" example:"NTU"`
 } //@name Update
 
+type GetUserResponse struct {
+	Status         int    `json:"status" binding:"required" example:"0"`
+	UserId         string `json:"user_id" binding:"required" example:"christine891225"`
+	Username       string `json:"username" binding:"required" example:"Christine Wang"`
+	PasswordAnswer string `json:"password_answer" binding:"required" example:"NTU"`
+} // @name GetUserResponse
+
 type ForgotInfo struct {
 	User_id         string `json:"userId" binding:"required" example:"christine891225"`
 	Password        string `json:"password" binding:"required" example:"password"`
@@ -115,8 +125,9 @@ type ForgotInfo struct {
 // @version 1.0
 // @produce application/json
 // @Param Body body Register true "The body to create a user"
-// @Success 200 string string successful return data
+// @Success 201 string string successful return data
 // @Failure 500 string string ErrorResponse
+// @Failure 400 string string ErrorResponse
 // @Router /v1/users/ [post]
 func (u UsersController) CreateUser(c *gin.Context) {
 	var form Register
@@ -126,15 +137,15 @@ func (u UsersController) CreateUser(c *gin.Context) {
 		err := service.RegisterOneUser(form.User_id, form.User_name, form.Password, form.Password_answer)
 		if err == nil {
 			fmt.Println("Good register!")
-			c.JSON(http.StatusOK, gin.H{
+			c.JSON(http.StatusCreated, gin.H{
 				"status": 1,
-				"msg":    "success Register",
+				"msg":    "user signed up successfully!",
 				"data":   nil,
 			})
 		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{
+			c.JSON(http.StatusBadRequest, gin.H{
 				"status": -1,
-				"msg":    "Register Failed" + err.Error(),
+				"msg":    "user ID has already existed!",
 				"data":   nil,
 			})
 		}
@@ -152,8 +163,9 @@ func (u UsersController) CreateUser(c *gin.Context) {
 // @version 1.0
 // @produce application/json
 // @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
-// @Success 200 string string successful return data
+// @Success 200 {object} GetUserResponse
 // @Failure 500 string string ErrorResponse
+// @Failure 401 string string ErrorResponse
 // @Router /v1/users/ [get]
 func (u UsersController) CheckUser(c *gin.Context) {
 
@@ -195,6 +207,7 @@ func (u UsersController) CheckUser(c *gin.Context) {
 // @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
 // @Param Body body Update true "The body to create a user"
 // @Success 200 string string successful return data
+// @Failure 401 string string ErrorResponse
 // @Failure 500 string string ErrorResponse
 // @Router /v1/users [patch]
 func (u UsersController) UpdateUserInfo(c *gin.Context) {
@@ -245,6 +258,7 @@ func (u UsersController) UpdateUserInfo(c *gin.Context) {
 // @Param Body body ForgotInfo true "The body to create a user"
 // @Success 200 string string successful return data
 // @Failure 500 string string ErrorResponse
+// @Failure 400 string string ErrorResponse
 // @Router /v1/users/resetPassword [patch]
 func (u UsersController) ResetPassword(c *gin.Context) {
 	var form ForgotInfo
@@ -259,7 +273,7 @@ func (u UsersController) ResetPassword(c *gin.Context) {
 				"data":   nil,
 			})
 		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{
+			c.JSON(http.StatusBadRequest, gin.H{
 				"status": -1,
 				"msg":    "Password Reset Failed : " + err.Error(),
 				"data":   nil,

@@ -78,27 +78,33 @@ func GetOneUserUsernamePasswordHash(userId string) (string, string, error) {
 }
 
 func UpdateOneUser(userId string, userName string, password string, passwordAnswer string) error {
-	fmt.Print("Updating user")
-	fmt.Print("userID = ", userId, " ")
-	fmt.Print(userName, password, passwordAnswer)
 	if !CheckOneUser(userId) {
 		return fmt.Errorf("User Not exists.")
 	}
 
+	var user model.User
+
 	//hash password
-	hash, err := crypto.Generate(password)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	user := model.User{
-		UserName:       userName,
-		PasswordHash:   hash,
-		PasswordAnswer: passwordAnswer,
+	if password != "" {
+		hash, err := crypto.Generate(password)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		user = model.User{
+			UserName:       userName,
+			PasswordHash:   hash,
+			PasswordAnswer: passwordAnswer,
+		}
+	} else {
+		user = model.User{
+			UserName:       userName,
+			PasswordAnswer: passwordAnswer,
+		}
 	}
 
 	log.Print("user = ", user)
-	updateErr := dao.SqlSession.Model(&model.User{}).Where("user_id = ?", userId).Updates(map[string]interface{}{"UserName": userName, "PasswordHash": hash, "PasswordAnswer": passwordAnswer}).Error
+	updateErr := dao.SqlSession.Model(&model.User{}).Where("user_id = ?", userId).Updates(user).Error
 	return updateErr
 }
 

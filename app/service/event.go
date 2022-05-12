@@ -28,3 +28,13 @@ func CreateEvent(eventName string, isPriorityEnabled *bool, startTime time.Time,
 	insertErr := dao.SqlSession.Model(&model.Event{}).Create(&event).Error
 	return insertErr
 }
+
+func SelectOneEvent(event_id int64) (*model.Event, error) {
+	eventOne := &model.Event{}
+	err := dao.SqlSession.Where("event_id = ?", event_id).First(&eventOne).Error
+	if err != nil {
+		return nil, err
+	} else {
+		return eventOne, nil
+	}
+}

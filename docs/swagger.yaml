@@ -1,4 +1,34 @@
 definitions:
+  Event:
+    properties:
+      admin_id:
+        type: string
+      confirmed_timeblocks:
+        type: string
+      date_or_days:
+        type: boolean
+      end_date:
+        type: string
+      end_day:
+        type: string
+      end_time:
+        type: string
+      event_id:
+        description: gorm.Model
+        type: integer
+      event_name:
+        type: string
+      event_nameis_priority_enabled:
+        type: boolean
+      is_confirmed:
+        type: boolean
+      start_date:
+        type: string
+      start_day:
+        type: string
+      start_time:
+        type: string
+    type: object
   EventFormat:
     properties:
       dateOrDays:
@@ -43,6 +73,26 @@ definitions:
     - eventName
     - isPriorityEnabled
     - startTime
+    type: object
+  GetUserResponse:
+    properties:
+      password_answer:
+        example: NTU
+        type: string
+      status:
+        example: 0
+        type: integer
+      user_id:
+        example: christine891225
+        type: string
+      username:
+        example: Christine Wang
+        type: string
+    required:
+    - password_answer
+    - status
+    - user_id
+    - username
     type: object
   Login:
     properties:
@@ -133,6 +183,36 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - event
+  /v1/events/{event_id}:
+    get:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: event id
+        in: path
+        name: event_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Event'
+        "404":
+          description: Not Found
           schema:
             type: string
         "500":

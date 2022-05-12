@@ -26,5 +26,6 @@ func RouteUsers(r *gin.Engine) {
 	events := r.Group("/v1/events")
 	{
 		events.POST("/", controller.CreateEventsController().CreateEvent)
+		events.GET("/:event_id", controller.CreateEventsController().GetEvent)
 	}
 }

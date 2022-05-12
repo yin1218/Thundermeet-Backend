@@ -10,6 +10,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	// "thundermeet_backend/app/middleware/crypto"
@@ -34,6 +35,10 @@ type createEventFormat struct {
 } //@name EventFormat
 
 func CreateEventsController() EventController {
+	return EventController{}
+}
+
+func GetEventsController() EventController {
 	return EventController{}
 }
 
@@ -222,4 +227,44 @@ func (u EventController) CreateEvent(c *gin.Context) {
 		})
 	}
 
+}
+
+// GetEvent GetEvent @Summary
+// @Tags event
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Success 200 {object} model.Event
+// @Failure 404 string string ErrorResponse
+// @Failure 500 string string ErrorResponse
+// @param event_id path int64 true "event id"
+// @Router /v1/events/{event_id} [get]
+func (u EventController) GetEvent(c *gin.Context) {
+	event_id, err := strconv.ParseInt(c.Param("event_id"), 10, 64)
+	fmt.Print(event_id)
+	event, err := service.SelectOneEvent(event_id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "The event id does not exist.",
+			"data":   nil,
+		})
+	} else {
+
+		c.JSON(http.StatusOK, gin.H{
+			"status":              0,
+			"event_id":            event.EventId,
+			"event_name":          event.EventName,
+			"is_priority_enabled": event.IsPriorityEnabled,
+			"is_confirmed":        event.IsConfirmed,
+			"start_time":          event.StartTime,
+			"end_time":            event.EndTime,
+			"date_or_days":        event.DateOrDays,
+			"start_day":           event.StartDay,
+			"end_day":             event.EndDay,
+			"start_date":          event.StartDate,
+			"end_date":            event.EndDate,
+			"admin_id":            event.AdminId,
+		})
+	}
 }

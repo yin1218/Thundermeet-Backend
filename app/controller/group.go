@@ -79,11 +79,19 @@ func (u GroupController) CreateGroup(c *gin.Context) {
 		fmt.Println(event_id)
 		format_event_id := int64(event_id)
 		// SelectOneEvent
-		_, err := service.SelectOneEvent(format_event_id)
+		event, err := service.SelectOneEvent(format_event_id)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": -1,
 				"msg":    "invalid event : " + err.Error(),
+				"data":   nil,
+			})
+			return
+		}
+		if event.AdminId != userOne.UserId {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "The event doesn't belong to current user!",
 				"data":   nil,
 			})
 			return

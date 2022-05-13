@@ -318,3 +318,53 @@ func (u TimeblockController) GetTimeblock(c *gin.Context) {
 	c.JSON(http.StatusAccepted, fullTimeblockRes)
 
 }
+
+type GetTimeblockPreviewFormat struct {
+	EventId  int64    `json:"event_id" example:"26" binding:"required"`     //required
+	Normal   []string `json:"normal" example:"2021-01-01T11:00:00+08:00"`   //optional
+	Priority []string `json:"priority" example:"2021-01-01T11:00:00+08:00"` //optional
+} //@name GetTimeblockPreviewResponse
+
+// GetTimeblockPreview GetTimeblockPreview @Summary
+// @Tags timeblock
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @param event_id path int64 true "event id"
+// @Router /v1/timeblocks/{event_id}/preview [get]
+func (u TimeblockController) GetTimeblockPreview(c *gin.Context) {
+	eventId, err := strconv.ParseInt(c.Param("event_id"), 10, 64)
+	fmt.Print(eventId)
+
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	userId, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var timeblockPreviewRes GetTimeblockPreviewFormat
+
+	timeblockPreviewRes.EventId = eventId
+
+	normal, priority, err := service.GetStatusForTimeblock(userId, eventId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Cannot get timeblocks!" + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+	timeblockPreviewRes.Normal = normal
+	timeblockPreviewRes.Priority = priority
+
+	c.JSON(http.StatusAccepted, timeblockPreviewRes)
+
+}

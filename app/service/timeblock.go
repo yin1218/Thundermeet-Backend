@@ -4,6 +4,7 @@ package service
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"thundermeet_backend/app/dao"
 	"thundermeet_backend/app/model"
 	"time"
@@ -116,4 +117,33 @@ func GetMembersStatusPerTimeBlock(timeblockId string, participants []string) ([]
 
 		return normal, priority, notAvailable, nil
 	}
+}
+
+func GetStatusForTimeblock(userId string, eventId int64) ([]string, []string, error) {
+	timeblocks, err := GetTimeblocksForEvent(eventId)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var priority []string
+	var normal []string
+
+	for _, timeblock := range timeblocks {
+		var TimeblockParticipants []model.TimeblockParticipants
+		dbResult := dao.SqlSession.Where("time_block_id = ? AND user_id = ?", timeblock.TimeBlockId, userId).Find(&TimeblockParticipants)
+		if dbResult.Error != nil {
+			return nil, nil, dbResult.Error
+		} else {
+
+			for _, timeblockparticipant := range TimeblockParticipants {
+				blocktime := strings.Split(timeblockparticipant.TimeBlockId, "A")[0]
+				if timeblockparticipant.Priority {
+					priority = append(priority, blocktime)
+				} else {
+					normal = append(normal, blocktime)
+				}
+			}
+		}
+	}
+	return normal, priority, nil
 }

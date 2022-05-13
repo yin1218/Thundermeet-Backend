@@ -74,3 +74,46 @@ func CheckOneTimeblockParticipant(userId string, timeblockId string) bool {
 	fmt.Print(result)
 	return result
 }
+
+func GetTimeblocksForEvent(eventId int64) ([]model.Timeblock, error) {
+	var timeblocks []model.Timeblock
+	dbResult := dao.SqlSession.Where("event_id = ? ", eventId).Find(&timeblocks)
+
+	if dbResult.Error != nil {
+		return nil, dbResult.Error
+	} else {
+		return timeblocks, nil
+	}
+}
+
+func remove(s []string, r string) []string {
+	for i, v := range s {
+		if v == r {
+			return append(s[:i], s[i+1:]...)
+		}
+	}
+	return s
+}
+
+func GetMembersStatusPerTimeBlock(timeblockId string, participants []string) ([]string, []string, []string, error) {
+	var TimeblockParticipants []model.TimeblockParticipants
+	dbResult := dao.SqlSession.Where("time_block_id = ? ", timeblockId).Find(&TimeblockParticipants)
+	if dbResult.Error != nil {
+		return nil, nil, nil, dbResult.Error
+	} else {
+		var priority []string
+		var normal []string
+		var notAvailable []string = participants
+		for _, timeblockparticipant := range TimeblockParticipants {
+			if timeblockparticipant.Priority {
+				priority = append(priority, timeblockparticipant.UserId)
+				notAvailable = remove(notAvailable, timeblockparticipant.UserId)
+			} else {
+				normal = append(normal, timeblockparticipant.UserId)
+				notAvailable = remove(notAvailable, timeblockparticipant.UserId)
+			}
+		}
+
+		return normal, priority, notAvailable, nil
+	}
+}

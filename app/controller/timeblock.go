@@ -35,6 +35,10 @@ func UpdateTimeblocksController() TimeblockController {
 	return TimeblockController{}
 }
 
+func GetTimeblocksController() TimeblockController {
+	return TimeblockController{}
+}
+
 func StartNewTime(curHour int, curMin int, endHour int, endMin int) bool {
 	if curHour > endHour {
 		return true
@@ -242,5 +246,75 @@ func (u TimeblockController) UpdateTimeblock(c *gin.Context) {
 			"data":   nil,
 		})
 	}
+
+}
+
+type GetTimeblockFormat struct {
+	Time         string   `json:"time" example:"2021-01-01T11:00:00+08:00" binding:"required"` //required
+	Normal       []string `json:"normal" example:"小葉"`                                         //optional
+	Priority     []string `json:"priority" example:"小巫"`                                       //optional
+	NotAvailable []string `json:"not_available" example:"小陳"`                                  //optional
+} //@name GetTimeblockResponse
+
+// GetTimeblock GetTimeblock @Summary
+// @Tags timeblock
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @param event_id path int64 true "event id"
+// @Router /v1/timeblocks/{event_id} [get]
+func (u TimeblockController) GetTimeblock(c *gin.Context) {
+	event_id, err := strconv.ParseInt(c.Param("event_id"), 10, 64)
+	fmt.Print(event_id)
+
+	timeblocks, err := service.GetTimeblocksForEvent(event_id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Cannot get timeblocks!" + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+	var fullTimeblockRes []GetTimeblockFormat
+	for _, timeblock := range timeblocks {
+		timeblockId := timeblock.TimeBlockId
+
+		var timeblockRes GetTimeblockFormat
+
+		timeblockRes.Time = timeblock.BlockTime.Format(time.RFC3339)
+		participants, err := service.GetEventParticipants(timeblock.EventId)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Cannot get timeblocks!" + err.Error(),
+				"data":   nil,
+			})
+			return
+		}
+
+		fmt.Print("participants = ", participants)
+
+		normal, priority, notAvailable, err := service.GetMembersStatusPerTimeBlock(timeblockId, participants)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Cannot get timeblocks!" + err.Error(),
+				"data":   nil,
+			})
+			return
+		}
+
+		timeblockRes.Normal = normal
+		timeblockRes.Priority = priority
+		timeblockRes.NotAvailable = notAvailable
+
+		fullTimeblockRes = append(fullTimeblockRes, timeblockRes)
+	}
+
+	c.JSON(http.StatusAccepted, fullTimeblockRes)
 
 }

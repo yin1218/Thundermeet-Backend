@@ -22,6 +22,60 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/events": {
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "event"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to update a event",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateEventFormat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/events/": {
             "post": {
                 "produces": [
@@ -92,7 +146,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Event"
+                            "type": "string"
                         }
                     },
                     "404": {
@@ -545,6 +599,28 @@ const docTemplate = `{
                 }
             }
         },
+        "UpdateEventFormat": {
+            "type": "object",
+            "properties": {
+                "confirmed_timeblocks": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "2021-01-01T11:00:00+08:00"
+                    ]
+                },
+                "event_id": {
+                    "type": "string",
+                    "example": "26"
+                },
+                "event_name": {
+                    "type": "string",
+                    "example": "Sad 2nd meeting"
+                }
+            }
+        },
         "controller.ForgotInfo": {
             "type": "object",
             "required": [
@@ -564,51 +640,6 @@ const docTemplate = `{
                 "userId": {
                     "type": "string",
                     "example": "christine891225"
-                }
-            }
-        },
-        "model.Event": {
-            "type": "object",
-            "properties": {
-                "admin_id": {
-                    "type": "string"
-                },
-                "confirmed_timeblocks": {
-                    "type": "string"
-                },
-                "date_or_days": {
-                    "type": "boolean"
-                },
-                "end_date": {
-                    "type": "string"
-                },
-                "end_day": {
-                    "type": "string"
-                },
-                "end_time": {
-                    "type": "string"
-                },
-                "event_id": {
-                    "description": "gorm.Model",
-                    "type": "integer"
-                },
-                "event_name": {
-                    "type": "string"
-                },
-                "event_nameis_priority_enabled": {
-                    "type": "boolean"
-                },
-                "is_confirmed": {
-                    "type": "boolean"
-                },
-                "start_date": {
-                    "type": "string"
-                },
-                "start_day": {
-                    "type": "string"
-                },
-                "start_time": {
-                    "type": "string"
                 }
             }
         }

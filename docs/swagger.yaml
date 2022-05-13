@@ -130,6 +130,21 @@ definitions:
         example: Christine Wang
         type: string
     type: object
+  UpdateEventFormat:
+    properties:
+      confirmed_timeblocks:
+        example:
+        - "2021-01-01T11:00:00+08:00"
+        items:
+          type: string
+        type: array
+      event_id:
+        example: "26"
+        type: string
+      event_name:
+        example: Sad 2nd meeting
+        type: string
+    type: object
   controller.ForgotInfo:
     properties:
       password:
@@ -146,36 +161,6 @@ definitions:
     - passwordAnswer
     - userId
     type: object
-  model.Event:
-    properties:
-      admin_id:
-        type: string
-      confirmed_timeblocks:
-        type: string
-      date_or_days:
-        type: boolean
-      end_date:
-        type: string
-      end_day:
-        type: string
-      end_time:
-        type: string
-      event_id:
-        description: gorm.Model
-        type: integer
-      event_name:
-        type: string
-      event_nameis_priority_enabled:
-        type: boolean
-      is_confirmed:
-        type: boolean
-      start_date:
-        type: string
-      start_day:
-        type: string
-      start_time:
-        type: string
-    type: object
 host: localhost:8080/
 info:
   contact:
@@ -187,6 +172,41 @@ info:
   title: ThunderMeet APIs
   version: "1.0"
 paths:
+  /v1/events:
+    patch:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to update a event
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateEventFormat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - event
   /v1/events/:
     post:
       parameters:
@@ -233,7 +253,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Event'
+            type: string
         "404":
           description: Not Found
           schema:

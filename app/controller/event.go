@@ -42,6 +42,10 @@ func GetEventsController() EventController {
 	return EventController{}
 }
 
+func UpdateEventsController() EventController {
+	return EventController{}
+}
+
 func isValidTime(startTime string, endTIme string) bool {
 	s, _ := strconv.Atoi(startTime[0:2])
 	t, _ := strconv.Atoi(endTIme[0:2])
@@ -257,7 +261,7 @@ func (u EventController) CreateEvent(c *gin.Context) {
 // @version 1.0
 // @produce application/json
 // @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
-// @Success 200 {object} model.Event
+// @Success 200 {object} string
 // @Failure 404 string string ErrorResponse
 // @Failure 500 string string ErrorResponse
 // @param event_id path int64 true "event id"
@@ -288,6 +292,52 @@ func (u EventController) GetEvent(c *gin.Context) {
 			"start_date":          event.StartDate,
 			"end_date":            event.EndDate,
 			"admin_id":            event.AdminId,
+		})
+	}
+}
+
+type UpdateEventFormat struct {
+	EventId             string   `json:"event_id" example:"26"`
+	EventName           string   `json:"event_name" example:"Sad 2nd meeting"`
+	ConfirmedTimeblocks []string `json:"confirmed_timeblocks" example:"2021-01-01T11:00:00+08:00"`
+} //@name UpdateEventFormat
+
+// UpdateEvent UpdateEvent @Summary
+// @Tags event
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param Body body UpdateEventFormat true "The body to update a event"
+// @Success 200 string string successful return data
+// @Failure 401 string string ErrorResponse
+// @Failure 403 string string ErrorResponse
+// @Failure 500 string string ErrorResponse
+// @Router /v1/events [patch]
+func (u EventController) UpdateEvent(c *gin.Context) {
+	var form UpdateEventFormat
+	bindErr := c.BindJSON(&form)
+	if bindErr == nil {
+		event_id, _ := strconv.ParseInt(form.EventId, 10, 64)
+		fmt.Print("event-id = ", event_id)
+		err := service.UpdateOneEvent(event_id, form.EventName, form.ConfirmedTimeblocks)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Fail to Update Event Info" + bindErr.Error(),
+				"data":   nil,
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 1,
+				"msg":    "success Update",
+				"data":   nil,
+			})
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to Update Event Info" + bindErr.Error(),
+			"data":   nil,
 		})
 	}
 }

@@ -49,3 +49,45 @@ func UpdateOneEvent(eventId int64, eventName string, confirmedTimeblocks []strin
 
 	return updateErr
 }
+
+func UpdateEventParticipants(eventId int64, userId string) error {
+	eventOne := &model.Event{}
+	err := dao.SqlSession.Where("event_id = ?", eventId).First(&eventOne).Error
+	if err != nil {
+		return err
+	}
+
+	participants := eventOne.Participants
+	containsParticipant := false
+
+	for _, x := range participants {
+		if x == userId {
+			containsParticipant = true
+			break
+		}
+	}
+
+	if containsParticipant {
+		return nil
+	} else {
+		participants = append(participants, userId)
+		var event model.Event
+		event = model.Event{
+			Participants: participants,
+		}
+		updateErr := dao.SqlSession.Model(&model.Event{}).Where("event_id = ?", eventId).Updates(event).Error
+
+		return updateErr
+	}
+}
+
+func GetEventsByUser(userId string) ([]model.Event, error) {
+	var events []model.Event
+	dbResult := dao.SqlSession.Where("? = ANY (participants)", userId).Find(&events)
+	fmt.Print(dbResult)
+	if dbResult.Error != nil {
+		return nil, fmt.Errorf("Get Event Info Failed:%v\n", dbResult.Error)
+	} else {
+		return events, nil
+	}
+}

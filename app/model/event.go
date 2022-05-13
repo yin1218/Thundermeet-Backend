@@ -23,4 +23,5 @@ type Event struct {
 	EndDate             time.Time      `gorm:"size:100" json:"end_date"`
 	ConfirmedTimeblocks pq.StringArray `gorm:"type:text[]" json:"confirmed_timeblocks"`
 	AdminId             string         `gorm:"size:100;not null" json:"admin_id"`
+	Participants        pq.StringArray `gorm:"type:text[]" json:"participants"`
 }

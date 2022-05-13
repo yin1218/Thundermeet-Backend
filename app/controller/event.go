@@ -296,6 +296,40 @@ func (u EventController) GetEvent(c *gin.Context) {
 	}
 }
 
+// GetEvent GetEvent @Summary
+// @Tags event
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Success 200 {object} string
+// @Failure 404 string string ErrorResponse
+// @Failure 500 string string ErrorResponse
+// @Router /v1/events [get]
+func (u EventController) GetEvents(c *gin.Context) {
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	user_id, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	//check id and return needed data
+	events, err := service.GetEventsByUser(user_id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "Events not found : " + err.Error(),
+			"data":   nil,
+		})
+	} else {
+		c.JSON(http.StatusOK, events)
+	}
+
+}
+
 type UpdateEventFormat struct {
 	EventId             string   `json:"event_id" example:"26"`
 	EventName           string   `json:"event_name" example:"Sad 2nd meeting"`

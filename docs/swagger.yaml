@@ -173,6 +173,30 @@ info:
   version: "1.0"
 paths:
   /v1/events:
+    get:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - event
     patch:
       parameters:
       - description: Bearer 31a165baebe6dec616b1f8f3207b4273

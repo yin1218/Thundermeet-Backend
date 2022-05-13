@@ -27,6 +27,7 @@ func RouteUsers(r *gin.Engine) {
 	{
 		events.POST("/", controller.CreateEventsController().CreateEvent)
 		events.GET("/:event_id", controller.GetEventsController().GetEvent)
+		events.GET("/", controller.GetEventsController().GetEvents)
 		events.PATCH("/", controller.UpdateEventsController().UpdateEvent)
 	}
 

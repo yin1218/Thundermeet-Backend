@@ -138,6 +138,7 @@ func (u TimeblockController) CreateTimeblock(c *gin.Context) {
 
 	if bindErr == nil {
 		err := CreateManyTimeblocksParticipants(form.Event_id, userId, form.Normal, form.Priority)
+		err = service.UpdateEventParticipants(form.Event_id, userId)
 		if err == nil {
 			c.JSON(http.StatusCreated, gin.H{
 				"status": 1,

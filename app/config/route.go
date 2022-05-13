@@ -30,9 +30,10 @@ func RouteUsers(r *gin.Engine) {
 		events.GET("/", controller.GetEventsController().GetEvents)
 		events.PATCH("/", controller.UpdateEventsController().UpdateEvent)
 	}
-
 	timeblocks := r.Group("/v1/timeblocks")
 	{
 		timeblocks.POST("/", controller.CreateTimeblocksController().CreateTimeblock)
+		timeblocks.PUT("/", controller.UpdateTimeblocksController().UpdateTimeblock)
 	}
+
 }

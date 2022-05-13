@@ -315,6 +315,32 @@ paths:
             type: string
       tags:
       - timeblock
+    put:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to update an event
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Timeblock'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - timeblock
   /v1/users:
     patch:
       parameters:

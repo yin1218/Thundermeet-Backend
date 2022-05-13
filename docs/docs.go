@@ -202,6 +202,46 @@ const docTemplate = `{
             }
         },
         "/v1/timeblocks/": {
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "timeblock"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to update an event",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Timeblock"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "produces": [
                     "application/json"

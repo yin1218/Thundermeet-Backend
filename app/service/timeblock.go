@@ -3,6 +3,7 @@ package service
 
 import (
 	"fmt"
+	"strconv"
 	"thundermeet_backend/app/dao"
 	"thundermeet_backend/app/model"
 	"time"
@@ -36,6 +37,12 @@ func CheckOneTimeblock(timeblockId string) bool {
 	}
 	fmt.Print(result)
 	return result
+}
+
+func DeletePreviousTimeblockParticipant(userId string, eventId int64) error {
+	eventMatchString := "%" + strconv.Itoa(int(eventId)) + "%"
+	delErr := dao.SqlSession.Where("user_id = ? AND time_block_id LIKE ?", userId, eventMatchString).Delete(&model.TimeblockParticipants{}).Error
+	return delErr
 }
 
 func CreateOneTimeblockParticipant(userId string, timeblockId string, priority bool) error {

@@ -92,11 +92,53 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Event"
+                            "$ref": "#/definitions/model.Event"
                         }
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/timeblocks/": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "timeblock"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to create an event",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Timeblock"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "type": "string"
                         }
@@ -326,51 +368,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "Event": {
-            "type": "object",
-            "properties": {
-                "admin_id": {
-                    "type": "string"
-                },
-                "confirmed_timeblocks": {
-                    "type": "string"
-                },
-                "date_or_days": {
-                    "type": "boolean"
-                },
-                "end_date": {
-                    "type": "string"
-                },
-                "end_day": {
-                    "type": "string"
-                },
-                "end_time": {
-                    "type": "string"
-                },
-                "event_id": {
-                    "description": "gorm.Model",
-                    "type": "integer"
-                },
-                "event_name": {
-                    "type": "string"
-                },
-                "event_nameis_priority_enabled": {
-                    "type": "boolean"
-                },
-                "is_confirmed": {
-                    "type": "boolean"
-                },
-                "start_date": {
-                    "type": "string"
-                },
-                "start_day": {
-                    "type": "string"
-                },
-                "start_time": {
-                    "type": "string"
-                }
-            }
-        },
         "EventFormat": {
             "type": "object",
             "required": [
@@ -399,7 +396,7 @@ const docTemplate = `{
                 "endTime": {
                     "description": "required",
                     "type": "string",
-                    "example": "1975-08-19T23:00:00.000Z"
+                    "example": "2100"
                 },
                 "eventName": {
                     "description": "required",
@@ -424,7 +421,7 @@ const docTemplate = `{
                 "startTime": {
                     "description": "required",
                     "type": "string",
-                    "example": "1975-08-19T11:00:00.000Z"
+                    "example": "0900"
                 }
             }
         },
@@ -498,6 +495,39 @@ const docTemplate = `{
                 }
             }
         },
+        "Timeblock": {
+            "type": "object",
+            "required": [
+                "eventId"
+            ],
+            "properties": {
+                "eventId": {
+                    "description": "required",
+                    "type": "integer",
+                    "example": 1
+                },
+                "normal": {
+                    "description": "optional",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "2021-01-01T11:00:00+08:00"
+                    ]
+                },
+                "priority": {
+                    "description": "optional",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "2021-01-02T12:00:00+08:00"
+                    ]
+                }
+            }
+        },
         "Update": {
             "type": "object",
             "properties": {
@@ -534,6 +564,51 @@ const docTemplate = `{
                 "userId": {
                     "type": "string",
                     "example": "christine891225"
+                }
+            }
+        },
+        "model.Event": {
+            "type": "object",
+            "properties": {
+                "admin_id": {
+                    "type": "string"
+                },
+                "confirmed_timeblocks": {
+                    "type": "string"
+                },
+                "date_or_days": {
+                    "type": "boolean"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "end_day": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "event_id": {
+                    "description": "gorm.Model",
+                    "type": "integer"
+                },
+                "event_name": {
+                    "type": "string"
+                },
+                "event_nameis_priority_enabled": {
+                    "type": "boolean"
+                },
+                "is_confirmed": {
+                    "type": "boolean"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "start_day": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
                 }
             }
         }

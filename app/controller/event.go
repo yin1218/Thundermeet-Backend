@@ -23,15 +23,15 @@ import (
 type EventController struct{}
 
 type createEventFormat struct {
-	Event_name          string `json:"eventName" example:"OR first meet" binding:"required"`            //required
-	Is_priority_enabled *bool  `json:"isPriorityEnabled" example:"true" binding:"required"`             //required
-	Start_time          string `json:"startTime" example:"1975-08-19T11:00:00.000Z" binding:"required"` //required
-	End_time            string `json:"endTime" example:"1975-08-19T23:00:00.000Z" binding:"required"`   //required
-	Date_or_days        *bool  `json:"dateOrDays" example:"true" binding:"required"`                    //required
-	Start_day           string `json:"startDay" example:"1" `                                           //optional
-	End_day             string `json:"endDay" example:"7"`                                              //optional
-	Start_date          string `json:"startDate" example:"2021-01-01T11:00:00.000Z"`                    //optional
-	End_date            string `json:"endDate" example:"2021-01-10T11:00:00.000Z"`                      //optional
+	Event_name          string `json:"eventName" example:"OR first meet" binding:"required"` //required
+	Is_priority_enabled *bool  `json:"isPriorityEnabled" example:"true" binding:"required"`  //required
+	Start_time          string `json:"startTime" example:"0900" binding:"required"`          //required
+	End_time            string `json:"endTime" example:"2100" binding:"required"`            //required
+	Date_or_days        *bool  `json:"dateOrDays" example:"true" binding:"required"`         //required
+	Start_day           string `json:"startDay" example:"1" `                                //optional
+	End_day             string `json:"endDay" example:"7"`                                   //optional
+	Start_date          string `json:"startDate" example:"2021-01-01T11:00:00.000Z"`         //optional
+	End_date            string `json:"endDate" example:"2021-01-10T11:00:00.000Z"`           //optional
 } //@name EventFormat
 
 func CreateEventsController() EventController {
@@ -40,6 +40,21 @@ func CreateEventsController() EventController {
 
 func GetEventsController() EventController {
 	return EventController{}
+}
+
+func isValidTime(startTime string, endTIme string) bool {
+	s, _ := strconv.Atoi(startTime[0:2])
+	t, _ := strconv.Atoi(endTIme[0:2])
+	if s < t {
+		return true
+	} else {
+		smin, _ := strconv.Atoi(startTime[2:4])
+		tmin, _ := strconv.Atoi(endTIme[2:4])
+		if smin < tmin {
+			return true
+		}
+		return false
+	}
 }
 
 // CreateEvent CreateEvent @Summary
@@ -85,28 +100,28 @@ func (u EventController) CreateEvent(c *gin.Context) {
 
 	if bindErr == nil {
 		//================== check the correctness of input value and format ==================
-		//change time format
-		start_time, err := time.Parse(time.RFC3339, form.Start_time)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": -1,
-				"msg":    "invalid start time",
-				"data":   nil,
-			})
-			return
-		}
-		end_time, err := time.Parse(time.RFC3339, form.End_time)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": -1,
-				"msg":    "invalid end time",
-				"data":   nil,
-			})
-			return
-		}
+		// change time format
+		// start_time, err := time.Parse(time.RFC3339, form.Start_time)
+		// if err != nil {
+		// 	c.JSON(http.StatusBadRequest, gin.H{
+		// 		"status": -1,
+		// 		"msg":    "invalid start time",
+		// 		"data":   nil,
+		// 	})
+		// 	return
+		// }
+		// end_time, err := time.Parse(time.RFC3339, form.End_time)
+		// if err != nil {
+		// 	c.JSON(http.StatusBadRequest, gin.H{
+		// 		"status": -1,
+		// 		"msg":    "invalid end time",
+		// 		"data":   nil,
+		// 	})
+		// 	return
+		// }
 
 		//check if time period is valid
-		if end_time.Before(start_time) {
+		if !isValidTime(form.Start_time, form.End_time) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": -1,
 				"msg":    "invalid time period",
@@ -153,7 +168,7 @@ func (u EventController) CreateEvent(c *gin.Context) {
 				return
 			}
 			//check if period is correct
-			if end_date.Before(start_date) {
+			if temp_end_date.Before(temp_start_date) {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": -1,
 					"msg":    "Invalid date period",
@@ -180,7 +195,6 @@ func (u EventController) CreateEvent(c *gin.Context) {
 					"data":   nil,
 				})
 				return
-
 			}
 
 			start_day = form.Start_day
@@ -197,19 +211,28 @@ func (u EventController) CreateEvent(c *gin.Context) {
 
 		// return
 
-		//========== 到這邊檢查都沒有問題 ================
+		// ========== 到這邊檢查都沒有問題 ================
 
-		//================ complete checking process, start to add things to db ================
+		// ================ complete checking process, start to add things to db ================
 
 		fmt.Println("Before go into loop")
-		createErr := service.CreateEvent(form.Event_name, form.Is_priority_enabled, start_time, end_time, form.Date_or_days, start_day, end_day, start_date, end_date, adminId)
+		event_id, createErr := service.CreateEvent(form.Event_name, form.Is_priority_enabled, form.Start_time, form.End_time, form.Date_or_days, start_day, end_day, start_date, end_date, adminId)
 		if createErr == nil {
-			fmt.Println("Successfully reset password")
-			c.JSON(http.StatusOK, gin.H{
-				"status": 1,
-				"msg":    "success Create Event",
-				"data":   nil,
-			})
+
+			err := CreateManyTimeblocks(*form.Date_or_days, form.Start_time, form.End_time, start_date, end_date, event_id)
+			if err == nil {
+				c.JSON(http.StatusOK, gin.H{
+					"status": 1,
+					"msg":    "success Create Event",
+					"data":   nil,
+				})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"status": -1,
+					"msg":    "Event Create Failed : " + createErr.Error(),
+					"data":   nil,
+				})
+			}
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"status": -1,

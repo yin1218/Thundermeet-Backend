@@ -1,34 +1,4 @@
 definitions:
-  Event:
-    properties:
-      admin_id:
-        type: string
-      confirmed_timeblocks:
-        type: string
-      date_or_days:
-        type: boolean
-      end_date:
-        type: string
-      end_day:
-        type: string
-      end_time:
-        type: string
-      event_id:
-        description: gorm.Model
-        type: integer
-      event_name:
-        type: string
-      event_nameis_priority_enabled:
-        type: boolean
-      is_confirmed:
-        type: boolean
-      start_date:
-        type: string
-      start_day:
-        type: string
-      start_time:
-        type: string
-    type: object
   EventFormat:
     properties:
       dateOrDays:
@@ -45,7 +15,7 @@ definitions:
         type: string
       endTime:
         description: required
-        example: "1975-08-19T23:00:00.000Z"
+        example: "2100"
         type: string
       eventName:
         description: required
@@ -65,7 +35,7 @@ definitions:
         type: string
       startTime:
         description: required
-        example: "1975-08-19T11:00:00.000Z"
+        example: "0900"
         type: string
     required:
     - dateOrDays
@@ -125,6 +95,29 @@ definitions:
     - passwordAnswer
     - userId
     type: object
+  Timeblock:
+    properties:
+      eventId:
+        description: required
+        example: 1
+        type: integer
+      normal:
+        description: optional
+        example:
+        - "2021-01-01T11:00:00+08:00"
+        items:
+          type: string
+        type: array
+      priority:
+        description: optional
+        example:
+        - "2021-01-02T12:00:00+08:00"
+        items:
+          type: string
+        type: array
+    required:
+    - eventId
+    type: object
   Update:
     properties:
       password:
@@ -152,6 +145,36 @@ definitions:
     - password
     - passwordAnswer
     - userId
+    type: object
+  model.Event:
+    properties:
+      admin_id:
+        type: string
+      confirmed_timeblocks:
+        type: string
+      date_or_days:
+        type: boolean
+      end_date:
+        type: string
+      end_day:
+        type: string
+      end_time:
+        type: string
+      event_id:
+        description: gorm.Model
+        type: integer
+      event_name:
+        type: string
+      event_nameis_priority_enabled:
+        type: boolean
+      is_confirmed:
+        type: boolean
+      start_date:
+        type: string
+      start_day:
+        type: string
+      start_time:
+        type: string
     type: object
 host: localhost:8080/
 info:
@@ -210,7 +233,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Event'
+            $ref: '#/definitions/model.Event'
         "404":
           description: Not Found
           schema:
@@ -221,6 +244,33 @@ paths:
             type: string
       tags:
       - event
+  /v1/timeblocks/:
+    post:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to create an event
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Timeblock'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - timeblock
   /v1/users:
     patch:
       parameters:

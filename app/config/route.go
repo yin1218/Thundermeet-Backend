@@ -28,4 +28,9 @@ func RouteUsers(r *gin.Engine) {
 		events.POST("/", controller.CreateEventsController().CreateEvent)
 		events.GET("/:event_id", controller.CreateEventsController().GetEvent)
 	}
+
+	timeblocks := r.Group("/v1/timeblocks")
+	{
+		timeblocks.POST("/", controller.CreateTimeblocksController().CreateTimeblock)
+	}
 }

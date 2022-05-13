@@ -161,6 +161,50 @@ definitions:
     - passwordAnswer
     - userId
     type: object
+  createGroupFormat:
+    properties:
+      event_ids:
+        description: required
+        items:
+          type: integer
+        type: array
+      group_name:
+        description: required
+        example: OR-related
+        type: string
+    required:
+    - group_name
+    type: object
+  model.Event:
+    properties:
+      admin_id:
+        type: string
+      confirmed_timeblocks:
+        type: string
+      date_or_days:
+        type: boolean
+      end_date:
+        type: string
+      end_day:
+        type: string
+      end_time:
+        type: string
+      event_id:
+        description: gorm.Model
+        type: integer
+      event_name:
+        type: string
+      event_nameis_priority_enabled:
+        type: boolean
+      is_confirmed:
+        type: boolean
+      start_date:
+        type: string
+      start_day:
+        type: string
+      start_time:
+        type: string
+    type: object
 host: localhost:8080/
 info:
   contact:
@@ -290,7 +334,11 @@ paths:
           schema:
             type: string
       tags:
+<<<<<<< HEAD
       - timeblock
+=======
+      - group
+>>>>>>> f52fe7b (feat: create group 50%)
   /v1/users:
     patch:
       parameters:

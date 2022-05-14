@@ -681,7 +681,7 @@ const docTemplate = `{
                 "endDate": {
                     "description": "optional",
                     "type": "string",
-                    "example": "2021-01-10T11:00:00.000Z"
+                    "example": "2021-01-02T12:00:00+08:00"
                 },
                 "endDay": {
                     "description": "optional",
@@ -706,7 +706,7 @@ const docTemplate = `{
                 "startDate": {
                     "description": "optional",
                     "type": "string",
-                    "example": "2021-01-01T11:00:00.000Z"
+                    "example": "2021-01-01T12:00:00+08:00"
                 },
                 "startDay": {
                     "description": "optional",

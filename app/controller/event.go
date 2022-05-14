@@ -30,8 +30,8 @@ type createEventFormat struct {
 	Date_or_days        *bool  `json:"dateOrDays" example:"true" binding:"required"`         //required
 	Start_day           string `json:"startDay" example:"1" `                                //optional
 	End_day             string `json:"endDay" example:"7"`                                   //optional
-	Start_date          string `json:"startDate" example:"2021-01-01T11:00:00.000Z"`         //optional
-	End_date            string `json:"endDate" example:"2021-01-10T11:00:00.000Z"`           //optional
+	Start_date          string `json:"startDate" example:"2021-01-01T12:00:00+08:00"`        //optional
+	End_date            string `json:"endDate" example:"2021-01-02T12:00:00+08:00"`          //optional
 } //@name EventFormat
 
 func CreateEventsController() EventController {

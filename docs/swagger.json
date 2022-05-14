@@ -275,6 +275,48 @@
                 }
             }
         },
+        "/v1/timeblocks/import": {
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "timeblock"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to import timeblocks",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateTimeblockImportFormat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/timeblocks/{event_id}": {
             "get": {
                 "produces": [
@@ -767,6 +809,25 @@
                 "event_name": {
                     "type": "string",
                     "example": "Sad 2nd meeting"
+                }
+            }
+        },
+        "UpdateTimeblockImportFormat": {
+            "type": "object",
+            "required": [
+                "dest_event_id",
+                "source_event_id"
+            ],
+            "properties": {
+                "dest_event_id": {
+                    "description": "required",
+                    "type": "integer",
+                    "example": 26
+                },
+                "source_event_id": {
+                    "description": "required",
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },

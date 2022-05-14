@@ -10,6 +10,24 @@ import (
 	"time"
 )
 
+func ReturnAvailableTimeblocks(timeblocks []model.Timeblock, userId string) ([]string, error) {
+	var timeblockparticipant model.TimeblockParticipants
+
+	var availableTimes []string
+	for _, timeblock := range timeblocks {
+		dao.SqlSession.Where("time_block_id = ? AND user_id = ?", timeblock.TimeBlockId, userId).First(&timeblockparticipant)
+		fmt.Print("timeblockpart = ", timeblockparticipant)
+		if timeblockparticipant.TimeBlockId == "" {
+			blocktime := strings.Split(timeblock.TimeBlockId, "A")[0]
+			availableTimes = append(availableTimes, blocktime)
+		} else {
+			timeblockparticipant.TimeBlockId = ""
+			continue
+		}
+	}
+	return availableTimes, nil
+}
+
 func CreateOneTimeblock(timeblockId string, eventId int64, blockTime time.Time) error {
 	if !CheckOneTimeblock(timeblockId) {
 		return fmt.Errorf("Timeblock exists")

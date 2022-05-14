@@ -3,10 +3,31 @@ package service
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 	"thundermeet_backend/app/dao"
+	helper "thundermeet_backend/app/helpers"
 	"thundermeet_backend/app/model"
 	"time"
 )
+
+func ReturnAvailableTimeblocks(timeblocks []model.Timeblock, userId string) ([]string, error) {
+	var timeblockparticipant model.TimeblockParticipants
+
+	var availableTimes []string
+	for _, timeblock := range timeblocks {
+		dao.SqlSession.Where("time_block_id = ? AND user_id = ?", timeblock.TimeBlockId, userId).First(&timeblockparticipant)
+		fmt.Print("timeblockpart = ", timeblockparticipant)
+		if timeblockparticipant.TimeBlockId == "" {
+			blocktime := strings.Split(timeblock.TimeBlockId, "A")[0]
+			availableTimes = append(availableTimes, blocktime)
+		} else {
+			timeblockparticipant.TimeBlockId = ""
+			continue
+		}
+	}
+	return availableTimes, nil
+}
 
 func CreateOneTimeblock(timeblockId string, eventId int64, blockTime time.Time) error {
 	if !CheckOneTimeblock(timeblockId) {
@@ -38,6 +59,12 @@ func CheckOneTimeblock(timeblockId string) bool {
 	return result
 }
 
+func DeletePreviousTimeblockParticipant(userId string, eventId int64) error {
+	eventMatchString := "%" + strconv.Itoa(int(eventId)) + "%"
+	delErr := dao.SqlSession.Where("user_id = ? AND time_block_id LIKE ?", userId, eventMatchString).Delete(&model.TimeblockParticipants{}).Error
+	return delErr
+}
+
 func CreateOneTimeblockParticipant(userId string, timeblockId string, priority bool) error {
 	if !CheckOneTimeblockParticipant(userId, timeblockId) {
 		return fmt.Errorf("Timeblock exists")
@@ -66,4 +93,84 @@ func CheckOneTimeblockParticipant(userId string, timeblockId string) bool {
 	}
 	fmt.Print(result)
 	return result
+}
+
+func GetTimeblocksForEvent(eventId int64) ([]model.Timeblock, error) {
+	var timeblocks []model.Timeblock
+	dbResult := dao.SqlSession.Where("event_id = ? ", eventId).Find(&timeblocks)
+
+	if dbResult.Error != nil {
+		return nil, dbResult.Error
+	} else {
+		return timeblocks, nil
+	}
+}
+
+func remove(s []string, r string) []string {
+	for i, v := range s {
+		if v == r {
+			return append(s[:i], s[i+1:]...)
+		}
+	}
+	return s
+}
+
+func GetMembersStatusPerTimeBlock(timeblockId string, participants []string) ([]string, []string, []string, error) {
+	var TimeblockParticipants []model.TimeblockParticipants
+	dbResult := dao.SqlSession.Where("time_block_id = ? ", timeblockId).Find(&TimeblockParticipants)
+	if dbResult.Error != nil {
+		return nil, nil, nil, dbResult.Error
+	} else {
+		var priority []string
+		var normal []string
+		var notAvailable []string = participants
+		for _, timeblockparticipant := range TimeblockParticipants {
+			if timeblockparticipant.Priority {
+				priority = append(priority, timeblockparticipant.UserId)
+				notAvailable = remove(notAvailable, timeblockparticipant.UserId)
+			} else {
+				normal = append(normal, timeblockparticipant.UserId)
+				notAvailable = remove(notAvailable, timeblockparticipant.UserId)
+			}
+		}
+
+		return normal, priority, notAvailable, nil
+	}
+}
+
+func GetStatusForTimeblock(userId string, eventId int64) ([]string, []string, error) {
+	timeblocks, err := GetTimeblocksForEvent(eventId)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var priority []string
+	var normal []string
+
+	for _, timeblock := range timeblocks {
+		var TimeblockParticipants []model.TimeblockParticipants
+		dbResult := dao.SqlSession.Where("time_block_id = ? AND user_id = ?", timeblock.TimeBlockId, userId).Find(&TimeblockParticipants)
+		if dbResult.Error != nil {
+			return nil, nil, dbResult.Error
+		} else {
+
+			for _, timeblockparticipant := range TimeblockParticipants {
+				blocktime := strings.Split(timeblockparticipant.TimeBlockId, "A")[0]
+				if timeblockparticipant.Priority {
+					priority = append(priority, blocktime)
+				} else {
+					normal = append(normal, blocktime)
+				}
+			}
+		}
+	}
+	return normal, priority, nil
+}
+
+func DeleteTimeblocksFromEvent(eventId int64, timeblocks []string, userId string) error {
+	for _, timeblock := range timeblocks {
+		timeblockId := helper.ConvertToTimeblockId(timeblock, eventId)
+		dao.SqlSession.Where("user_id = ? AND time_block_id = ?", userId, timeblockId).Delete(&model.TimeblockParticipants{})
+	}
+	return nil
 }

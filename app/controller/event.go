@@ -30,8 +30,8 @@ type createEventFormat struct {
 	Date_or_days        *bool  `json:"dateOrDays" example:"true" binding:"required"`         //required
 	Start_day           string `json:"startDay" example:"1" `                                //optional
 	End_day             string `json:"endDay" example:"7"`                                   //optional
-	Start_date          string `json:"startDate" example:"2021-01-01T11:00:00.000Z"`         //optional
-	End_date            string `json:"endDate" example:"2021-01-10T11:00:00.000Z"`           //optional
+	Start_date          string `json:"startDate" example:"2021-01-01T12:00:00+08:00"`        //optional
+	End_date            string `json:"endDate" example:"2021-01-02T12:00:00+08:00"`          //optional
 } //@name EventFormat
 
 func CreateEventsController() EventController {
@@ -294,6 +294,40 @@ func (u EventController) GetEvent(c *gin.Context) {
 			"admin_id":            event.AdminId,
 		})
 	}
+}
+
+// GetEvent GetEvent @Summary
+// @Tags event
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Success 200 {object} string
+// @Failure 404 string string ErrorResponse
+// @Failure 500 string string ErrorResponse
+// @Router /v1/events [get]
+func (u EventController) GetEvents(c *gin.Context) {
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	user_id, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	//check id and return needed data
+	events, err := service.GetEventsByUser(user_id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "Events not found : " + err.Error(),
+			"data":   nil,
+		})
+	} else {
+		c.JSON(http.StatusOK, events)
+	}
+
 }
 
 type UpdateEventFormat struct {

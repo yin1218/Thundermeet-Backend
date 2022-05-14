@@ -194,6 +194,37 @@
             }
         },
         "/v1/groups/": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "group"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer eyJhbGcikDCEVLw0xRO8CzTg",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "produces": [
                     "application/json"
@@ -204,7 +235,7 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTIyODM1NzcsInVzZXJJZCI6ImNocmlzdGluZTg5MTIyNTAwMCJ9.v1jFVMYnl9HX293qxgadJ_xQksuHrRCJqe3Rgt9tKOwXvjqT3dmoepQ679OtirSzgNoCkSqDCEVLw0xRO8CzTg",
+                        "description": "Bearer eyJNoCkSqDCEVLw0xRO8CzTg",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -246,7 +277,7 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Bearer eyJhbGciOiJ9.eyJleHAiOjE2NTIyODM1NzcsInVzZXJJZCI6ImNocmlzdGluZTg5MTIyNTAwMCJ9.v1jFVMYnl9HX293qxgadJ_xQksuHrRCJqe3Rgt9tKOwXvjqT3dmoepQ679OtirSzgNoCkSqDCEVLw0xRO8CzTg",
+                        "description": "Bearer eyJhbGcikDCEVLw0xRO8CzTg",
                         "name": "Authorization",
                         "in": "header",
                         "required": true

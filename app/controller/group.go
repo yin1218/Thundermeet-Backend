@@ -57,6 +57,56 @@ func GetGroupController() GroupController {
 	return GroupController{}
 }
 
+// GetGroup GetGroup @Summary
+// @Tags group
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer eyJhbGcikDCEVLw0xRO8CzTg"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @Router /v1/groups/ [get]
+func GetGroupListController() GroupController {
+	return GroupController{}
+}
+
+func (u GroupController) GetGroupList(c *gin.Context) {
+	//===== validate token ============//
+	token := c.Request.Header.Get("Authorization")
+	id, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	//check id and return needed data
+	userOne, err := service.SelectOneUser(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "User not found : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	groupList, err := service.SelectGroups(userOne.UserId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "fail to get groups : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": 0,
+		"data":   groupList,
+	})
+
+}
+
 func (u GroupController) GetGroup(c *gin.Context) {
 	//===== validate token ============//
 	token := c.Request.Header.Get("Authorization")

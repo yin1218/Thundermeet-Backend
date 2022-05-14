@@ -339,9 +339,29 @@ paths:
       tags:
       - event
   /v1/groups/:
+    get:
+      parameters:
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - group
     post:
       parameters:
-      - description: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTIyODM1NzcsInVzZXJJZCI6ImNocmlzdGluZTg5MTIyNTAwMCJ9.v1jFVMYnl9HX293qxgadJ_xQksuHrRCJqe3Rgt9tKOwXvjqT3dmoepQ679OtirSzgNoCkSqDCEVLw0xRO8CzTg
+      - description: Bearer eyJNoCkSqDCEVLw0xRO8CzTg
         in: header
         name: Authorization
         required: true
@@ -368,7 +388,7 @@ paths:
   /v1/groups/{group_id}:
     get:
       parameters:
-      - description: Bearer eyJhbGciOiJ9.eyJleHAiOjE2NTIyODM1NzcsInVzZXJJZCI6ImNocmlzdGluZTg5MTIyNTAwMCJ9.v1jFVMYnl9HX293qxgadJ_xQksuHrRCJqe3Rgt9tKOwXvjqT3dmoepQ679OtirSzgNoCkSqDCEVLw0xRO8CzTg
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
         in: header
         name: Authorization
         required: true

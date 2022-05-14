@@ -45,6 +45,23 @@ func SelectGroupEvents(groupId int) ([]int, error) {
 
 }
 
+type GroupInfoItem struct {
+	Group_id   int    `json:"group_id"`
+	Group_name string `json:"group_name"`
+}
+
+type Groups []GroupInfoItem
+
+func SelectGroups(userId string) (Groups, error) {
+	var results Groups
+
+	db := dao.SqlSession.Model(&model.Group{}).Select("group_id", "group_name").Where("User_id=?", userId).Scan(&results)
+	if db.Error != nil {
+		return nil, db.Error
+	}
+	return results, nil
+}
+
 func AddEventToGroup(eventId int, groupId int) error {
 	group_event := model.GroupEvent{
 		GroupId: groupId,

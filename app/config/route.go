@@ -40,7 +40,6 @@ func RouteUsers(r *gin.Engine) {
 		timeblocks.PATCH("/export", controller.UpdateTimeblocksController().UpdateTimeblockExport)
 	}
 
-<<<<<<< HEAD
 	groups := r.Group("/v1/groups")
 	{
 		groups.POST("/", controller.CreateGroupsController().CreateGroup) //建立分類群組
@@ -53,6 +52,4 @@ func RouteUsers(r *gin.Engine) {
 
 	}
 
-=======
->>>>>>> main
 }

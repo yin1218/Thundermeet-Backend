@@ -21,6 +21,30 @@ func CreateGroup(groupName string, userId string) (int, error) {
 	return group.GroupId, nil
 }
 
+var GroupFields = []string{"group_id", "group_name", "user_id"}
+
+func SelectOneGroup(groupId int) (*model.Group, error) {
+	groupOne := &model.Group{}
+	err := dao.SqlSession.Select(GroupFields).Where("Group_id=?", groupId).First(&groupOne).Error
+	if err != nil {
+		return nil, err
+	} else {
+		return groupOne, nil
+	}
+
+}
+
+func SelectGroupEvents(groupId int) ([]int, error) {
+
+	var results []int
+	db := dao.SqlSession.Model(&model.GroupEvent{}).Pluck("event_id", &results).Where("Group_id=?", groupId)
+	if db.Error != nil {
+		return nil, db.Error
+	}
+	return results, nil
+
+}
+
 func AddEventToGroup(eventId int, groupId int) error {
 	group_event := model.GroupEvent{
 		GroupId: groupId,

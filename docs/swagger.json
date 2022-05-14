@@ -198,6 +198,46 @@
                 }
             }
         },
+        "/v1/groups/{group_id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "group"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer eyJhbGciOiJ9.eyJleHAiOjE2NTIyODM1NzcsInVzZXJJZCI6ImNocmlzdGluZTg5MTIyNTAwMCJ9.v1jFVMYnl9HX293qxgadJ_xQksuHrRCJqe3Rgt9tKOwXvjqT3dmoepQ679OtirSzgNoCkSqDCEVLw0xRO8CzTg",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "7",
+                        "name": "group_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/timeblocks/": {
             "post": {
                 "produces": [

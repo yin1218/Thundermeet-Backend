@@ -197,6 +197,20 @@ definitions:
     - passwordAnswer
     - userId
     type: object
+  createGroupFormat:
+    properties:
+      event_ids:
+        description: required
+        items:
+          type: integer
+        type: array
+      group_name:
+        description: required
+        example: OR-related
+        type: string
+    required:
+    - group_name
+    type: object
 host: localhost:8080/
 info:
   contact:
@@ -324,6 +338,33 @@ paths:
             type: string
       tags:
       - event
+  /v1/groups/:
+    post:
+      parameters:
+      - description: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTIyODM1NzcsInVzZXJJZCI6ImNocmlzdGluZTg5MTIyNTAwMCJ9.v1jFVMYnl9HX293qxgadJ_xQksuHrRCJqe3Rgt9tKOwXvjqT3dmoepQ679OtirSzgNoCkSqDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to create an group
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/createGroupFormat'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - group
   /v1/timeblocks/:
     post:
       parameters:

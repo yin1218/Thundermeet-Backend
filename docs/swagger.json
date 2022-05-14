@@ -193,6 +193,48 @@
                 }
             }
         },
+        "/v1/groups/": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "group"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTIyODM1NzcsInVzZXJJZCI6ImNocmlzdGluZTg5MTIyNTAwMCJ9.v1jFVMYnl9HX293qxgadJ_xQksuHrRCJqe3Rgt9tKOwXvjqT3dmoepQ679OtirSzgNoCkSqDCEVLw0xRO8CzTg",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to create an group",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/createGroupFormat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/timeblocks/": {
             "put": {
                 "produces": [
@@ -922,6 +964,26 @@
                 "userId": {
                     "type": "string",
                     "example": "christine891225"
+                }
+            }
+        },
+        "createGroupFormat": {
+            "type": "object",
+            "required": [
+                "group_name"
+            ],
+            "properties": {
+                "event_ids": {
+                    "description": "required",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "group_name": {
+                    "description": "required",
+                    "type": "string",
+                    "example": "OR-related"
                 }
             }
         }

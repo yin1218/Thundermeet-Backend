@@ -69,6 +69,19 @@ func GetGroupListController() GroupController {
 	return GroupController{}
 }
 
+// DeleteGroup DeleteGroup @Summary
+// @Tags group
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer eyJhbGcikDCEVLw0xRO8CzTg"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @param group_id path int64 true "7"
+// @Router /v1/groups/{group_id} [delete]
+func DeleteGroupController() GroupController {
+	return GroupController{}
+}
+
 func (u GroupController) GetGroupList(c *gin.Context) {
 	//===== validate token ============//
 	token := c.Request.Header.Get("Authorization")
@@ -274,6 +287,70 @@ func (u GroupController) CreateGroup(c *gin.Context) {
 	})
 }
 
+func (u GroupController) DeleteGroup(c *gin.Context) {
+	//===== validate token ============//
+	token := c.Request.Header.Get("Authorization")
+	id, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	//check id and return needed data
+	userOne, err := service.SelectOneUser(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "User not found : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	group_id, err := strconv.ParseInt(c.Param("group_id"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to parse group id : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	//delete event group relationship
+	err = service.DeleteEvents(int(group_id))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to delete event-group relationship : " + err.Error(),
+			"data":   nil,
+		})
+		return
+
+	}
+
+	//delete group
+	err = service.DeleteGroup(userOne.UserId, int(group_id))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to delete group : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	//return value
+	c.JSON(http.StatusOK, gin.H{
+		"status": 1,
+		"msg":    "group delete successfully!",
+		"data":   nil,
+	})
+
+}
+
 // func (u GroupController) AddGroupEvent(c *gin.Context) {
 // 		//===== validate token ============//
 // 		token := c.Request.Header.Get("Authorization")
@@ -311,3 +388,4 @@ func (u GroupController) CreateGroup(c *gin.Context) {
 // 		//check group_id
 
 // }
+//

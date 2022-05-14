@@ -45,9 +45,9 @@ func RouteUsers(r *gin.Engine) {
 		groups.POST("/", controller.CreateGroupsController().CreateGroup) //建立分類群組
 		// groups.POST("/:group_id") //將event 加入 group
 		// groups.DELETE("/:group_id/:event_id") //刪除group中的一個event
-		groups.GET("/", controller.GetGroupListController().GetGroupList)  //獲得所有的group
-		groups.GET("/:group_id", controller.GetGroupController().GetGroup) //獲得某個group中的所有event id
-		// groups.DELETE("/:group_id") //刪除某個群組
+		groups.GET("/", controller.GetGroupListController().GetGroupList)           //獲得所有的group
+		groups.GET("/:group_id", controller.GetGroupController().GetGroup)          //獲得某個group中的所有event id
+		groups.DELETE("/:group_id", controller.DeleteGroupController().DeleteGroup) //刪除某個群組
 		// groups.PATCH("/:group_id") //修改某個群組的姓名
 
 	}

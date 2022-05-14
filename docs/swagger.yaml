@@ -386,6 +386,31 @@ paths:
       tags:
       - group
   /v1/groups/{group_id}:
+    delete:
+      parameters:
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "7"
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - group
     get:
       parameters:
       - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg

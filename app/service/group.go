@@ -71,3 +71,13 @@ func AddEventToGroup(eventId int, groupId int) error {
 	return insertErr
 
 }
+
+func DeleteGroup(userId string, groupId int) error {
+	delErr := dao.SqlSession.Where("user_id = ? AND group_id = ?", userId, groupId).Delete(&model.Group{}).Error
+	return delErr
+}
+
+func DeleteEvents(groupId int) error {
+	delErr := dao.SqlSession.Where("group_id = ?", groupId).Delete(&model.GroupEvent{}).Error
+	return delErr
+}

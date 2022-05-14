@@ -29,7 +29,7 @@ type createGroupFormat struct {
 // @Tags group
 // @version 1.0
 // @produce application/json
-// @Param Authorization header string true "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTIyODM1NzcsInVzZXJJZCI6ImNocmlzdGluZTg5MTIyNTAwMCJ9.v1jFVMYnl9HX293qxgadJ_xQksuHrRCJqe3Rgt9tKOwXvjqT3dmoepQ679OtirSzgNoCkSqDCEVLw0xRO8CzTg"
+// @Param Authorization header string true "Bearer eyJNoCkSqDCEVLw0xRO8CzTg"
 // @Param Body body createGroupFormat true "The body to create an group"
 // @Success 201 string string successful return data
 // @Failure 500 string string ErrorResponse

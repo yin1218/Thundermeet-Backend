@@ -35,7 +35,7 @@ type addGroupEventFormat struct {
 // @Tags group
 // @version 1.0
 // @produce application/json
-// @Param Authorization header string true "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTIyODM1NzcsInVzZXJJZCI6ImNocmlzdGluZTg5MTIyNTAwMCJ9.v1jFVMYnl9HX293qxgadJ_xQksuHrRCJqe3Rgt9tKOwXvjqT3dmoepQ679OtirSzgNoCkSqDCEVLw0xRO8CzTg"
+// @Param Authorization header string true "Bearer eyJhbGciOKOwXvjqT3dmoepQ679OtirSzgNoCkSqDCEVLw0xRO8CzTg"
 // @Param Body body createGroupFormat true "The body to create an group"
 // @Success 201 string string successful return data
 // @Failure 500 string string ErrorResponse
@@ -48,7 +48,7 @@ func CreateGroupsController() GroupController {
 // @Tags group
 // @version 1.0
 // @produce application/json
-// @Param Authorization header string true "Bearer eyJhbGciOiJ9.eyJleHAiOjE2NTIyODM1NzcsInVzZXJJZCI6ImNocmlzdGluZTg5MTIyNTAwMCJ9.v1jFVMYnl9HX293qxgadJ_xQksuHrRCJqe3Rgt9tKOwXvjqT3dmoepQ679OtirSzgNoCkSqDCEVLw0xRO8CzTg"
+// @Param Authorization header string true "Bearer eyJhbGcikDCEVLw0xRO8CzTg"
 // @Success 200 string string successful return data
 // @Failure 500 string string ErrorResponse
 // @param group_id path int64 true "7"

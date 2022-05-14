@@ -23,6 +23,43 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/v1/events": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "event"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "produces": [
                     "application/json"
@@ -207,6 +244,46 @@ const docTemplate = `{
             }
         },
         "/v1/timeblocks/": {
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "timeblock"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to update an event",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Timeblock"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "produces": [
                     "application/json"
@@ -230,6 +307,170 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/Timeblock"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/timeblocks/export": {
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "timeblock"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to import timeblocks",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateTimeblockExportFormat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/timeblocks/import": {
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "timeblock"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to import timeblocks",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateTimeblockImportFormat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/timeblocks/{event_id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "timeblock"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "event id",
+                        "name": "event_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/timeblocks/{event_id}/preview": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "timeblock"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "event id",
+                        "name": "event_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -482,7 +723,7 @@ const docTemplate = `{
                 "endDate": {
                     "description": "optional",
                     "type": "string",
-                    "example": "2021-01-10T11:00:00.000Z"
+                    "example": "2021-01-02T12:00:00+08:00"
                 },
                 "endDay": {
                     "description": "optional",
@@ -507,7 +748,7 @@ const docTemplate = `{
                 "startDate": {
                     "description": "optional",
                     "type": "string",
-                    "example": "2021-01-01T11:00:00.000Z"
+                    "example": "2021-01-01T12:00:00+08:00"
                 },
                 "startDay": {
                     "description": "optional",
@@ -660,6 +901,55 @@ const docTemplate = `{
                 "event_name": {
                     "type": "string",
                     "example": "Sad 2nd meeting"
+                }
+            }
+        },
+        "UpdateTimeblockExportFormat": {
+            "type": "object",
+            "required": [
+                "confirmed_time_blocks",
+                "dest_event_id",
+                "source_event_id"
+            ],
+            "properties": {
+                "confirmed_time_blocks": {
+                    "description": "required",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "2021-01-01T11:00:00+08:00"
+                    ]
+                },
+                "dest_event_id": {
+                    "description": "required",
+                    "type": "integer",
+                    "example": 26
+                },
+                "source_event_id": {
+                    "description": "required",
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "UpdateTimeblockImportFormat": {
+            "type": "object",
+            "required": [
+                "dest_event_id",
+                "source_event_id"
+            ],
+            "properties": {
+                "dest_event_id": {
+                    "description": "required",
+                    "type": "integer",
+                    "example": 26
+                },
+                "source_event_id": {
+                    "description": "required",
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },

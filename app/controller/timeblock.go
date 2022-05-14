@@ -31,6 +31,14 @@ func CreateTimeblocksController() TimeblockController {
 	return TimeblockController{}
 }
 
+func UpdateTimeblocksController() TimeblockController {
+	return TimeblockController{}
+}
+
+func GetTimeblocksController() TimeblockController {
+	return TimeblockController{}
+}
+
 func StartNewTime(curHour int, curMin int, endHour int, endMin int) bool {
 	if curHour > endHour {
 		return true
@@ -113,6 +121,38 @@ func CreateManyTimeblocksParticipants(eventId int64, userId string, normal []str
 	return nil
 }
 
+func UpdateManyTimeblocksParticipants(eventId int64, userId string, normal []string, priority []string) error {
+	timeset := map[string]bool{}
+	for _, timeblock := range priority {
+		fmt.Print(timeblock)
+		timeset[timeblock] = true
+	}
+
+	for _, timeblock := range normal {
+		fmt.Print(timeblock)
+		if timeset[timeblock] == true {
+			return fmt.Errorf("normal and priority have times that overlap")
+		}
+		timeset[timeblock] = false
+	}
+
+	err := service.DeletePreviousTimeblockParticipant(userId, eventId)
+	if err != nil {
+		return err
+	}
+
+	for timeblock, priority := range timeset {
+		timeblock_id := helper.ConvertToTimeblockId(timeblock, eventId)
+		fmt.Print("timeid = ", timeblock_id, "-------")
+
+		err := service.CreateOneTimeblockParticipant(userId, timeblock_id, priority)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // CreateTimeblock CreateTimeblock @Summary
 // @Tags timeblock
 // @version 1.0
@@ -138,6 +178,7 @@ func (u TimeblockController) CreateTimeblock(c *gin.Context) {
 
 	if bindErr == nil {
 		err := CreateManyTimeblocksParticipants(form.Event_id, userId, form.Normal, form.Priority)
+		err = service.UpdateEventParticipants(form.Event_id, userId)
 		if err == nil {
 			c.JSON(http.StatusCreated, gin.H{
 				"status": 1,
@@ -159,4 +200,288 @@ func (u TimeblockController) CreateTimeblock(c *gin.Context) {
 		})
 	}
 
+}
+
+// UpdateTimeblock UpdateTimeblock @Summary
+// @Tags timeblock
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param Body body createTimeblockFormat true "The body to update an event"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @Router /v1/timeblocks/ [put]
+func (u TimeblockController) UpdateTimeblock(c *gin.Context) {
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	userId, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var form createTimeblockFormat
+	bindErr := c.BindJSON(&form)
+	if bindErr == nil {
+		err := UpdateManyTimeblocksParticipants(form.Event_id, userId, form.Normal, form.Priority)
+		if err == nil {
+			c.JSON(http.StatusAccepted, gin.H{
+				"status": 1,
+				"msg":    "timeblocks updated successfully!",
+				"data":   nil,
+			})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Cannot create timeblocks!" + err.Error(),
+				"data":   nil,
+			})
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Failed to parse timeblocks data : " + bindErr.Error(),
+			"data":   nil,
+		})
+	}
+
+}
+
+type GetTimeblockFormat struct {
+	Time         string   `json:"time" example:"2021-01-01T11:00:00+08:00" binding:"required"` //required
+	Normal       []string `json:"normal" example:"小葉"`                                         //optional
+	Priority     []string `json:"priority" example:"小巫"`                                       //optional
+	NotAvailable []string `json:"not_available" example:"小陳"`                                  //optional
+} //@name GetTimeblockResponse
+
+// GetTimeblock GetTimeblock @Summary
+// @Tags timeblock
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @param event_id path int64 true "event id"
+// @Router /v1/timeblocks/{event_id} [get]
+func (u TimeblockController) GetTimeblock(c *gin.Context) {
+	event_id, err := strconv.ParseInt(c.Param("event_id"), 10, 64)
+	fmt.Print(event_id)
+
+	timeblocks, err := service.GetTimeblocksForEvent(event_id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Cannot get timeblocks!" + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+	var fullTimeblockRes []GetTimeblockFormat
+	for _, timeblock := range timeblocks {
+		timeblockId := timeblock.TimeBlockId
+
+		var timeblockRes GetTimeblockFormat
+
+		timeblockRes.Time = timeblock.BlockTime.Format(time.RFC3339)
+		participants, err := service.GetEventParticipants(timeblock.EventId)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Cannot get timeblocks!" + err.Error(),
+				"data":   nil,
+			})
+			return
+		}
+
+		fmt.Print("participants = ", participants)
+
+		normal, priority, notAvailable, err := service.GetMembersStatusPerTimeBlock(timeblockId, participants)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Cannot get timeblocks!" + err.Error(),
+				"data":   nil,
+			})
+			return
+		}
+
+		timeblockRes.Normal = normal
+		timeblockRes.Priority = priority
+		timeblockRes.NotAvailable = notAvailable
+
+		fullTimeblockRes = append(fullTimeblockRes, timeblockRes)
+	}
+
+	c.JSON(http.StatusAccepted, fullTimeblockRes)
+
+}
+
+type GetTimeblockPreviewFormat struct {
+	EventId  int64    `json:"event_id" example:"26" binding:"required"`     //required
+	Normal   []string `json:"normal" example:"2021-01-01T11:00:00+08:00"`   //optional
+	Priority []string `json:"priority" example:"2021-01-01T11:00:00+08:00"` //optional
+} //@name GetTimeblockPreviewResponse
+
+// GetTimeblockPreview GetTimeblockPreview @Summary
+// @Tags timeblock
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @param event_id path int64 true "event id"
+// @Router /v1/timeblocks/{event_id}/preview [get]
+func (u TimeblockController) GetTimeblockPreview(c *gin.Context) {
+	eventId, err := strconv.ParseInt(c.Param("event_id"), 10, 64)
+	fmt.Print(eventId)
+
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	userId, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var timeblockPreviewRes GetTimeblockPreviewFormat
+
+	timeblockPreviewRes.EventId = eventId
+
+	normal, priority, err := service.GetStatusForTimeblock(userId, eventId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Cannot get timeblocks!" + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+	timeblockPreviewRes.Normal = normal
+	timeblockPreviewRes.Priority = priority
+
+	c.JSON(http.StatusAccepted, timeblockPreviewRes)
+
+}
+
+type UpdateTimeblockImportFormat struct {
+	SourceEventId int64 `json:"source_event_id" example:"1" binding:"required"` //required
+	DestEventId   int64 `json:"dest_event_id" example:"26" binding:"required"`  //required
+} //@name UpdateTimeblockImportFormat
+
+// UpdateTimeblockImport UpdateTimeblockImport @Summary
+// @Tags timeblock
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param Body body UpdateTimeblockImportFormat true "The body to import timeblocks"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @Router /v1/timeblocks/import [patch]
+func (u TimeblockController) UpdateTimeblockImport(c *gin.Context) {
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	userId, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var form UpdateTimeblockImportFormat
+	bindErr := c.BindJSON(&form)
+	if bindErr == nil {
+		timeblocks, err := service.GetTimeblocksForEvent(form.SourceEventId)
+
+		fmt.Print("timeblocks = ", timeblocks)
+
+		err = service.DeletePreviousTimeblockParticipant(userId, form.DestEventId)
+
+		available, err := service.ReturnAvailableTimeblocks(timeblocks, userId)
+		fmt.Print("available = ", available)
+		var priority []string
+
+		err = CreateManyTimeblocksParticipants(form.DestEventId, userId, available, priority)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Cannot get timeblocks!" + err.Error(),
+				"data":   nil,
+			})
+			return
+		}
+
+		c.JSON(http.StatusAccepted, gin.H{
+			"event_id": form.DestEventId,
+			"normal":   available,
+		})
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Failed to parse timeblocks data : " + bindErr.Error(),
+			"data":   nil,
+		})
+	}
+}
+
+type UpdateTimeblockExportFormat struct {
+	SourceEventId       int64    `json:"source_event_id" example:"1" binding:"required"`                               //required
+	DestEventId         int64    `json:"dest_event_id" example:"26" binding:"required"`                                //required
+	ComfirmedTimeblocks []string `json:"confirmed_time_blocks" example:"2021-01-01T11:00:00+08:00" binding:"required"` //required
+} //@name UpdateTimeblockExportFormat
+
+// UpdateTimeblockExport UpdateTimeblockExport @Summary
+// @Tags timeblock
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param Body body UpdateTimeblockExportFormat true "The body to import timeblocks"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @Router /v1/timeblocks/export [patch]
+func (u TimeblockController) UpdateTimeblockExport(c *gin.Context) {
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	userId, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var form UpdateTimeblockExportFormat
+	bindErr := c.BindJSON(&form)
+	if bindErr == nil {
+
+		err = service.DeleteTimeblocksFromEvent(form.DestEventId, form.ComfirmedTimeblocks, userId)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Cannot get timeblocks!" + err.Error(),
+				"data":   nil,
+			})
+			return
+		}
+
+		c.JSON(http.StatusAccepted, gin.H{
+			"msg": "success export",
+		})
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Failed to parse timeblocks data : " + bindErr.Error(),
+			"data":   nil,
+		})
+	}
 }

@@ -1,34 +1,4 @@
 definitions:
-  Event:
-    properties:
-      admin_id:
-        type: string
-      confirmed_timeblocks:
-        type: string
-      date_or_days:
-        type: boolean
-      end_date:
-        type: string
-      end_day:
-        type: string
-      end_time:
-        type: string
-      event_id:
-        description: gorm.Model
-        type: integer
-      event_name:
-        type: string
-      event_nameis_priority_enabled:
-        type: boolean
-      is_confirmed:
-        type: boolean
-      start_date:
-        type: string
-      start_day:
-        type: string
-      start_time:
-        type: string
-    type: object
   EventFormat:
     properties:
       dateOrDays:
@@ -45,7 +15,7 @@ definitions:
         type: string
       endTime:
         description: required
-        example: "1975-08-19T23:00:00.000Z"
+        example: "2100"
         type: string
       eventName:
         description: required
@@ -65,7 +35,7 @@ definitions:
         type: string
       startTime:
         description: required
-        example: "1975-08-19T11:00:00.000Z"
+        example: "0900"
         type: string
     required:
     - dateOrDays
@@ -125,6 +95,29 @@ definitions:
     - passwordAnswer
     - userId
     type: object
+  Timeblock:
+    properties:
+      eventId:
+        description: required
+        example: 1
+        type: integer
+      normal:
+        description: optional
+        example:
+        - "2021-01-01T11:00:00+08:00"
+        items:
+          type: string
+        type: array
+      priority:
+        description: optional
+        example:
+        - "2021-01-02T12:00:00+08:00"
+        items:
+          type: string
+        type: array
+    required:
+    - eventId
+    type: object
   Update:
     properties:
       password:
@@ -136,6 +129,57 @@ definitions:
       userName:
         example: Christine Wang
         type: string
+    type: object
+  UpdateEventFormat:
+    properties:
+      confirmed_timeblocks:
+        example:
+        - "2021-01-01T11:00:00+08:00"
+        items:
+          type: string
+        type: array
+      event_id:
+        example: "26"
+        type: string
+      event_name:
+        example: Sad 2nd meeting
+        type: string
+    type: object
+  UpdateTimeblockExportFormat:
+    properties:
+      confirmed_time_blocks:
+        description: required
+        example:
+        - "2021-01-01T11:00:00+08:00"
+        items:
+          type: string
+        type: array
+      dest_event_id:
+        description: required
+        example: 26
+        type: integer
+      source_event_id:
+        description: required
+        example: 1
+        type: integer
+    required:
+    - confirmed_time_blocks
+    - dest_event_id
+    - source_event_id
+    type: object
+  UpdateTimeblockImportFormat:
+    properties:
+      dest_event_id:
+        description: required
+        example: 26
+        type: integer
+      source_event_id:
+        description: required
+        example: 1
+        type: integer
+    required:
+    - dest_event_id
+    - source_event_id
     type: object
   controller.ForgotInfo:
     properties:
@@ -164,6 +208,65 @@ info:
   title: ThunderMeet APIs
   version: "1.0"
 paths:
+  /v1/events:
+    get:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - event
+    patch:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to update a event
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateEventFormat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - event
   /v1/events/:
     post:
       parameters:
@@ -210,7 +313,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Event'
+            type: string
         "404":
           description: Not Found
           schema:
@@ -221,6 +324,165 @@ paths:
             type: string
       tags:
       - event
+  /v1/timeblocks/:
+    post:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to create an event
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Timeblock'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - timeblock
+    put:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to update an event
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Timeblock'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - timeblock
+  /v1/timeblocks/{event_id}:
+    get:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: event id
+        in: path
+        name: event_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - timeblock
+  /v1/timeblocks/{event_id}/preview:
+    get:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: event id
+        in: path
+        name: event_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - timeblock
+  /v1/timeblocks/export:
+    patch:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to import timeblocks
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateTimeblockExportFormat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - timeblock
+  /v1/timeblocks/import:
+    patch:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to import timeblocks
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateTimeblockImportFormat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - timeblock
   /v1/users:
     patch:
       parameters:

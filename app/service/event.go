@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func CreateEvent(eventName string, isPriorityEnabled *bool, startTime time.Time, endTime time.Time, dateOrDays *bool, startDay string, endDay string, startDate time.Time, endDate time.Time, adminId string) error {
+func CreateEvent(eventName string, isPriorityEnabled *bool, startTime string, endTime string, dateOrDays *bool, startDay string, endDay string, startDate time.Time, endDate time.Time, adminId string) (int64, error) {
 
 	fmt.Println("Here")
 	event := model.Event{
@@ -26,7 +26,7 @@ func CreateEvent(eventName string, isPriorityEnabled *bool, startTime time.Time,
 	}
 
 	insertErr := dao.SqlSession.Model(&model.Event{}).Create(&event).Error
-	return insertErr
+	return event.EventId, insertErr
 }
 
 func SelectOneEvent(event_id int64) (*model.Event, error) {
@@ -36,5 +36,68 @@ func SelectOneEvent(event_id int64) (*model.Event, error) {
 		return nil, err
 	} else {
 		return eventOne, nil
+	}
+}
+
+func UpdateOneEvent(eventId int64, eventName string, confirmedTimeblocks []string) error {
+	var event model.Event
+	event = model.Event{
+		EventName:           eventName,
+		ConfirmedTimeblocks: confirmedTimeblocks,
+	}
+	updateErr := dao.SqlSession.Model(&model.Event{}).Where("event_id = ?", eventId).Updates(event).Error
+
+	return updateErr
+}
+
+func GetEventParticipants(eventId int64) ([]string, error) {
+	eventOne := &model.Event{}
+	err := dao.SqlSession.Where("event_id = ?", eventId).First(&eventOne).Error
+	if err != nil {
+		return nil, err
+	}
+	participants := eventOne.Participants
+	return participants, nil
+}
+
+func UpdateEventParticipants(eventId int64, userId string) error {
+	eventOne := &model.Event{}
+	err := dao.SqlSession.Where("event_id = ?", eventId).First(&eventOne).Error
+	if err != nil {
+		return err
+	}
+
+	participants := eventOne.Participants
+	containsParticipant := false
+
+	for _, x := range participants {
+		if x == userId {
+			containsParticipant = true
+			break
+		}
+	}
+
+	if containsParticipant {
+		return nil
+	} else {
+		participants = append(participants, userId)
+		var event model.Event
+		event = model.Event{
+			Participants: participants,
+		}
+		updateErr := dao.SqlSession.Model(&model.Event{}).Where("event_id = ?", eventId).Updates(event).Error
+
+		return updateErr
+	}
+}
+
+func GetEventsByUser(userId string) ([]model.Event, error) {
+	var events []model.Event
+	dbResult := dao.SqlSession.Where("? = ANY (participants)", userId).Find(&events)
+	fmt.Print(dbResult)
+	if dbResult.Error != nil {
+		return nil, fmt.Errorf("Get Event Info Failed:%v\n", dbResult.Error)
+	} else {
+		return events, nil
 	}
 }

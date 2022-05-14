@@ -23,15 +23,15 @@ import (
 type EventController struct{}
 
 type createEventFormat struct {
-	Event_name          string `json:"eventName" example:"OR first meet" binding:"required"`            //required
-	Is_priority_enabled *bool  `json:"isPriorityEnabled" example:"true" binding:"required"`             //required
-	Start_time          string `json:"startTime" example:"1975-08-19T11:00:00.000Z" binding:"required"` //required
-	End_time            string `json:"endTime" example:"1975-08-19T23:00:00.000Z" binding:"required"`   //required
-	Date_or_days        *bool  `json:"dateOrDays" example:"true" binding:"required"`                    //required
-	Start_day           string `json:"startDay" example:"1" `                                           //optional
-	End_day             string `json:"endDay" example:"7"`                                              //optional
-	Start_date          string `json:"startDate" example:"2021-01-01T11:00:00.000Z"`                    //optional
-	End_date            string `json:"endDate" example:"2021-01-10T11:00:00.000Z"`                      //optional
+	Event_name          string `json:"eventName" example:"OR first meet" binding:"required"` //required
+	Is_priority_enabled *bool  `json:"isPriorityEnabled" example:"true" binding:"required"`  //required
+	Start_time          string `json:"startTime" example:"0900" binding:"required"`          //required
+	End_time            string `json:"endTime" example:"2100" binding:"required"`            //required
+	Date_or_days        *bool  `json:"dateOrDays" example:"true" binding:"required"`         //required
+	Start_day           string `json:"startDay" example:"1" `                                //optional
+	End_day             string `json:"endDay" example:"7"`                                   //optional
+	Start_date          string `json:"startDate" example:"2021-01-01T11:00:00.000Z"`         //optional
+	End_date            string `json:"endDate" example:"2021-01-10T11:00:00.000Z"`           //optional
 } //@name EventFormat
 
 func CreateEventsController() EventController {
@@ -40,6 +40,25 @@ func CreateEventsController() EventController {
 
 func GetEventsController() EventController {
 	return EventController{}
+}
+
+func UpdateEventsController() EventController {
+	return EventController{}
+}
+
+func isValidTime(startTime string, endTIme string) bool {
+	s, _ := strconv.Atoi(startTime[0:2])
+	t, _ := strconv.Atoi(endTIme[0:2])
+	if s < t {
+		return true
+	} else {
+		smin, _ := strconv.Atoi(startTime[2:4])
+		tmin, _ := strconv.Atoi(endTIme[2:4])
+		if smin < tmin {
+			return true
+		}
+		return false
+	}
 }
 
 // CreateEvent CreateEvent @Summary
@@ -85,28 +104,28 @@ func (u EventController) CreateEvent(c *gin.Context) {
 
 	if bindErr == nil {
 		//================== check the correctness of input value and format ==================
-		//change time format
-		start_time, err := time.Parse(time.RFC3339, form.Start_time)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": -1,
-				"msg":    "invalid start time",
-				"data":   nil,
-			})
-			return
-		}
-		end_time, err := time.Parse(time.RFC3339, form.End_time)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": -1,
-				"msg":    "invalid end time",
-				"data":   nil,
-			})
-			return
-		}
+		// change time format
+		// start_time, err := time.Parse(time.RFC3339, form.Start_time)
+		// if err != nil {
+		// 	c.JSON(http.StatusBadRequest, gin.H{
+		// 		"status": -1,
+		// 		"msg":    "invalid start time",
+		// 		"data":   nil,
+		// 	})
+		// 	return
+		// }
+		// end_time, err := time.Parse(time.RFC3339, form.End_time)
+		// if err != nil {
+		// 	c.JSON(http.StatusBadRequest, gin.H{
+		// 		"status": -1,
+		// 		"msg":    "invalid end time",
+		// 		"data":   nil,
+		// 	})
+		// 	return
+		// }
 
 		//check if time period is valid
-		if end_time.Before(start_time) {
+		if !isValidTime(form.Start_time, form.End_time) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": -1,
 				"msg":    "invalid time period",
@@ -153,7 +172,7 @@ func (u EventController) CreateEvent(c *gin.Context) {
 				return
 			}
 			//check if period is correct
-			if end_date.Before(start_date) {
+			if temp_end_date.Before(temp_start_date) {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": -1,
 					"msg":    "Invalid date period",
@@ -180,7 +199,6 @@ func (u EventController) CreateEvent(c *gin.Context) {
 					"data":   nil,
 				})
 				return
-
 			}
 
 			start_day = form.Start_day
@@ -197,19 +215,28 @@ func (u EventController) CreateEvent(c *gin.Context) {
 
 		// return
 
-		//========== 到這邊檢查都沒有問題 ================
+		// ========== 到這邊檢查都沒有問題 ================
 
-		//================ complete checking process, start to add things to db ================
+		// ================ complete checking process, start to add things to db ================
 
 		fmt.Println("Before go into loop")
-		createErr := service.CreateEvent(form.Event_name, form.Is_priority_enabled, start_time, end_time, form.Date_or_days, start_day, end_day, start_date, end_date, adminId)
+		event_id, createErr := service.CreateEvent(form.Event_name, form.Is_priority_enabled, form.Start_time, form.End_time, form.Date_or_days, start_day, end_day, start_date, end_date, adminId)
 		if createErr == nil {
-			fmt.Println("Successfully reset password")
-			c.JSON(http.StatusOK, gin.H{
-				"status": 1,
-				"msg":    "success Create Event",
-				"data":   nil,
-			})
+
+			err := CreateManyTimeblocks(*form.Date_or_days, form.Start_time, form.End_time, start_date, end_date, event_id)
+			if err == nil {
+				c.JSON(http.StatusOK, gin.H{
+					"status": 1,
+					"msg":    "success Create Event",
+					"data":   nil,
+				})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"status": -1,
+					"msg":    "Event Create Failed : " + createErr.Error(),
+					"data":   nil,
+				})
+			}
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"status": -1,
@@ -234,7 +261,7 @@ func (u EventController) CreateEvent(c *gin.Context) {
 // @version 1.0
 // @produce application/json
 // @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
-// @Success 200 {object} model.Event
+// @Success 200 {object} string
 // @Failure 404 string string ErrorResponse
 // @Failure 500 string string ErrorResponse
 // @param event_id path int64 true "event id"
@@ -265,6 +292,86 @@ func (u EventController) GetEvent(c *gin.Context) {
 			"start_date":          event.StartDate,
 			"end_date":            event.EndDate,
 			"admin_id":            event.AdminId,
+		})
+	}
+}
+
+// GetEvent GetEvent @Summary
+// @Tags event
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Success 200 {object} string
+// @Failure 404 string string ErrorResponse
+// @Failure 500 string string ErrorResponse
+// @Router /v1/events [get]
+func (u EventController) GetEvents(c *gin.Context) {
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	user_id, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	//check id and return needed data
+	events, err := service.GetEventsByUser(user_id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "Events not found : " + err.Error(),
+			"data":   nil,
+		})
+	} else {
+		c.JSON(http.StatusOK, events)
+	}
+
+}
+
+type UpdateEventFormat struct {
+	EventId             string   `json:"event_id" example:"26"`
+	EventName           string   `json:"event_name" example:"Sad 2nd meeting"`
+	ConfirmedTimeblocks []string `json:"confirmed_timeblocks" example:"2021-01-01T11:00:00+08:00"`
+} //@name UpdateEventFormat
+
+// UpdateEvent UpdateEvent @Summary
+// @Tags event
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param Body body UpdateEventFormat true "The body to update a event"
+// @Success 200 string string successful return data
+// @Failure 401 string string ErrorResponse
+// @Failure 403 string string ErrorResponse
+// @Failure 500 string string ErrorResponse
+// @Router /v1/events [patch]
+func (u EventController) UpdateEvent(c *gin.Context) {
+	var form UpdateEventFormat
+	bindErr := c.BindJSON(&form)
+	if bindErr == nil {
+		event_id, _ := strconv.ParseInt(form.EventId, 10, 64)
+		fmt.Print("event-id = ", event_id)
+		err := service.UpdateOneEvent(event_id, form.EventName, form.ConfirmedTimeblocks)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Fail to Update Event Info" + bindErr.Error(),
+				"data":   nil,
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 1,
+				"msg":    "success Update",
+				"data":   nil,
+			})
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to Update Event Info" + bindErr.Error(),
+			"data":   nil,
 		})
 	}
 }

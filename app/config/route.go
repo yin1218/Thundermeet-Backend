@@ -26,6 +26,18 @@ func RouteUsers(r *gin.Engine) {
 	events := r.Group("/v1/events")
 	{
 		events.POST("/", controller.CreateEventsController().CreateEvent)
-		events.GET("/:event_id", controller.CreateEventsController().GetEvent)
+		events.GET("/:event_id", controller.GetEventsController().GetEvent)
+		events.GET("/", controller.GetEventsController().GetEvents)
+		events.PATCH("/", controller.UpdateEventsController().UpdateEvent)
 	}
+	timeblocks := r.Group("/v1/timeblocks")
+	{
+		timeblocks.POST("/", controller.CreateTimeblocksController().CreateTimeblock)
+		timeblocks.PUT("/", controller.UpdateTimeblocksController().UpdateTimeblock)
+		timeblocks.GET("/:event_id", controller.GetTimeblocksController().GetTimeblock)
+		timeblocks.GET("/:event_id/preview", controller.GetTimeblocksController().GetTimeblockPreview)
+		timeblocks.PATCH("/import", controller.UpdateTimeblocksController().UpdateTimeblockImport)
+		timeblocks.PATCH("/export", controller.UpdateTimeblocksController().UpdateTimeblockExport)
+	}
+
 }

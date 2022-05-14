@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"thundermeet_backend/app/dao"
+	helper "thundermeet_backend/app/helpers"
 	"thundermeet_backend/app/model"
 	"time"
 )
@@ -164,4 +165,12 @@ func GetStatusForTimeblock(userId string, eventId int64) ([]string, []string, er
 		}
 	}
 	return normal, priority, nil
+}
+
+func DeleteTimeblocksFromEvent(eventId int64, timeblocks []string, userId string) error {
+	for _, timeblock := range timeblocks {
+		timeblockId := helper.ConvertToTimeblockId(timeblock, eventId)
+		dao.SqlSession.Where("user_id = ? AND time_block_id = ?", userId, timeblockId).Delete(&model.TimeblockParticipants{})
+	}
+	return nil
 }

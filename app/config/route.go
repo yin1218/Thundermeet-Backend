@@ -37,6 +37,7 @@ func RouteUsers(r *gin.Engine) {
 		timeblocks.GET("/:event_id", controller.GetTimeblocksController().GetTimeblock)
 		timeblocks.GET("/:event_id/preview", controller.GetTimeblocksController().GetTimeblockPreview)
 		timeblocks.PATCH("/import", controller.UpdateTimeblocksController().UpdateTimeblockImport)
+		timeblocks.PATCH("/export", controller.UpdateTimeblocksController().UpdateTimeblockExport)
 	}
 
 }

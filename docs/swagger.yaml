@@ -145,6 +145,28 @@ definitions:
         example: Sad 2nd meeting
         type: string
     type: object
+  UpdateTimeblockExportFormat:
+    properties:
+      confirmed_time_blocks:
+        description: required
+        example:
+        - "2021-01-01T11:00:00+08:00"
+        items:
+          type: string
+        type: array
+      dest_event_id:
+        description: required
+        example: 26
+        type: integer
+      source_event_id:
+        description: required
+        example: 1
+        type: integer
+    required:
+    - confirmed_time_blocks
+    - dest_event_id
+    - source_event_id
+    type: object
   UpdateTimeblockImportFormat:
     properties:
       dest_event_id:
@@ -394,6 +416,33 @@ paths:
         name: event_id
         required: true
         type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - timeblock
+  /v1/timeblocks/export:
+    patch:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to import timeblocks
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateTimeblockExportFormat'
       produces:
       - application/json
       responses:

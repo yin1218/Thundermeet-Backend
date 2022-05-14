@@ -283,6 +283,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/timeblocks/export": {
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "timeblock"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to import timeblocks",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateTimeblockExportFormat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/timeblocks/import": {
             "patch": {
                 "produces": [
@@ -817,6 +859,36 @@ const docTemplate = `{
                 "event_name": {
                     "type": "string",
                     "example": "Sad 2nd meeting"
+                }
+            }
+        },
+        "UpdateTimeblockExportFormat": {
+            "type": "object",
+            "required": [
+                "confirmed_time_blocks",
+                "dest_event_id",
+                "source_event_id"
+            ],
+            "properties": {
+                "confirmed_time_blocks": {
+                    "description": "required",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "2021-01-01T11:00:00+08:00"
+                    ]
+                },
+                "dest_event_id": {
+                    "description": "required",
+                    "type": "integer",
+                    "example": 26
+                },
+                "source_event_id": {
+                    "description": "required",
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },

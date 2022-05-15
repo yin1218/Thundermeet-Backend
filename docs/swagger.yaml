@@ -185,6 +185,14 @@ definitions:
     - dest_event_id
     - source_event_id
     type: object
+  addGroupEventFormat:
+    properties:
+      event_ids:
+        description: required
+        items:
+          type: integer
+        type: array
+    type: object
   controller.ForgotInfo:
     properties:
       password:
@@ -211,6 +219,15 @@ definitions:
       group_name:
         description: required
         example: OR-related
+        type: string
+    required:
+    - group_name
+    type: object
+  patchGroupFormat:
+    properties:
+      group_name:
+        description: required
+        example: SAD-related
         type: string
     required:
     - group_name
@@ -390,6 +407,31 @@ paths:
       tags:
       - group
   /v1/groups/{group_id}:
+    delete:
+      parameters:
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "7"
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - group
     get:
       parameters:
       - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
@@ -400,6 +442,99 @@ paths:
       - description: "7"
         in: path
         name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - group
+    patch:
+      parameters:
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to change the group's name
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/patchGroupFormat'
+      - description: "5"
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - group
+    post:
+      parameters:
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to change the group's name
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/addGroupEventFormat'
+      - description: "5"
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - group
+  /v1/groups/{group_id}/{event_id}:
+    delete:
+      parameters:
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "5"
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: "20"
+        in: path
+        name: event_id
         required: true
         type: integer
       produces:

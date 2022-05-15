@@ -6,6 +6,8 @@ import (
 	"thundermeet_backend/app/model"
 )
 
+var GroupFields = []string{"group_id", "group_name", "user_id"}
+
 func CreateGroup(groupName string, userId string) (int, error) {
 
 	// fmt.Println("Here")
@@ -20,8 +22,6 @@ func CreateGroup(groupName string, userId string) (int, error) {
 	}
 	return group.GroupId, nil
 }
-
-var GroupFields = []string{"group_id", "group_name", "user_id"}
 
 func SelectOneGroup(groupId int) (*model.Group, error) {
 	groupOne := &model.Group{}
@@ -69,5 +69,26 @@ func AddEventToGroup(eventId int, groupId int) error {
 	}
 	insertErr := dao.SqlSession.Model(&model.GroupEvent{}).Create(&group_event).Error
 	return insertErr
+
+}
+
+func DeleteGroup(userId string, groupId int) error {
+	delErr := dao.SqlSession.Where("user_id = ? AND group_id = ?", userId, groupId).Delete(&model.Group{}).Error
+	return delErr
+}
+
+func DeleteGroupEvent(eventId int, groupId int) error {
+	delErr := dao.SqlSession.Where("event_id = ? AND group_id = ?", eventId, groupId).Delete(&model.GroupEvent{}).Error
+	return delErr
+}
+
+func DeleteEvents(groupId int) error {
+	delErr := dao.SqlSession.Where("group_id = ?", groupId).Delete(&model.GroupEvent{}).Error
+	return delErr
+}
+
+func ChangeGroupName(groupId int, groupName string) error {
+	changeErr := dao.SqlSession.Model(&model.Group{}).Where("group_id = ?", groupId).Update("group_name", groupName).Error
+	return changeErr
 
 }

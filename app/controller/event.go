@@ -32,6 +32,7 @@ type createEventFormat struct {
 	End_day             string `json:"endDay" example:"7"`                                   //optional
 	Start_date          string `json:"startDate" example:"2021-01-01T12:00:00.000Z"`         //optional
 	End_date            string `json:"endDate" example:"2021-01-02T12:00:00.000Z"`           //optional
+	Event_description   string `json:"eventDescription" example:"description of event"`      //optional
 } //@name EventFormat
 
 func CreateEventsController() EventController {
@@ -220,7 +221,7 @@ func (u EventController) CreateEvent(c *gin.Context) {
 		// ================ complete checking process, start to add things to db ================
 
 		fmt.Println("Before go into loop")
-		event_id, createErr := service.CreateEvent(form.Event_name, form.Is_priority_enabled, form.Start_time, form.End_time, form.Date_or_days, start_day, end_day, start_date, end_date, adminId)
+		event_id, createErr := service.CreateEvent(form.Event_name, form.Is_priority_enabled, form.Start_time, form.End_time, form.Date_or_days, start_day, end_day, start_date, end_date, adminId, form.Event_description)
 		if createErr == nil {
 
 			err := CreateManyTimeblocks(*form.Date_or_days, form.Start_time, form.End_time, start_date, end_date, event_id)
@@ -283,6 +284,7 @@ func (u EventController) GetEvent(c *gin.Context) {
 			"status":              0,
 			"event_id":            event.EventId,
 			"event_name":          event.EventName,
+			"event_description":   event.EventDescription,
 			"is_priority_enabled": event.IsPriorityEnabled,
 			"is_confirmed":        event.IsConfirmed,
 			"start_time":          event.StartTime,

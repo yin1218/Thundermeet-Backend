@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func CreateEvent(eventName string, isPriorityEnabled *bool, startTime string, endTime string, dateOrDays *bool, startDay string, endDay string, startDate time.Time, endDate time.Time, adminId string) (int64, error) {
+func CreateEvent(eventName string, isPriorityEnabled *bool, startTime string, endTime string, dateOrDays *bool, startDay string, endDay string, startDate time.Time, endDate time.Time, adminId string, eventDescription string) (int64, error) {
 
 	fmt.Println("Here")
 	event := model.Event{
@@ -23,6 +23,7 @@ func CreateEvent(eventName string, isPriorityEnabled *bool, startTime string, en
 		StartDate:         startDate,
 		EndDate:           endDate,
 		AdminId:           adminId,
+		EventDescription:  eventDescription,
 	}
 
 	insertErr := dao.SqlSession.Model(&model.Event{}).Create(&event).Error

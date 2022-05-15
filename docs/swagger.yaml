@@ -42,11 +42,11 @@ definitions:
         example: "0900"
         type: string
     required:
-      - dateOrDays
-      - endTime
-      - eventName
-      - isPriorityEnabled
-      - startTime
+    - dateOrDays
+    - endTime
+    - eventName
+    - isPriorityEnabled
+    - startTime
     type: object
   GetUserResponse:
     properties:
@@ -63,10 +63,10 @@ definitions:
         example: Christine Wang
         type: string
     required:
-      - password_answer
-      - status
-      - user_id
-      - username
+    - password_answer
+    - status
+    - user_id
+    - username
     type: object
   Login:
     properties:
@@ -77,8 +77,8 @@ definitions:
         example: christine891225
         type: string
     required:
-      - password
-      - userId
+    - password
+    - userId
     type: object
   Register:
     properties:
@@ -95,9 +95,9 @@ definitions:
         example: Christine Wang
         type: string
     required:
-      - password
-      - passwordAnswer
-      - userId
+    - password
+    - passwordAnswer
+    - userId
     type: object
   Timeblock:
     properties:
@@ -108,19 +108,19 @@ definitions:
       normal:
         description: optional
         example:
-          - "2021-01-01T11:00:00.000Z"
+        - "2021-01-01T11:00:00.000Z"
         items:
           type: string
         type: array
       priority:
         description: optional
         example:
-          - "2021-01-02T12:00:00.000Z"
+        - "2021-01-02T12:00:00.000Z"
         items:
           type: string
         type: array
     required:
-      - eventId
+    - eventId
     type: object
   Update:
     properties:
@@ -138,7 +138,7 @@ definitions:
     properties:
       confirmed_timeblocks:
         example:
-          - "2021-01-01T11:00:00.000Z"
+        - "2021-01-01T11:00:00.000Z"
         items:
           type: string
         type: array
@@ -154,7 +154,7 @@ definitions:
       confirmed_time_blocks:
         description: required
         example:
-          - "2021-01-01T11:00:00.000Z"
+        - "2021-01-01T11:00:00.000Z"
         items:
           type: string
         type: array
@@ -167,9 +167,9 @@ definitions:
         example: 1
         type: integer
     required:
-      - confirmed_time_blocks
-      - dest_event_id
-      - source_event_id
+    - confirmed_time_blocks
+    - dest_event_id
+    - source_event_id
     type: object
   UpdateTimeblockImportFormat:
     properties:
@@ -182,8 +182,8 @@ definitions:
         example: 1
         type: integer
     required:
-      - dest_event_id
-      - source_event_id
+    - dest_event_id
+    - source_event_id
     type: object
   controller.ForgotInfo:
     properties:
@@ -197,9 +197,9 @@ definitions:
         example: christine891225
         type: string
     required:
-      - password
-      - passwordAnswer
-      - userId
+    - password
+    - passwordAnswer
+    - userId
     type: object
   createGroupFormat:
     properties:
@@ -213,7 +213,7 @@ definitions:
         example: OR-related
         type: string
     required:
-      - group_name
+    - group_name
     type: object
 host: localhost:8080/
 info:
@@ -229,13 +229,13 @@ paths:
   /v1/events:
     get:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -250,22 +250,22 @@ paths:
           schema:
             type: string
       tags:
-        - event
+      - event
     patch:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: The body to update a event
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/UpdateEventFormat"
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to update a event
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateEventFormat'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -284,23 +284,23 @@ paths:
           schema:
             type: string
       tags:
-        - event
+      - event
   /v1/events/:
     post:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: The body to create an event
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/EventFormat"
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to create an event
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/EventFormat'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -311,22 +311,22 @@ paths:
           schema:
             type: string
       tags:
-        - event
+      - event
   /v1/events/{event_id}:
     get:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: event id
-          in: path
-          name: event_id
-          required: true
-          type: integer
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: event id
+        in: path
+        name: event_id
+        required: true
+        type: integer
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -341,17 +341,17 @@ paths:
           schema:
             type: string
       tags:
-        - event
+      - event
   /v1/groups/:
     get:
       parameters:
-        - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
-          in: header
-          name: Authorization
-          required: true
-          type: string
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -362,22 +362,22 @@ paths:
           schema:
             type: string
       tags:
-        - group
+      - group
     post:
       parameters:
-        - description: Bearer eyJNoCkSqDCEVLw0xRO8CzTg
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: The body to create an group
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/createGroupFormat"
+      - description: Bearer eyJNoCkSqDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to create an group
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/createGroupFormat'
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
@@ -388,22 +388,22 @@ paths:
           schema:
             type: string
       tags:
-        - group
+      - group
   /v1/groups/{group_id}:
     get:
       parameters:
-        - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: "7"
-          in: path
-          name: group_id
-          required: true
-          type: integer
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "7"
+        in: path
+        name: group_id
+        required: true
+        type: integer
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -414,23 +414,23 @@ paths:
           schema:
             type: string
       tags:
-        - group
+      - group
   /v1/timeblocks/:
     post:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: The body to create an event
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/Timeblock"
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to create an event
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Timeblock'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -441,22 +441,22 @@ paths:
           schema:
             type: string
       tags:
-        - timeblock
+      - timeblock
     put:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: The body to update an event
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/Timeblock"
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to update an event
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Timeblock'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -467,22 +467,22 @@ paths:
           schema:
             type: string
       tags:
-        - timeblock
+      - timeblock
   /v1/timeblocks/{event_id}:
     get:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: event id
-          in: path
-          name: event_id
-          required: true
-          type: integer
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: event id
+        in: path
+        name: event_id
+        required: true
+        type: integer
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -493,22 +493,22 @@ paths:
           schema:
             type: string
       tags:
-        - timeblock
+      - timeblock
   /v1/timeblocks/{event_id}/preview:
     get:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: event id
-          in: path
-          name: event_id
-          required: true
-          type: integer
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: event id
+        in: path
+        name: event_id
+        required: true
+        type: integer
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -519,23 +519,23 @@ paths:
           schema:
             type: string
       tags:
-        - timeblock
+      - timeblock
   /v1/timeblocks/export:
     patch:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: The body to import timeblocks
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/UpdateTimeblockExportFormat"
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to import timeblocks
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateTimeblockExportFormat'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -546,23 +546,23 @@ paths:
           schema:
             type: string
       tags:
-        - timeblock
+      - timeblock
   /v1/timeblocks/import:
     patch:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: The body to import timeblocks
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/UpdateTimeblockImportFormat"
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to import timeblocks
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateTimeblockImportFormat'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -573,23 +573,23 @@ paths:
           schema:
             type: string
       tags:
-        - timeblock
+      - timeblock
   /v1/users:
     patch:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
-        - description: The body to create a user
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/Update"
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to create a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Update'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -604,22 +604,22 @@ paths:
           schema:
             type: string
       tags:
-        - user
+      - user
   /v1/users/:
     get:
       parameters:
-        - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-          in: header
-          name: Authorization
-          required: true
-          type: string
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/GetUserResponse"
+            $ref: '#/definitions/GetUserResponse'
         "401":
           description: Unauthorized
           schema:
@@ -629,17 +629,17 @@ paths:
           schema:
             type: string
       tags:
-        - user
+      - user
     post:
       parameters:
-        - description: The body to create a user
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/Register"
+      - description: The body to create a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Register'
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
@@ -654,18 +654,18 @@ paths:
           schema:
             type: string
       tags:
-        - user
+      - user
   /v1/users/login/:
     post:
       parameters:
-        - description: The body to login a user
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/Login"
+      - description: The body to login a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Login'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -684,18 +684,18 @@ paths:
           schema:
             type: string
       tags:
-        - user
+      - user
   /v1/users/resetPassword:
     patch:
       parameters:
-        - description: The body to create a user
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/controller.ForgotInfo"
+      - description: The body to create a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.ForgotInfo'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -710,5 +710,5 @@ paths:
           schema:
             type: string
       tags:
-        - user
+      - user
 swagger: "2.0"

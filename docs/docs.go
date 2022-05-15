@@ -350,6 +350,53 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "group"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer eyJhbGcikDCEVLw0xRO8CzTg",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to change the group's name",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/patchGroupFormat"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "5",
+                        "name": "group_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "/v1/timeblocks/": {
@@ -1101,6 +1148,19 @@ const docTemplate = `{
                     "description": "required",
                     "type": "string",
                     "example": "OR-related"
+                }
+            }
+        },
+        "patchGroupFormat": {
+            "type": "object",
+            "required": [
+                "group_name"
+            ],
+            "properties": {
+                "group_name": {
+                    "description": "required",
+                    "type": "string",
+                    "example": "SAD-related"
                 }
             }
         }

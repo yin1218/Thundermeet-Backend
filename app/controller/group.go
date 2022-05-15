@@ -31,6 +31,10 @@ type addGroupEventFormat struct {
 	Event_ids []int  `json:"event_ids" example:[9,10,11] binding:"required"` //required
 } //@name addGroupEventFormat
 
+type patchGroupFormat struct {
+	Group_name string `json:"group_name" example:"SAD-related" binding:"required"` //required
+} //@name patchGroupFormat
+
 // CreateGroup CreateGroup @Summary
 // @Tags group
 // @version 1.0
@@ -80,6 +84,105 @@ func GetGroupListController() GroupController {
 // @Router /v1/groups/{group_id} [delete]
 func DeleteGroupController() GroupController {
 	return GroupController{}
+}
+
+// ChangeGroupName ChangeGroupName @Summary
+// @Tags group
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer eyJhbGcikDCEVLw0xRO8CzTg"
+// @Param Body body patchGroupFormat true "The body to change the group's name"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @param group_id path int64 true "5"
+// @Router /v1/groups/{group_id} [patch]
+func ReviseGroupController() GroupController {
+	return GroupController{}
+}
+
+func (u GroupController) ChangeGroupName(c *gin.Context) {
+	//===== validate token ============//
+	token := c.Request.Header.Get("Authorization")
+	id, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	//check id and return needed data
+	userOne, err := service.SelectOneUser(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "User not found : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	group_id, err := strconv.ParseInt(c.Param("group_id"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to parse group id : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	//Check Group Admin
+	groupOne, err := service.SelectOneGroup(int(group_id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "Group not found : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	if groupOne.UserId != userOne.UserId {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "This group doesn't belong to the user : ",
+			"data":   nil,
+		})
+		return
+	}
+
+	//get group new name
+	//parse request body
+	var form patchGroupFormat
+	bindErr := c.BindJSON(&form)
+	if bindErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "invalid input : " + bindErr.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	// form.Group_name
+	changeErr := service.ChangeGroupName(int(group_id), form.Group_name)
+	if changeErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to change group name : " + changeErr.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	//return 200
+	c.JSON(http.StatusOK, gin.H{
+		"status": 0,
+		"msg":    "Success to change group name!",
+		"data":   nil,
+	})
+
 }
 
 func (u GroupController) GetGroupList(c *gin.Context) {
@@ -281,7 +384,7 @@ func (u GroupController) CreateGroup(c *gin.Context) {
 
 	//return 201 created
 	c.JSON(http.StatusCreated, gin.H{
-		"status": -1,
+		"status": 0,
 		"msg":    "Success to add group and init. event!",
 		"data":   nil,
 	})

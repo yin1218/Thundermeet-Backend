@@ -211,6 +211,15 @@ definitions:
     required:
     - group_name
     type: object
+  patchGroupFormat:
+    properties:
+      group_name:
+        description: required
+        example: SAD-related
+        type: string
+    required:
+    - group_name
+    type: object
 host: localhost:8080/
 info:
   contact:
@@ -419,6 +428,37 @@ paths:
         required: true
         type: string
       - description: "7"
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - group
+    patch:
+      parameters:
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to change the group's name
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/patchGroupFormat'
+      - description: "5"
         in: path
         name: group_id
         required: true

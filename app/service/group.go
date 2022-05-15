@@ -81,3 +81,9 @@ func DeleteEvents(groupId int) error {
 	delErr := dao.SqlSession.Where("group_id = ?", groupId).Delete(&model.GroupEvent{}).Error
 	return delErr
 }
+
+func ChangeGroupName(groupId int, groupName string) error {
+	changeErr := dao.SqlSession.Model(&model.Group{}).Where("group_id = ?", groupId).Update("group_name", groupName).Error
+	return changeErr
+
+}

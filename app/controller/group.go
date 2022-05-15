@@ -27,8 +27,7 @@ type createGroupFormat struct {
 } //@name createGroupFormat
 
 type addGroupEventFormat struct {
-	Group_id  string `json:"group_id" example:"3" binding:"required"`        //required
-	Event_ids []int  `json:"event_ids" example:[9,10,11] binding:"required"` //required
+	Event_ids []int `json:"event_ids" example:[9,10,11] binding:"required"` //required
 } //@name addGroupEventFormat
 
 type patchGroupFormat struct {
@@ -86,6 +85,20 @@ func DeleteGroupController() GroupController {
 	return GroupController{}
 }
 
+// AddEventsToGroup AddEventsToGroup @Summary
+// @Tags group
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer eyJhbGcikDCEVLw0xRO8CzTg"
+// @Param Body body addGroupEventFormat true "The body to change the group's name"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @param group_id path int64 true "5"
+// @Router /v1/groups/{group_id} [post]
+func AddEventsToGroupController() GroupController {
+	return GroupController{}
+}
+
 // ChangeGroupName ChangeGroupName @Summary
 // @Tags group
 // @version 1.0
@@ -98,6 +111,120 @@ func DeleteGroupController() GroupController {
 // @Router /v1/groups/{group_id} [patch]
 func ReviseGroupController() GroupController {
 	return GroupController{}
+}
+
+func (u GroupController) AddEventsToGroup(c *gin.Context) {
+	//validate token and group owner
+	token := c.Request.Header.Get("Authorization")
+	id, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	//check id and return needed data
+	userOne, err := service.SelectOneUser(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "User not found : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	group_id, err := strconv.ParseInt(c.Param("group_id"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to parse group id : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	//Check Group Admin
+	groupOne, err := service.SelectOneGroup(int(group_id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "Group not found : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	if groupOne.UserId != userOne.UserId {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "This group doesn't belong to the user : ",
+			"data":   nil,
+		})
+		return
+	}
+
+	//get datas
+	var form addGroupEventFormat
+	bindErr := c.BindJSON(&form)
+	if bindErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "invalid input : " + bindErr.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	//===== validate event_ids ============//
+	var temp_event []int64
+	for _, event_id := range form.Event_ids {
+		fmt.Println(event_id)
+		format_event_id := int64(event_id)
+		// SelectOneEvent
+		event, err := service.SelectOneEvent(format_event_id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "invalid event : " + err.Error(),
+				"data":   nil,
+			})
+			return
+		}
+		if event.AdminId != userOne.UserId {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "The event doesn't belong to current user!",
+				"data":   nil,
+			})
+			return
+		}
+		//add event into a list
+		temp_event = append(temp_event, format_event_id)
+	}
+
+	//start adding process
+
+	// iterate slice : temp_event
+	for _, event_id := range temp_event {
+		createErr := service.AddEventToGroup(int(event_id), int(group_id))
+		if createErr != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "fail to add event into group : " + createErr.Error(),
+				"data":   nil,
+			})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": 0,
+		"msg":    "events added to group!",
+		"data":   nil,
+	})
+
 }
 
 func (u GroupController) ChangeGroupName(c *gin.Context) {
@@ -453,42 +580,3 @@ func (u GroupController) DeleteGroup(c *gin.Context) {
 	})
 
 }
-
-// func (u GroupController) AddGroupEvent(c *gin.Context) {
-// 		//===== validate token ============//
-// 		token := c.Request.Header.Get("Authorization")
-// 		id, err := jwt.ValidateToken(token)
-// 		if err != nil {
-// 			c.JSON(http.StatusUnauthorized, gin.H{
-// 				"error": err.Error(),
-// 			})
-// 			return
-// 		}
-// 		//check id and return needed data
-// 		userOne, err := service.SelectOneUser(id)
-// 		if err != nil {
-// 			c.JSON(http.StatusNotFound, gin.H{
-// 				"status": -1,
-// 				"msg":    "User not found : " + err.Error(),
-// 				"data":   nil,
-// 			})
-// 		}
-
-// 		fmt.Println(userOne.UserId)
-
-// 		//parse request body
-// 		var form addGroupEventFormat
-// 		bindErr := c.BindJSON(&form)
-// 		if bindErr != nil {
-// 			c.JSON(http.StatusBadRequest, gin.H{
-// 				"status": -1,
-// 				"msg":    "invalid input : " + bindErr.Error(),
-// 				"data":   nil,
-// 			})
-// 			return
-// 		}
-
-// 		//check group_id
-
-// }
-//

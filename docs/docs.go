@@ -313,6 +313,53 @@ const docTemplate = `{
                     }
                 }
             },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "group"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer eyJhbGcikDCEVLw0xRO8CzTg",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to change the group's name",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/addGroupEventFormat"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "5",
+                        "name": "group_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "produces": [
                     "application/json"
@@ -1106,6 +1153,18 @@ const docTemplate = `{
                     "description": "required",
                     "type": "integer",
                     "example": 1
+                }
+            }
+        },
+        "addGroupEventFormat": {
+            "type": "object",
+            "properties": {
+                "event_ids": {
+                    "description": "required",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

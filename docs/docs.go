@@ -794,7 +794,7 @@ const docTemplate = `{
                 "endDate": {
                     "description": "optional",
                     "type": "string",
-                    "example": "2021-01-02T12:00:00+08:00"
+                    "example": "2021-01-02T12:00:00.000Z"
                 },
                 "endDay": {
                     "description": "optional",
@@ -805,6 +805,11 @@ const docTemplate = `{
                     "description": "required",
                     "type": "string",
                     "example": "2100"
+                },
+                "eventDescription": {
+                    "description": "optional",
+                    "type": "string",
+                    "example": "description of event"
                 },
                 "eventName": {
                     "description": "required",
@@ -819,7 +824,7 @@ const docTemplate = `{
                 "startDate": {
                     "description": "optional",
                     "type": "string",
-                    "example": "2021-01-01T12:00:00+08:00"
+                    "example": "2021-01-01T12:00:00.000Z"
                 },
                 "startDay": {
                     "description": "optional",
@@ -921,7 +926,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "2021-01-01T11:00:00+08:00"
+                        "2021-01-01T11:00:00.000Z"
                     ]
                 },
                 "priority": {
@@ -931,7 +936,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "2021-01-02T12:00:00+08:00"
+                        "2021-01-02T12:00:00.000Z"
                     ]
                 }
             }
@@ -962,7 +967,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "2021-01-01T11:00:00+08:00"
+                        "2021-01-01T11:00:00.000Z"
                     ]
                 },
                 "event_id": {
@@ -990,7 +995,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "2021-01-01T11:00:00+08:00"
+                        "2021-01-01T11:00:00.000Z"
                     ]
                 },
                 "dest_event_id": {

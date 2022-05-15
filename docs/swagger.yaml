@@ -7,7 +7,7 @@ definitions:
         type: boolean
       endDate:
         description: optional
-        example: "2021-01-02T12:00:00+08:00"
+        example: "2021-01-02T12:00:00.000Z"
         type: string
       endDay:
         description: optional
@@ -16,6 +16,10 @@ definitions:
       endTime:
         description: required
         example: "2100"
+        type: string
+      eventDescription:
+        description: optional
+        example: description of event
         type: string
       eventName:
         description: required
@@ -27,7 +31,7 @@ definitions:
         type: boolean
       startDate:
         description: optional
-        example: "2021-01-01T12:00:00+08:00"
+        example: "2021-01-01T12:00:00.000Z"
         type: string
       startDay:
         description: optional
@@ -104,14 +108,14 @@ definitions:
       normal:
         description: optional
         example:
-          - "2021-01-01T11:00:00+08:00"
+          - "2021-01-01T11:00:00.000Z"
         items:
           type: string
         type: array
       priority:
         description: optional
         example:
-          - "2021-01-02T12:00:00+08:00"
+          - "2021-01-02T12:00:00.000Z"
         items:
           type: string
         type: array
@@ -134,7 +138,7 @@ definitions:
     properties:
       confirmed_timeblocks:
         example:
-          - "2021-01-01T11:00:00+08:00"
+          - "2021-01-01T11:00:00.000Z"
         items:
           type: string
         type: array
@@ -150,7 +154,7 @@ definitions:
       confirmed_time_blocks:
         description: required
         example:
-          - "2021-01-01T11:00:00+08:00"
+          - "2021-01-01T11:00:00.000Z"
         items:
           type: string
         type: array

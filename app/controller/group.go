@@ -34,6 +34,20 @@ type patchGroupFormat struct {
 	Group_name string `json:"group_name" example:"SAD-related" binding:"required"` //required
 } //@name patchGroupFormat
 
+// DeleteEventFromGroup DeleteEventFromGroup @Summary
+// @Tags group
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer eyJhbGcikDCEVLw0xRO8CzTg"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @param group_id path int64 true "5"
+// @param event_id path int64 true "20"
+// @Router /v1/groups/{group_id}/{event_id} [delete]
+func DeleteEventFromGroupController() GroupController {
+	return GroupController{}
+}
+
 // CreateGroup CreateGroup @Summary
 // @Tags group
 // @version 1.0
@@ -111,6 +125,89 @@ func AddEventsToGroupController() GroupController {
 // @Router /v1/groups/{group_id} [patch]
 func ReviseGroupController() GroupController {
 	return GroupController{}
+}
+
+func (u GroupController) DeleteEventsFromGroup(c *gin.Context) {
+	//validate token and group owner
+	token := c.Request.Header.Get("Authorization")
+	id, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	//check id and return needed data
+	userOne, err := service.SelectOneUser(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "User not found : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	group_id, err := strconv.ParseInt(c.Param("group_id"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to parse group id : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	//Check Group Admin
+	groupOne, err := service.SelectOneGroup(int(group_id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "Group not found : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	if groupOne.UserId != userOne.UserId {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "This group doesn't belong to the user : ",
+			"data":   nil,
+		})
+		return
+	}
+
+	event_id, err := strconv.ParseInt(c.Param("event_id"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to parse event id : " + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	//delete
+	deleteErr := service.DeleteGroupEvent(int(event_id), int(group_id))
+	if deleteErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Can't delete event from group : " + deleteErr.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": 0,
+		"msg":    "event deleted successfully from group",
+		"data":   nil,
+	})
+	return
+
 }
 
 func (u GroupController) AddEventsToGroup(c *gin.Context) {

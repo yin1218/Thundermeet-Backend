@@ -515,6 +515,37 @@ paths:
             type: string
       tags:
       - group
+  /v1/groups/{group_id}/{event_id}:
+    delete:
+      parameters:
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "5"
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: "20"
+        in: path
+        name: event_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - group
   /v1/timeblocks/:
     post:
       parameters:

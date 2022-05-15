@@ -22,9 +22,9 @@ import (
 type TimeblockController struct{}
 
 type createTimeblockFormat struct {
-	Event_id int64    `json:"eventId" example:"1" binding:"required"`       //required
-	Normal   []string `json:"normal" example:"2021-01-01T11:00:00+08:00"`   //optional
-	Priority []string `json:"priority" example:"2021-01-02T12:00:00+08:00"` //optional
+	Event_id int64    `json:"eventId" example:"1" binding:"required"`      //required
+	Normal   []string `json:"normal" example:"2021-01-01T11:00:00.000Z"`   //optional
+	Priority []string `json:"priority" example:"2021-01-02T12:00:00.000Z"` //optional
 } //@name Timeblock
 
 func CreateTimeblocksController() TimeblockController {
@@ -60,8 +60,8 @@ func CreateManyTimeblocks(dateOrDays bool, startTime string, endTime string, sta
 		s_yyyy, s_mm, s_dd := startDate.Date()
 		e_yyyy, e_mm, e_dd := endDate.Date()
 
-		start_t := time.Date(s_yyyy, s_mm, s_dd, s_hh, s_min, 0, 0, time.Local)
-		end_t := time.Date(e_yyyy, e_mm, e_dd, e_hh, e_min, 0, 0, time.Local)
+		start_t := time.Date(s_yyyy, s_mm, s_dd, s_hh, s_min, 0, 0, time.UTC)
+		end_t := time.Date(e_yyyy, e_mm, e_dd, e_hh, e_min, 0, 0, time.UTC)
 
 		time_string := start_t.Format(time.RFC3339)
 		timeblock_id := time_string + "A" + strconv.Itoa(int(eventId))
@@ -250,10 +250,10 @@ func (u TimeblockController) UpdateTimeblock(c *gin.Context) {
 }
 
 type GetTimeblockFormat struct {
-	Time         string   `json:"time" example:"2021-01-01T11:00:00+08:00" binding:"required"` //required
-	Normal       []string `json:"normal" example:"小葉"`                                         //optional
-	Priority     []string `json:"priority" example:"小巫"`                                       //optional
-	NotAvailable []string `json:"not_available" example:"小陳"`                                  //optional
+	Time         string   `json:"time" example:"2021-01-01T11:00:00.000Z" binding:"required"` //required
+	Normal       []string `json:"normal" example:"小葉"`                                        //optional
+	Priority     []string `json:"priority" example:"小巫"`                                      //optional
+	NotAvailable []string `json:"not_available" example:"小陳"`                                 //optional
 } //@name GetTimeblockResponse
 
 // GetTimeblock GetTimeblock @Summary
@@ -320,9 +320,9 @@ func (u TimeblockController) GetTimeblock(c *gin.Context) {
 }
 
 type GetTimeblockPreviewFormat struct {
-	EventId  int64    `json:"event_id" example:"26" binding:"required"`     //required
-	Normal   []string `json:"normal" example:"2021-01-01T11:00:00+08:00"`   //optional
-	Priority []string `json:"priority" example:"2021-01-01T11:00:00+08:00"` //optional
+	EventId  int64    `json:"event_id" example:"26" binding:"required"`    //required
+	Normal   []string `json:"normal" example:"2021-01-01T11:00:00.000Z"`   //optional
+	Priority []string `json:"priority" example:"2021-01-01T11:00:00.000Z"` //optional
 } //@name GetTimeblockPreviewResponse
 
 // GetTimeblockPreview GetTimeblockPreview @Summary
@@ -433,9 +433,9 @@ func (u TimeblockController) UpdateTimeblockImport(c *gin.Context) {
 }
 
 type UpdateTimeblockExportFormat struct {
-	SourceEventId       int64    `json:"source_event_id" example:"1" binding:"required"`                               //required
-	DestEventId         int64    `json:"dest_event_id" example:"26" binding:"required"`                                //required
-	ComfirmedTimeblocks []string `json:"confirmed_time_blocks" example:"2021-01-01T11:00:00+08:00" binding:"required"` //required
+	SourceEventId       int64    `json:"source_event_id" example:"1" binding:"required"`                              //required
+	DestEventId         int64    `json:"dest_event_id" example:"26" binding:"required"`                               //required
+	ComfirmedTimeblocks []string `json:"confirmed_time_blocks" example:"2021-01-01T11:00:00.000Z" binding:"required"` //required
 } //@name UpdateTimeblockExportFormat
 
 // UpdateTimeblockExport UpdateTimeblockExport @Summary

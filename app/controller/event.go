@@ -226,9 +226,10 @@ func (u EventController) CreateEvent(c *gin.Context) {
 			err := CreateManyTimeblocks(*form.Date_or_days, form.Start_time, form.End_time, start_date, end_date, event_id)
 			if err == nil {
 				c.JSON(http.StatusOK, gin.H{
-					"status": 1,
-					"msg":    "success Create Event",
-					"data":   nil,
+					"status":   1,
+					"msg":      "success Create Event",
+					"event_id": event_id,
+					"data":     nil,
 				})
 			} else {
 				c.JSON(http.StatusInternalServerError, gin.H{

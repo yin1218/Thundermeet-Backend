@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	jwt "github.com/golang-jwt/jwt"
 )
@@ -21,12 +20,9 @@ func GenToken(userId string) (string, error) {
 	jwtKeyString := os.Getenv("JWT_SECRET")
 	jwtKey := []byte(jwtKeyString)
 
-	expiresAt := time.Now().Add(24 * time.Hour).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, authClaims{
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expiresAt,
-		},
-		UserID: userId,
+		StandardClaims: jwt.StandardClaims{},
+		UserID:         userId,
 	})
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {

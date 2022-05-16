@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"thundermeet_backend/app/config"
 	"thundermeet_backend/app/dao"
@@ -12,7 +11,6 @@ import (
 	"thundermeet_backend/app/middleware/cors"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 
 	// "gorm.io/driver/postgres"
 	// "gorm.io/gorm"
@@ -32,14 +30,18 @@ import (
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host thundermeet-backend.herokuapp.com/
+<<<<<<< HEAD
+=======
+
+>>>>>>> 52ce7dda1d2c263c76c62ff5ccb4667c6ea13cf2
 // schemes http
 func main() {
 	fmt.Println("Good Morning!")
 	//read env
-	envErr := godotenv.Load()
-	if envErr != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// envErr := godotenv.Load()
+	// if envErr != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
 
 	//get env
 	// port := os.Getenv("PORT")
@@ -68,6 +70,7 @@ func main() {
 			"message": "health check",
 		})
 	})
+
 	config.RouteUsers(app)
 	err := app.Run()
 	if err != nil {

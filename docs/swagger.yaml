@@ -1,4 +1,24 @@
 definitions:
+  GetUserResponse:
+    properties:
+      password_answer:
+        example: NTU
+        type: string
+      status:
+        example: 0
+        type: integer
+      user_id:
+        example: christine891225
+        type: string
+      username:
+        example: Christine Wang
+        type: string
+    required:
+    - password_answer
+    - status
+    - user_id
+    - username
+    type: object
   Login:
     properties:
       password:
@@ -90,6 +110,10 @@ paths:
           description: OK
           schema:
             type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
         "500":
           description: Internal Server Error
           schema:
@@ -109,6 +133,10 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/GetUserResponse'
+        "401":
+          description: Unauthorized
           schema:
             type: string
         "500":
@@ -130,6 +158,10 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
           schema:
             type: string
         "500":
@@ -154,6 +186,10 @@ paths:
           description: OK
           schema:
             type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
         "500":
           description: Internal Server Error
           schema:
@@ -174,6 +210,10 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
           schema:
             type: string
         "500":

@@ -82,16 +82,25 @@ func UpdateOneUser(userId string, userName string, password string, passwordAnsw
 		return fmt.Errorf("User Not exists.")
 	}
 
+	var user model.User
+
 	//hash password
-	hash, err := crypto.Generate(password)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	user := model.User{
-		UserName:       userName,
-		PasswordHash:   hash,
-		PasswordAnswer: passwordAnswer,
+	if password != "" {
+		hash, err := crypto.Generate(password)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		user = model.User{
+			UserName:       userName,
+			PasswordHash:   hash,
+			PasswordAnswer: passwordAnswer,
+		}
+	} else {
+		user = model.User{
+			UserName:       userName,
+			PasswordAnswer: passwordAnswer,
+		}
 	}
 
 	log.Print("user = ", user)

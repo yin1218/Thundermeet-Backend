@@ -13,3 +13,5 @@ type User struct {
 	PasswordHash   string `gorm:"size:100;not null" json:"passwordHash"`
 	PasswordAnswer string `gorm:"size:100;not null" json:"passwordAnswer"`
 }
+
+// 13 column

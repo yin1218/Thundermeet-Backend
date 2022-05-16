@@ -30,10 +30,6 @@ import (
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host thundermeet-backend.herokuapp.com/
-<<<<<<< HEAD
-=======
-
->>>>>>> 52ce7dda1d2c263c76c62ff5ccb4667c6ea13cf2
 // schemes http
 func main() {
 	fmt.Println("Good Morning!")

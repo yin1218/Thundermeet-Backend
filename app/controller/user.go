@@ -48,6 +48,7 @@ type Login struct {
 // @Success 200 string string successful return data
 // @Failure 500 string ErrorResponse
 // @Failure 401 string ErrorResponse
+// @Failure 404 string ErrorResponse
 // @Router /v1/users/login/ [post]
 func (u UsersController) Login(c *gin.Context) {
 	var form Login
@@ -124,7 +125,7 @@ type ForgotInfo struct {
 // @version 1.0
 // @produce application/json
 // @Param Body body Register true "The body to create a user"
-// @Success 200 string string successful return data
+// @Success 201 string string successful return data
 // @Failure 500 string string ErrorResponse
 // @Failure 400 string string ErrorResponse
 // @Router /v1/users/ [post]
@@ -136,7 +137,7 @@ func (u UsersController) CreateUser(c *gin.Context) {
 		err := service.RegisterOneUser(form.User_id, form.User_name, form.Password, form.Password_answer)
 		if err == nil {
 			fmt.Println("Good register!")
-			c.JSON(http.StatusOK, gin.H{
+			c.JSON(http.StatusCreated, gin.H{
 				"status": 1,
 				"msg":    "user signed up successfully!",
 				"data":   nil,

@@ -34,6 +34,12 @@ func SelectOneGroup(groupId int) (*model.Group, error) {
 
 }
 
+func GroupNameNotExist(groupName string) bool {
+	groupOne := &model.Group{}
+	err := dao.SqlSession.Select(GroupFields).Where("Group_name=?", groupName).First(&groupOne).Error
+	return err == nil
+}
+
 func SelectGroupEvents(groupId int) ([]int, error) {
 
 	var results []int

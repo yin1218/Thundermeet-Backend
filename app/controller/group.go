@@ -173,7 +173,7 @@ func (u GroupController) DeleteEventsFromGroup(c *gin.Context) {
 	if groupOne.UserId != userOne.UserId {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status": -1,
-			"msg":    "This group doesn't belong to the user : ",
+			"msg":    "This group doesn't belong to the user",
 			"data":   nil,
 		})
 		return
@@ -545,6 +545,17 @@ func (u GroupController) CreateGroup(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": -1,
 			"msg":    "invalid input : " + bindErr.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	//check group name
+	GroupNamrErr := service.GroupNameNotExist(form.Group_name)
+	if GroupNamrErr {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Group Name Already Exist!",
 			"data":   nil,
 		})
 		return

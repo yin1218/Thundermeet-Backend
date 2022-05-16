@@ -232,7 +232,7 @@ definitions:
     required:
     - group_name
     type: object
-host: localhost:8080/
+host: thundermeet-backend.herokuapp.com/
 info:
   contact:
     name: Wu, Chien Yin and Yeh, Hsiao Li

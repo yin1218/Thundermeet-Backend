@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"thundermeet_backend/app/config"
 	"thundermeet_backend/app/dao"
@@ -12,7 +11,6 @@ import (
 	"thundermeet_backend/app/middleware/cors"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 
 	// "gorm.io/driver/postgres"
 	// "gorm.io/gorm"
@@ -31,15 +29,15 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host localhost:8080/
+// @host thundermeet-backend.herokuapp.com/
 // schemes http
 func main() {
 	fmt.Println("Good Morning!")
 	//read env
-	envErr := godotenv.Load()
-	if envErr != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// envErr := godotenv.Load()
+	// if envErr != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
 
 	//get env
 	// port := os.Getenv("PORT")
@@ -59,7 +57,7 @@ func main() {
 	app.Use(cors.CORSMiddleware())
 	// app.Use(cors.Default())
 	// set swagger docs
-	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
+	url := ginSwagger.URL("https://thundermeet-backend.herokuapp.com/swagger/doc.json")
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	app.GET("/hc", func(c *gin.Context) {

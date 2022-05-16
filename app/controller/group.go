@@ -608,9 +608,10 @@ func (u GroupController) CreateGroup(c *gin.Context) {
 
 	//return 201 created
 	c.JSON(http.StatusCreated, gin.H{
-		"status": 0,
-		"msg":    "Success to add group and init. event!",
-		"data":   nil,
+		"status":   0,
+		"msg":      "Success to add group and init. event!",
+		"group_id": group_id,
+		"data":     nil,
 	})
 }
 

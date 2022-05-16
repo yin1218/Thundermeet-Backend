@@ -26,6 +26,7 @@ Install docker and make sure docker desktop is running first!
   - download `heroku CLI`
   - In your terminal, type `heroku login`
 - The whole deployment process 
+  - remember to pull before editing!
   -  `git add .`
   - `git commit -m "message"`
   - `git push heroku heroku-deploy:main`
@@ -37,6 +38,10 @@ Install docker and make sure docker desktop is running first!
 
 - If you want to publish main branch on heroku
   `git push heroku main`
+
+- If there's any problem after deploying, do the following process
+  - `heroku releases`
+  - `heroku rollback vX`
 
 <!-- 理論上應該要有一個 fake server 測試所有 test branch，但我還沒做 QQ
 可以參考這篇，有寫 CI 方法><

@@ -50,10 +50,41 @@ func StartNewTime(curHour int, curMin int, endHour int, endMin int) bool {
 }
 
 func CreateManyTimeblocks(dateOrDays bool, startTime string, endTime string, startDate time.Time, endDate time.Time, eventId int64) error {
-	s_hh, _ := strconv.Atoi(startTime[0:2])
-	s_min, _ := strconv.Atoi(startTime[2:4])
-	e_hh, _ := strconv.Atoi(endTime[0:2])
-	e_min, _ := strconv.Atoi(endTime[2:4])
+	s_hh, s_hh_err := strconv.Atoi(startTime[0:2])
+	s_min, s_min_err := strconv.Atoi(startTime[2:4])
+	e_hh, e_hh_err := strconv.Atoi(endTime[0:2])
+	e_min, e_min_err := strconv.Atoi(endTime[2:4])
+
+	if s_hh_err != nil {
+		return fmt.Errorf("start hour error : " + s_hh_err.Error())
+	}
+	if s_min_err != nil {
+		return fmt.Errorf("start minute error : " + s_min_err.Error())
+	}
+	if e_hh_err != nil {
+		return fmt.Errorf("end hour error : " + e_hh_err.Error())
+	}
+	if e_min_err != nil {
+		return fmt.Errorf("end minute error : " + e_min_err.Error())
+	}
+
+	// if e_hh > 23 {
+	// 	return errors.New("math: square root of negative number")
+	// }
+
+	if (s_hh | e_hh) < 0 {
+		return fmt.Errorf("hour is smaller than 0")
+	}
+	if (s_hh | e_hh) > 23 {
+		return fmt.Errorf("hour is greater than 23")
+	}
+	if (s_min | e_min) < 0 {
+		return fmt.Errorf("minute is smaller than 0")
+	}
+	if (s_min | e_min) > 59 {
+		return fmt.Errorf("minute is greater than 59")
+	}
+
 	fmt.Print("strateim = ", startTime, " ", startTime, " ", endTime, " ", endTime)
 
 	if dateOrDays { // date

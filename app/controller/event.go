@@ -233,14 +233,14 @@ func (u EventController) CreateEvent(c *gin.Context) {
 					"data":     nil,
 				})
 			} else {
-				c.JSON(http.StatusInternalServerError, gin.H{
+				c.JSON(http.StatusBadRequest, gin.H{
 					"status": -1,
-					"msg":    "Event Create Failed : " + createErr.Error(),
+					"msg":    "Event Create Failed : " + err.Error(),
 					"data":   nil,
 				})
 			}
 		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{
+			c.JSON(http.StatusBadRequest, gin.H{
 				"status": -1,
 				"msg":    "Event Create Failed : " + createErr.Error(),
 				"data":   nil,
@@ -356,6 +356,19 @@ func (u EventController) UpdateEvent(c *gin.Context) {
 	if bindErr == nil {
 		event_id, _ := strconv.ParseInt(form.EventId, 10, 64)
 		fmt.Print("event-id = ", event_id)
+
+		//check the existance of event_name
+		_, SelectEventErr := service.SelectOneEvent(event_id)
+
+		if SelectEventErr != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "The event id does not exist : " + SelectEventErr.Error(),
+				"data":   nil,
+			})
+			return
+		}
+
 		err := service.UpdateOneEvent(event_id, form.EventName, form.ConfirmedTimeblocks)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -363,6 +376,7 @@ func (u EventController) UpdateEvent(c *gin.Context) {
 				"msg":    "Fail to Update Event Info" + bindErr.Error(),
 				"data":   nil,
 			})
+			return
 		} else {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 1,

@@ -103,3 +103,14 @@ func GetEventsByUser(userId string) ([]model.Event, error) {
 		return events, nil
 	}
 }
+
+func SelectEventGroups(eventId int) ([]int, error) {
+
+	var results []int
+	db := dao.SqlSession.Model(&model.GroupEvent{}).Where("Event_id=?", eventId).Pluck("group_id", &results)
+	if db.Error != nil {
+		return nil, db.Error
+	}
+	return results, nil
+
+}

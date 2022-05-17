@@ -280,6 +280,18 @@ func (u EventController) GetEvent(c *gin.Context) {
 		})
 	} else {
 
+		// get groups of the event
+
+		groupList, err := service.SelectEventGroups(int(event.EventId))
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{
+				"status": -1,
+				"msg":    "Get group fail : " + err.Error(),
+				"data":   nil,
+			})
+			return
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"status":              0,
 			"event_id":            event.EventId,
@@ -295,6 +307,7 @@ func (u EventController) GetEvent(c *gin.Context) {
 			"start_date":          event.StartDate,
 			"end_date":            event.EndDate,
 			"admin_id":            event.AdminId,
+			"groups":              groupList,
 		})
 	}
 }

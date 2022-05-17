@@ -33,6 +33,7 @@ func RouteUsers(r *gin.Engine) {
 	timeblocks := r.Group("/v1/timeblocks")
 	{
 		timeblocks.POST("/", controller.CreateTimeblocksController().CreateTimeblock)
+		timeblocks.POST("/confirm", controller.CreateTimeblocksController().ConfirmTimeblock)
 		timeblocks.PUT("/", controller.UpdateTimeblocksController().UpdateTimeblock)
 		timeblocks.GET("/:event_id", controller.GetTimeblocksController().GetTimeblock)
 		timeblocks.GET("/:event_id/preview", controller.GetTimeblocksController().GetTimeblockPreview)

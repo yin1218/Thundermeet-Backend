@@ -52,6 +52,17 @@ func UpdateOneEvent(eventId int64, eventName string, confirmedTimeblocks []strin
 	return updateErr
 }
 
+func ConfirmOneEvent(eventId int64, confirmedTimeblocks []string) error {
+	var event model.Event
+	event = model.Event{
+		IsConfirmed:         true,
+		ConfirmedTimeblocks: confirmedTimeblocks,
+	}
+	updateErr := dao.SqlSession.Model(&model.Event{}).Where("event_id = ?", eventId).Updates(event).Error
+
+	return updateErr
+}
+
 func GetEventParticipants(eventId int64) ([]string, error) {
 	eventOne := &model.Event{}
 	err := dao.SqlSession.Where("event_id = ?", eventId).First(&eventOne).Error

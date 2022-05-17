@@ -193,6 +193,22 @@ definitions:
           type: integer
         type: array
     type: object
+  confirmTimeblockFormat:
+    properties:
+      eventId:
+        description: required
+        example: 1
+        type: integer
+      timeblocks:
+        description: required
+        example:
+        - "2021-01-01T11:00:00+08:00"
+        items:
+          type: string
+        type: array
+    required:
+    - eventId
+    type: object
   controller.ForgotInfo:
     properties:
       password:
@@ -647,6 +663,37 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - timeblock
+  /v1/timeblocks/confirm:
+    post:
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to confirm an timeblock
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/confirmTimeblockFormat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
           schema:
             type: string
         "500":

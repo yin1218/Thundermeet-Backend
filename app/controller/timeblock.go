@@ -91,8 +91,10 @@ func CreateManyTimeblocks(dateOrDays bool, startTime string, endTime string, sta
 		s_yyyy, s_mm, s_dd := startDate.Date()
 		e_yyyy, e_mm, e_dd := endDate.Date()
 
-		start_t := time.Date(s_yyyy, s_mm, s_dd, s_hh, s_min, 0, 0, time.Local)
-		end_t := time.Date(e_yyyy, e_mm, e_dd, e_hh, e_min, 0, 0, time.Local)
+		secondsEastOfUTC := int((8 * time.Hour).Seconds())
+		beijing := time.FixedZone("Beijing Time", secondsEastOfUTC)
+		start_t := time.Date(s_yyyy, s_mm, s_dd, s_hh, s_min, 0, 0, beijing)
+		end_t := time.Date(e_yyyy, e_mm, e_dd, e_hh, e_min, 0, 0, beijing)
 
 		time_string := start_t.Format(time.RFC3339)
 		timeblock_id := time_string + "A" + strconv.Itoa(int(eventId))

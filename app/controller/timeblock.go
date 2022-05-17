@@ -186,46 +186,6 @@ func UpdateManyTimeblocksParticipants(eventId int64, userId string, normal []str
 	return nil
 }
 
-// func (u TimeblockController) CreateTimeblock(c *gin.Context) {
-// 	token := c.Request.Header.Get("Authorization")
-// 	//validate token
-// 	userId, err := jwt.ValidateToken(token)
-// 	if err != nil {
-// 		c.JSON(http.StatusUnauthorized, gin.H{
-// 			"error": err.Error(),
-// 		})
-// 		return
-// 	}
-
-// 	var form createTimeblockFormat
-// 	bindErr := c.BindJSON(&form)
-
-// 	if bindErr == nil {
-// 		err := CreateManyTimeblocksParticipants(form.Event_id, userId, form.Normal, form.Priority)
-// 		err = service.UpdateEventParticipants(form.Event_id, userId)
-// 		if err == nil {
-// 			c.JSON(http.StatusCreated, gin.H{
-// 				"status": 1,
-// 				"msg":    "timeblocks saved successfully!",
-// 				"data":   nil,
-// 			})
-// 		} else {
-// 			c.JSON(http.StatusBadRequest, gin.H{
-// 				"status": -1,
-// 				"msg":    "Cannot create timeblocks!" + err.Error(),
-// 				"data":   nil,
-// 			})
-// 		}
-// 	} else {
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"status": -1,
-// 			"msg":    "Failed to parse timeblocks data : " + bindErr.Error(),
-// 			"data":   nil,
-// 		})
-// 	}
-
-// }
-
 // UpdateTimeblock UpdateTimeblock @Summary
 // @Tags timeblock
 // @version 1.0
@@ -319,6 +279,74 @@ func (u TimeblockController) CreateTimeblock(c *gin.Context) {
 		})
 	}
 
+}
+
+type confirmTimeblockFormat struct {
+	Event_id   int64    `json:"eventId" example:"1" binding:"required"`         //required
+	Timeblocks []string `json:"timeblocks" example:"2021-01-01T11:00:00+08:00"` //required
+} //@name confirmTimeblockFormat
+
+// ConfirmTimeblock ConfirmTimeblock @Summary
+// @Tags timeblock
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param Body body confirmTimeblockFormat true "The body to confirm an timeblock"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @Failure 400 string string ErrorResponse
+// @Router /v1/timeblocks/confirm [post]
+func (u TimeblockController) ConfirmTimeblock(c *gin.Context) {
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	_, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var form confirmTimeblockFormat
+	bindErr := c.BindJSON(&form)
+	if bindErr == nil {
+		event, err1 := service.SelectOneEvent(form.Event_id)
+		if err1 != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Cannot confirm timeblocks!" + err.Error(),
+				"data":   nil,
+			})
+		}
+		if event.IsConfirmed == true {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "The event was confirmed already!",
+				"data":   nil,
+			})
+		}
+		err := service.ConfirmOneEvent(form.Event_id, form.Timeblocks)
+
+		if err == nil {
+			c.JSON(http.StatusAccepted, gin.H{
+				"status": 1,
+				"msg":    "timeblocks confirmed successfully!",
+				"data":   nil,
+			})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Cannot confirm timeblocks!" + err.Error(),
+				"data":   nil,
+			})
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Failed to parse timeblocks data : " + bindErr.Error(),
+			"data":   nil,
+		})
+	}
 }
 
 type GetTimeblockFormat struct {

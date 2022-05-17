@@ -293,21 +293,22 @@ func (u EventController) GetEvent(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"status":              0,
-			"event_id":            event.EventId,
-			"event_name":          event.EventName,
-			"event_description":   event.EventDescription,
-			"is_priority_enabled": event.IsPriorityEnabled,
-			"is_confirmed":        event.IsConfirmed,
-			"start_time":          event.StartTime,
-			"end_time":            event.EndTime,
-			"date_or_days":        event.DateOrDays,
-			"start_day":           event.StartDay,
-			"end_day":             event.EndDay,
-			"start_date":          event.StartDate,
-			"end_date":            event.EndDate,
-			"admin_id":            event.AdminId,
-			"groups":              groupList,
+			"status":               0,
+			"event_id":             event.EventId,
+			"event_name":           event.EventName,
+			"event_description":    event.EventDescription,
+			"is_priority_enabled":  event.IsPriorityEnabled,
+			"is_confirmed":         event.IsConfirmed,
+			"confirmed_timeblocks": event.ConfirmedTimeblocks,
+			"start_time":           event.StartTime,
+			"end_time":             event.EndTime,
+			"date_or_days":         event.DateOrDays,
+			"start_day":            event.StartDay,
+			"end_day":              event.EndDay,
+			"start_date":           event.StartDate,
+			"end_date":             event.EndDate,
+			"admin_id":             event.AdminId,
+			"groups":               groupList,
 		})
 	}
 }

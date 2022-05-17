@@ -567,6 +567,54 @@
                 }
             }
         },
+        "/v1/timeblocks/confirm": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "timeblock"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to confirm an timeblock",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/confirmTimeblockFormat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/timeblocks/export": {
             "patch": {
                 "produces": [
@@ -1209,6 +1257,29 @@
                     "items": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "confirmTimeblockFormat": {
+            "type": "object",
+            "required": [
+                "eventId"
+            ],
+            "properties": {
+                "eventId": {
+                    "description": "required",
+                    "type": "integer",
+                    "example": 1
+                },
+                "timeblocks": {
+                    "description": "required",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "2021-01-01T11:00:00+08:00"
+                    ]
                 }
             }
         },

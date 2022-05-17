@@ -98,19 +98,39 @@ func GetEventsByUser(userId string) ([]model.Event, error) {
 	dbResult := dao.SqlSession.Where("? = ANY (participants)", userId).Find(&events)
 	fmt.Print(dbResult)
 	if dbResult.Error != nil {
-		return nil, fmt.Errorf("Get Event Info Failed:%v\n", dbResult.Error)
+		return nil, fmt.Errorf("get Event Info Failed:%v\n", dbResult.Error)
 	} else {
 		return events, nil
 	}
 }
 
-func SelectEventGroups(eventId int) ([]int, error) {
+type Group struct {
+	// gorm.Model
+	GroupId   int
+	GroupName string
+}
 
-	var results []int
-	db := dao.SqlSession.Model(&model.GroupEvent{}).Where("Event_id=?", eventId).Pluck("group_id", &results)
+func SelectEventGroups(eventId int) ([]Group, error) {
+
+	var groups []int
+	db := dao.SqlSession.Model(&model.GroupEvent{}).Where("Event_id=?", eventId).Pluck("group_id", &groups)
 	if db.Error != nil {
 		return nil, db.Error
 	}
+
+	var results []Group
+	//get name of the results
+	for _, group_id := range groups {
+		// fmt.Println(group)
+		var temp Group
+		err := dao.SqlSession.Model(&model.Group{}).Where("Group_id=?", group_id).First(&temp).Error
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, temp)
+	}
+
+	fmt.Print(results)
 	return results, nil
 
 }

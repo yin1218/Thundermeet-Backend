@@ -72,16 +72,16 @@ func CreateManyTimeblocks(dateOrDays bool, startTime string, endTime string, sta
 	// 	return errors.New("math: square root of negative number")
 	// }
 
-	if (s_hh | e_hh) < 0 {
+	if s_hh < 0 || e_hh < 0 {
 		return fmt.Errorf("hour is smaller than 0")
 	}
-	if (s_hh | e_hh) > 23 {
+	if s_hh > 23 || e_hh > 23 {
 		return fmt.Errorf("hour is greater than 23")
 	}
-	if (s_min | e_min) < 0 {
+	if s_min < 0 || e_min < 0 {
 		return fmt.Errorf("minute is smaller than 0")
 	}
-	if (s_min | e_min) > 59 {
+	if s_min > 59 || e_min > 59 {
 		return fmt.Errorf("minute is greater than 59")
 	}
 

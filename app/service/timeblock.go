@@ -151,9 +151,8 @@ func GetStatusForTimeblock(userId string, eventId int64) ([]string, []string, er
 		var TimeblockParticipants []model.TimeblockParticipants
 		dbResult := dao.SqlSession.Where("time_block_id = ? AND user_id = ?", timeblock.TimeBlockId, userId).Find(&TimeblockParticipants)
 		if dbResult.Error != nil {
-			return nil, nil, dbResult.Error
+			continue
 		} else {
-
 			for _, timeblockparticipant := range TimeblockParticipants {
 				blocktime := strings.Split(timeblockparticipant.TimeBlockId, "A")[0]
 				if timeblockparticipant.Priority {

@@ -169,10 +169,10 @@ func UpdateManyTimeblocksParticipants(eventId int64, userId string, normal []str
 		timeset[timeblock] = false
 	}
 
-	err := service.DeletePreviousTimeblockParticipant(userId, eventId)
-	if err != nil {
-		return err
-	}
+	service.DeletePreviousTimeblockParticipant(userId, eventId)
+	// if err != nil {
+	// 	return err
+	// }
 
 	for timeblock, priority := range timeset {
 		timeblock_id := helper.ConvertToTimeblockId(timeblock, eventId)
@@ -186,54 +186,45 @@ func UpdateManyTimeblocksParticipants(eventId int64, userId string, normal []str
 	return nil
 }
 
-// CreateTimeblock CreateTimeblock @Summary
-// @Tags timeblock
-// @version 1.0
-// @produce application/json
-// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
-// @Param Body body createTimeblockFormat true "The body to create an event"
-// @Success 200 string string successful return data
-// @Failure 500 string string ErrorResponse
-// @Router /v1/timeblocks/ [post]
-func (u TimeblockController) CreateTimeblock(c *gin.Context) {
-	token := c.Request.Header.Get("Authorization")
-	//validate token
-	userId, err := jwt.ValidateToken(token)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
+// func (u TimeblockController) CreateTimeblock(c *gin.Context) {
+// 	token := c.Request.Header.Get("Authorization")
+// 	//validate token
+// 	userId, err := jwt.ValidateToken(token)
+// 	if err != nil {
+// 		c.JSON(http.StatusUnauthorized, gin.H{
+// 			"error": err.Error(),
+// 		})
+// 		return
+// 	}
 
-	var form createTimeblockFormat
-	bindErr := c.BindJSON(&form)
+// 	var form createTimeblockFormat
+// 	bindErr := c.BindJSON(&form)
 
-	if bindErr == nil {
-		err := CreateManyTimeblocksParticipants(form.Event_id, userId, form.Normal, form.Priority)
-		err = service.UpdateEventParticipants(form.Event_id, userId)
-		if err == nil {
-			c.JSON(http.StatusCreated, gin.H{
-				"status": 1,
-				"msg":    "timeblocks saved successfully!",
-				"data":   nil,
-			})
-		} else {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": -1,
-				"msg":    "Cannot create timeblocks!" + err.Error(),
-				"data":   nil,
-			})
-		}
-	} else {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": -1,
-			"msg":    "Failed to parse timeblocks data : " + bindErr.Error(),
-			"data":   nil,
-		})
-	}
+// 	if bindErr == nil {
+// 		err := CreateManyTimeblocksParticipants(form.Event_id, userId, form.Normal, form.Priority)
+// 		err = service.UpdateEventParticipants(form.Event_id, userId)
+// 		if err == nil {
+// 			c.JSON(http.StatusCreated, gin.H{
+// 				"status": 1,
+// 				"msg":    "timeblocks saved successfully!",
+// 				"data":   nil,
+// 			})
+// 		} else {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"status": -1,
+// 				"msg":    "Cannot create timeblocks!" + err.Error(),
+// 				"data":   nil,
+// 			})
+// 		}
+// 	} else {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status": -1,
+// 			"msg":    "Failed to parse timeblocks data : " + bindErr.Error(),
+// 			"data":   nil,
+// 		})
+// 	}
 
-}
+// }
 
 // UpdateTimeblock UpdateTimeblock @Summary
 // @Tags timeblock
@@ -260,6 +251,54 @@ func (u TimeblockController) UpdateTimeblock(c *gin.Context) {
 	if bindErr == nil {
 		err := UpdateManyTimeblocksParticipants(form.Event_id, userId, form.Normal, form.Priority)
 		if err == nil {
+			c.JSON(http.StatusAccepted, gin.H{
+				"status": 1,
+				"msg":    "timeblocks updated successfully!",
+				"data":   nil,
+			})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Cannot create timeblocks!" + err.Error(),
+				"data":   nil,
+			})
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Failed to parse timeblocks data : " + bindErr.Error(),
+			"data":   nil,
+		})
+	}
+
+}
+
+// CreateTimeblock CreateTimeblock @Summary
+// @Tags timeblock
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param Body body createTimeblockFormat true "The body to create an event"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @Router /v1/timeblocks/ [post]
+func (u TimeblockController) CreateTimeblock(c *gin.Context) {
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	userId, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var form createTimeblockFormat
+	bindErr := c.BindJSON(&form)
+	if bindErr == nil {
+		err := UpdateManyTimeblocksParticipants(form.Event_id, userId, form.Normal, form.Priority)
+		err2 := service.UpdateEventParticipants(form.Event_id, userId)
+		if err == nil && err2 == nil {
 			c.JSON(http.StatusAccepted, gin.H{
 				"status": 1,
 				"msg":    "timeblocks updated successfully!",

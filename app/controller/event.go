@@ -269,6 +269,22 @@ func (u EventController) CreateEvent(c *gin.Context) {
 // @param event_id path int64 true "event id"
 // @Router /v1/events/{event_id} [get]
 func (u EventController) GetEvent(c *gin.Context) {
+
+	//validate user
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	user_id, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	fmt.Println(user_id)
+
+	//validate user of event
+
 	event_id, err := strconv.ParseInt(c.Param("event_id"), 10, 64)
 	fmt.Print(event_id)
 	event, err := service.SelectOneEvent(event_id)
@@ -278,6 +294,15 @@ func (u EventController) GetEvent(c *gin.Context) {
 			"msg":    "The event id does not exist.",
 			"data":   nil,
 		})
+		return
+	} else if event.AdminId != user_id {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": -1,
+			"msg":    "the event's admin is not the current user.",
+			"data":   nil,
+		})
+		return
+
 	} else {
 
 		// get groups of the event

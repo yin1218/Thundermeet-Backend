@@ -309,6 +309,7 @@ func (u EventController) GetEvent(c *gin.Context) {
 			"end_date":             event.EndDate,
 			"admin_id":             event.AdminId,
 			"groups":               groupList,
+			"participants":         event.Participants,
 		})
 	}
 }

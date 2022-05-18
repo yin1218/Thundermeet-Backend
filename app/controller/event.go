@@ -295,14 +295,6 @@ func (u EventController) GetEvent(c *gin.Context) {
 			"data":   nil,
 		})
 		return
-	} else if event.AdminId != user_id {
-		c.JSON(http.StatusNotFound, gin.H{
-			"status": -1,
-			"msg":    "the event's admin is not the current user.",
-			"data":   nil,
-		})
-		return
-
 	} else {
 
 		// get groups of the event

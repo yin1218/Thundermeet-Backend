@@ -43,7 +43,7 @@ func GroupNameNotExist(groupName string) bool {
 func SelectGroupEvents(groupId int) ([]int, error) {
 
 	var results []int
-	db := dao.SqlSession.Model(&model.GroupEvent{}).Pluck("event_id", &results).Where("Group_id=?", groupId)
+	db := dao.SqlSession.Model(&model.GroupEvent{}).Where("Group_id=?", groupId).Pluck("event_id", &results)
 	if db.Error != nil {
 		return nil, db.Error
 	}
@@ -73,6 +73,7 @@ func AddEventToGroup(eventId int, groupId int) error {
 		GroupId: groupId,
 		EventId: eventId,
 	}
+
 	insertErr := dao.SqlSession.Model(&model.GroupEvent{}).Create(&group_event).Error
 	return insertErr
 

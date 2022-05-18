@@ -514,7 +514,7 @@ func (u GroupController) GetGroup(c *gin.Context) {
 		"group_name": groupOne.GroupName,
 		"event_ids":  eventList,
 	})
-	return
+	// return
 
 }
 

@@ -40,13 +40,31 @@ func GroupNameNotExist(groupName string) bool {
 	return err == nil
 }
 
-func SelectGroupEvents(groupId int) ([]int, error) {
+type GroupEventInfo struct {
+	Event_id     int
+	Event_name   string
+	Is_confirmed bool
+}
 
-	var results []int
-	db := dao.SqlSession.Model(&model.GroupEvent{}).Where("Group_id=?", groupId).Pluck("event_id", &results)
+func SelectGroupEvents(groupId int) ([]GroupEventInfo, error) {
+
+	var results []GroupEventInfo
+	var events_id []int
+	db := dao.SqlSession.Model(&model.GroupEvent{}).Where("Group_id=?", groupId).Pluck("event_id", &events_id)
 	if db.Error != nil {
 		return nil, db.Error
 	}
+
+	//get info of the group
+	for _, event_id := range events_id {
+		var temp GroupEventInfo
+		db := dao.SqlSession.Model(&model.Event{}).Where("Event_id=?", event_id).First(&temp)
+		if db.Error != nil {
+			return nil, db.Error
+		}
+		results = append(results, temp)
+	}
+
 	return results, nil
 
 }

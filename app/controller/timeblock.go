@@ -350,10 +350,10 @@ func (u TimeblockController) ConfirmTimeblock(c *gin.Context) {
 }
 
 type GetTimeblockFormat struct {
-	Time         string   `json:"time" example:"2021-01-01T11:00:00.000Z" binding:"required"` //required
-	Normal       []string `json:"normal" example:"小葉"`                                        //optional
-	Priority     []string `json:"priority" example:"小巫"`                                      //optional
-	NotAvailable []string `json:"not_available" example:"小陳"`                                 //optional
+	Time         string                         `json:"time" example:"2021-01-01T11:00:00.000Z" binding:"required"` //required
+	Normal       []service.ParticipantsWithName `json:"normal" example:"小葉"`                                        //optional
+	Priority     []service.ParticipantsWithName `json:"priority" example:"小巫"`                                      //optional
+	NotAvailable []service.ParticipantsWithName `json:"not_available" example:"小陳"`                                 //optional
 } //@name GetTimeblockResponse
 
 // GetTimeblock GetTimeblock @Summary

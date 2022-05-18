@@ -106,7 +106,12 @@ func GetTimeblocksForEvent(eventId int64) ([]model.Timeblock, error) {
 	}
 }
 
-func remove(s []string, r string) []string {
+type ParticipantsWithName struct {
+	UserId   string
+	UserName string
+}
+
+func remove(s []ParticipantsWithName, r ParticipantsWithName) []ParticipantsWithName {
 	for i, v := range s {
 		if v == r {
 			return append(s[:i], s[i+1:]...)
@@ -115,22 +120,34 @@ func remove(s []string, r string) []string {
 	return s
 }
 
-func GetMembersStatusPerTimeBlock(timeblockId string, participants []string) ([]string, []string, []string, error) {
+func GetMembersStatusPerTimeBlock(timeblockId string, participants []string) ([]ParticipantsWithName, []ParticipantsWithName, []ParticipantsWithName, error) {
+
+	var users []ParticipantsWithName
+
+	dao.SqlSession.Model(&model.User{}).Select([]string{"user_id", "user_name"}).Where("user_id IN ?", participants).Find(&users)
+	fmt.Print(users)
+
 	var TimeblockParticipants []model.TimeblockParticipants
 	dbResult := dao.SqlSession.Where("time_block_id = ? ", timeblockId).Find(&TimeblockParticipants)
 	if dbResult.Error != nil {
 		return nil, nil, nil, dbResult.Error
 	} else {
-		var priority []string
-		var normal []string
-		var notAvailable []string = participants
+		var priority []ParticipantsWithName
+		var normal []ParticipantsWithName
+		var notAvailable []ParticipantsWithName = users
+		var participant ParticipantsWithName
 		for _, timeblockparticipant := range TimeblockParticipants {
+			for _, user := range users {
+				if user.UserId == timeblockparticipant.UserId {
+					participant = user
+				}
+			}
 			if timeblockparticipant.Priority {
-				priority = append(priority, timeblockparticipant.UserId)
-				notAvailable = remove(notAvailable, timeblockparticipant.UserId)
+				priority = append(priority, participant)
+				notAvailable = remove(notAvailable, participant)
 			} else {
-				normal = append(normal, timeblockparticipant.UserId)
-				notAvailable = remove(notAvailable, timeblockparticipant.UserId)
+				normal = append(normal, participant)
+				notAvailable = remove(notAvailable, participant)
 			}
 		}
 

@@ -471,6 +471,70 @@ func (u TimeblockController) GetTimeblockPreview(c *gin.Context) {
 
 }
 
+type GetAllEventsTimeblockFormat struct {
+	EventId   int64    `json:"event_id" example:"26" binding:"required"`            //required
+	EventName int64    `json:"event_name" example:"SAD meeting" binding:"required"` //required
+	Normal    []string `json:"normal" example:"2021-01-01T11:00:00.000Z"`           //optional
+	Priority  []string `json:"priority" example:"2021-01-01T11:00:00.000Z"`         //optional
+} //@name GetAllEventsTimeblockFormat
+
+// GetAllEventsTimeblock GetAllEventsTimeblock @Summary
+// @Tags timeblock
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @Router /v1/timeblocks/preview [get]
+func (u TimeblockController) GetAllEventsTimeblock(c *gin.Context) {
+
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	userId, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var timeblockPreviewRes []GetAllEventsTimeblockFormat
+
+	events, err := service.GetEventsByUser(userId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Cannot get timeblocks!" + err.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	for _, event := range events {
+		var oneEventTimeblock GetAllEventsTimeblockFormat
+		oneEventTimeblock.EventId = event.EventId
+
+		normal, priority, err := service.GetStatusForTimeblock(userId, event.EventId)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Cannot get timeblocks!" + err.Error(),
+				"data":   nil,
+			})
+			return
+		}
+		oneEventTimeblock.Normal = normal
+		oneEventTimeblock.Priority = priority
+
+		timeblockPreviewRes = append(timeblockPreviewRes, oneEventTimeblock)
+	}
+
+	c.JSON(http.StatusAccepted, timeblockPreviewRes)
+
+}
+
 type UpdateTimeblockImportFormat struct {
 	SourceEventId int64 `json:"source_event_id" example:"1" binding:"required"` //required
 	DestEventId   int64 `json:"dest_event_id" example:"26" binding:"required"`  //required

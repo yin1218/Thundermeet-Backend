@@ -115,6 +115,11 @@ func GetEventsByUser(userId string) ([]model.Event, error) {
 	}
 }
 
+func DeleteEvent(eventId int64) error {
+	delErr := dao.SqlSession.Where("event_id = ?", eventId).Delete(&model.Event{}).Error
+	return delErr
+}
+
 type Group struct {
 	// gorm.Model
 	GroupId   int

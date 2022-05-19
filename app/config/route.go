@@ -29,6 +29,7 @@ func RouteUsers(r *gin.Engine) {
 		events.GET("/:event_id", controller.GetEventsController().GetEvent)
 		events.GET("/", controller.GetEventsController().GetEvents)
 		events.PATCH("/", controller.UpdateEventsController().UpdateEvent)
+		events.DELETE("/:event_id", controller.DeleteEventsController().DeleteEvent) //刪除group中的一個event
 	}
 	timeblocks := r.Group("/v1/timeblocks")
 	{

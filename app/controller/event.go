@@ -299,7 +299,7 @@ func (u EventController) GetEvent(c *gin.Context) {
 
 		// get groups of the event
 
-		groupList, err := service.SelectEventGroups(int(event.EventId))
+		groupList, err := service.SelectEventGroups(int(event.EventId), user_id)
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{
 				"status": -1,

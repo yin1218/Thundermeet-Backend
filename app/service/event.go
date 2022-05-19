@@ -121,12 +121,23 @@ type Group struct {
 	GroupName string
 }
 
-func SelectEventGroups(eventId int) ([]Group, error) {
+func SelectEventGroups(eventId int, userId string) ([]Group, error) {
 
-	var groups []int
-	db := dao.SqlSession.Model(&model.GroupEvent{}).Where("Event_id=?", eventId).Pluck("group_id", &groups)
+	// var groups_notfilter []int
+	var groups_notfilter []model.GroupEvent
+	// db := dao.SqlSession.Model(&model.GroupEvent{}).Where("Event_id=?", eventId).Pluck("group_id", &groups)
+	db := dao.SqlSession.Preload("Group").Where("Event_id=?", eventId).Find(&groups_notfilter)
+
 	if db.Error != nil {
 		return nil, db.Error
+	}
+
+	var groups []int
+
+	for _, group_id := range groups_notfilter {
+		if group_id.Group.UserId == userId {
+			groups = append(groups, group_id.GroupId)
+		}
 	}
 
 	var results []Group

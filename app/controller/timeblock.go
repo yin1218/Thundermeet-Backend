@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	helper "thundermeet_backend/app/helpers"
 	"thundermeet_backend/app/middleware/jwt"
 	"thundermeet_backend/app/service"
@@ -384,7 +385,8 @@ func (u TimeblockController) GetTimeblock(c *gin.Context) {
 
 		var timeblockRes GetTimeblockFormat
 
-		timeblockRes.Time = timeblock.BlockTime.Format(time.RFC3339)
+		blocktime := strings.Split(timeblock.TimeBlockId, "A")[0]
+		timeblockRes.Time = blocktime
 		participants, err := service.GetEventParticipants(timeblock.EventId)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{

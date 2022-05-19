@@ -47,6 +47,10 @@ func UpdateEventsController() EventController {
 	return EventController{}
 }
 
+func DeleteEventsController() EventController {
+	return EventController{}
+}
+
 func isValidTime(startTime string, endTIme string) bool {
 	s, _ := strconv.Atoi(startTime[0:2])
 	t, _ := strconv.Atoi(endTIme[0:2])
@@ -423,4 +427,70 @@ func (u EventController) UpdateEvent(c *gin.Context) {
 			"data":   nil,
 		})
 	}
+}
+
+// DeleteEvent DeleteEvent @Summary
+// @Tags event
+// @version 1.0
+// @produce application/json
+// @Param Authorization header string true "Bearer eyJhbGcikDCEVLw0xRO8CzTg"
+// @Success 200 string string successful return data
+// @Failure 500 string string ErrorResponse
+// @param event_id path int64 true "4"
+// @Router /v1/events/{event_id} [delete]
+func (u EventController) DeleteEvent(c *gin.Context) {
+	//validate user
+	token := c.Request.Header.Get("Authorization")
+	//validate token
+	user_id, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	fmt.Println(user_id)
+
+	//validate user of event
+
+	event_id, err := strconv.ParseInt(c.Param("event_id"), 10, 64)
+	fmt.Print(event_id)
+
+	event, getErr := service.SelectOneEvent(event_id)
+	if getErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to delete Event" + getErr.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	if event.AdminId != user_id {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Only admin can delete event!",
+			"data":   nil,
+		})
+		return
+	}
+
+	delErr := service.DeleteEvent(event_id)
+
+	if delErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to delete Event" + delErr.Error(),
+			"data":   nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusAccepted, gin.H{
+		"status": 0,
+		"msg":    "delete event successfully!",
+		"data":   nil,
+	})
+
 }

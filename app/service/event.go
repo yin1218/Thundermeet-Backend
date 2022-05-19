@@ -41,10 +41,11 @@ func SelectOneEvent(event_id int64) (*model.Event, error) {
 	}
 }
 
-func UpdateOneEvent(eventId int64, eventName string, confirmedTimeblocks []string) error {
+func UpdateOneEvent(eventId int64, eventName string, confirmedTimeblocks []string, eventDescription string) error {
 	var event model.Event
 	event = model.Event{
 		EventName:           eventName,
+		EventDescription:    eventDescription,
 		ConfirmedTimeblocks: confirmedTimeblocks,
 	}
 	updateErr := dao.SqlSession.Model(&model.Event{}).Where("event_id = ?", eventId).Updates(event).Error

@@ -142,12 +142,17 @@ definitions:
         items:
           type: string
         type: array
+      event_description:
+        example: Sad 2nd meeting description
+        type: string
       event_id:
         example: "26"
         type: string
       event_name:
         example: Sad 2nd meeting
         type: string
+    required:
+    - event_id
     type: object
   UpdateTimeblockExportFormat:
     properties:
@@ -300,7 +305,7 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: The body to update a event
+      - description: The body to update a event, event id is required
         in: body
         name: Body
         required: true

@@ -76,7 +76,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "The body to update a event",
+                        "description": "The body to update a event, event id is required",
                         "name": "Body",
                         "in": "body",
                         "required": true,
@@ -1222,6 +1222,9 @@ const docTemplate = `{
         },
         "UpdateEventFormat": {
             "type": "object",
+            "required": [
+                "event_id"
+            ],
             "properties": {
                 "confirmed_timeblocks": {
                     "type": "array",
@@ -1231,6 +1234,10 @@ const docTemplate = `{
                     "example": [
                         "2021-01-01T11:00:00.000Z"
                     ]
+                },
+                "event_description": {
+                    "type": "string",
+                    "example": "Sad 2nd meeting description"
                 },
                 "event_id": {
                     "type": "string",

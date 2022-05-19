@@ -366,8 +366,9 @@ func (u EventController) GetEvents(c *gin.Context) {
 }
 
 type UpdateEventFormat struct {
-	EventId             string   `json:"event_id" example:"26"`
+	EventId             string   `json:"event_id" example:"26" binding:"required"`
 	EventName           string   `json:"event_name" example:"Sad 2nd meeting"`
+	EventDescription    string   `json:"event_description" example:"Sad 2nd meeting description"`
 	ConfirmedTimeblocks []string `json:"confirmed_timeblocks" example:"2021-01-01T11:00:00.000Z"`
 } //@name UpdateEventFormat
 
@@ -376,7 +377,7 @@ type UpdateEventFormat struct {
 // @version 1.0
 // @produce application/json
 // @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
-// @Param Body body UpdateEventFormat true "The body to update a event"
+// @Param Body body UpdateEventFormat true "The body to update a event, event id is required"
 // @Success 200 string string successful return data
 // @Failure 401 string string ErrorResponse
 // @Failure 403 string string ErrorResponse
@@ -401,7 +402,7 @@ func (u EventController) UpdateEvent(c *gin.Context) {
 			return
 		}
 
-		err := service.UpdateOneEvent(event_id, form.EventName, form.ConfirmedTimeblocks)
+		err := service.UpdateOneEvent(event_id, form.EventName, form.ConfirmedTimeblocks, form.EventDescription)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": -1,

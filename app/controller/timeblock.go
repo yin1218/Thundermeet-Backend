@@ -473,7 +473,7 @@ func (u TimeblockController) GetTimeblockPreview(c *gin.Context) {
 
 type GetAllEventsTimeblockFormat struct {
 	EventId   int64    `json:"event_id" example:"26" binding:"required"`            //required
-	EventName int64    `json:"event_name" example:"SAD meeting" binding:"required"` //required
+	EventName string   `json:"event_name" example:"SAD meeting" binding:"required"` //required
 	Normal    []string `json:"normal" example:"2021-01-01T11:00:00.000Z"`           //optional
 	Priority  []string `json:"priority" example:"2021-01-01T11:00:00.000Z"`         //optional
 } //@name GetAllEventsTimeblockFormat
@@ -514,6 +514,7 @@ func (u TimeblockController) GetAllEventsTimeblock(c *gin.Context) {
 	for _, event := range events {
 		var oneEventTimeblock GetAllEventsTimeblockFormat
 		oneEventTimeblock.EventId = event.EventId
+		oneEventTimeblock.EventName = event.EventName
 
 		normal, priority, err := service.GetStatusForTimeblock(userId, event.EventId)
 

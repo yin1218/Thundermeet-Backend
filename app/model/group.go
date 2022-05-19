@@ -11,7 +11,8 @@ type Group struct {
 
 type GroupEvent struct {
 	// gorm.Model
-	GroupEventsId int `gorm:"primary_key;auto_increment" json:"group_events_id"`
-	GroupId       int `gorm:"size:100;not null;" json:"group_id"`
-	EventId       int `gorm:"size:100;not null;" json:"event_id"`
+	GroupEventsId int   `gorm:"primary_key;auto_increment" json:"group_events_id"`
+	GroupId       int   `gorm:"size:100;not null;" json:"group_id"`
+	EventId       int   `gorm:"size:100;not null;" json:"event_id"`
+	Group         Group `gorm:"foreignKey:GroupId;references:GroupId"`
 }

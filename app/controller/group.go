@@ -26,13 +26,18 @@ type createGroupFormat struct {
 	Event_ids  []int  `json:"event_ids" example:[7,8,9] binding:"required"`       //required
 } //@name createGroupFormat
 
-type addGroupEventFormat struct {
+type groupEventFormat struct {
 	Event_ids []int `json:"event_ids" example:[9,10,11] binding:"required"` //required
-} //@name addGroupEventFormat
+} //@name groupEventFormat
 
 type patchGroupFormat struct {
 	Group_name string `json:"group_name" example:"SAD-related" binding:"required"` //required
 } //@name patchGroupFormat
+
+type deleteGroupFormat struct {
+	Group_id int `json:"group_id" example:"4" binding:"required"` //required
+
+} //@name deleteGroupFormat
 
 // DeleteEventFromGroup DeleteEventFromGroup @Summary
 // @Tags group
@@ -41,9 +46,9 @@ type patchGroupFormat struct {
 // @Param Authorization header string true "Bearer eyJhbGcikDCEVLw0xRO8CzTg"
 // @Success 200 string string successful return data
 // @Failure 500 string string ErrorResponse
-// @param group_id path int64 true "5"
-// @param event_id path int64 true "20"
-// @Router /v1/groups/{group_id}/{event_id} [delete]
+// @Param Body body groupEventFormat true "The body to delete event from an group"
+// @param group_id path int64 true "4"
+// @Router /v1/groups/{group_id} [delete]
 func DeleteEventFromGroupController() GroupController {
 	return GroupController{}
 }
@@ -91,10 +96,10 @@ func GetGroupListController() GroupController {
 // @version 1.0
 // @produce application/json
 // @Param Authorization header string true "Bearer eyJhbGcikDCEVLw0xRO8CzTg"
+// @Param Body body deleteGroupFormat true "The body to delete an group"
 // @Success 200 string string successful return data
 // @Failure 500 string string ErrorResponse
-// @param group_id path int64 true "7"
-// @Router /v1/groups/{group_id} [delete]
+// @Router /v1/groups/ [delete]
 func DeleteGroupController() GroupController {
 	return GroupController{}
 }
@@ -104,7 +109,7 @@ func DeleteGroupController() GroupController {
 // @version 1.0
 // @produce application/json
 // @Param Authorization header string true "Bearer eyJhbGcikDCEVLw0xRO8CzTg"
-// @Param Body body addGroupEventFormat true "The body to change the group's name"
+// @Param Body body groupEventFormat true "The body to change the group's name"
 // @Success 200 string string successful return data
 // @Failure 500 string string ErrorResponse
 // @param group_id path int64 true "5"
@@ -179,27 +184,70 @@ func (u GroupController) DeleteEventsFromGroup(c *gin.Context) {
 		return
 	}
 
-	event_id, err := strconv.ParseInt(c.Param("event_id"), 10, 64)
+	// event_id, err := strconv.ParseInt(c.Param("event_id"), 10, 64)
 
-	if err != nil {
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"status": -1,
+	// 		"msg":    "Fail to parse event id : " + err.Error(),
+	// 		"data":   nil,
+	// 	})
+	// 	return
+	// }
+
+	//get delete event
+	var form groupEventFormat
+	bindErr := c.BindJSON(&form)
+	if bindErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": -1,
-			"msg":    "Fail to parse event id : " + err.Error(),
+			"msg":    "invalid input : " + bindErr.Error(),
 			"data":   nil,
 		})
 		return
 	}
 
-	//delete
-	deleteErr := service.DeleteGroupEvent(int(event_id), int(group_id))
-	if deleteErr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": -1,
-			"msg":    "Can't delete event from group : " + deleteErr.Error(),
-			"data":   nil,
-		})
-		return
+	//===== validate event_ids ============//
+	var temp_event []int64
+	for _, event_id := range form.Event_ids {
+		fmt.Println(event_id)
+		format_event_id := int64(event_id)
+		// SelectOneEvent
+		_, err := service.SelectOneEvent(format_event_id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "invalid event : " + err.Error(),
+				"data":   nil,
+			})
+			return
+		}
+		temp_event = append(temp_event, format_event_id)
 	}
+
+	// iterate slice : temp_event
+	for _, event_id := range temp_event {
+		createErr := service.DeleteGroupEvent(int(event_id), int(group_id))
+		if createErr != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "fail to delete event from group : " + createErr.Error(),
+				"data":   nil,
+			})
+			return
+		}
+	}
+
+	// //delete
+	// deleteErr := service.DeleteGroupEvent(int(event_id), int(group_id))
+	// if deleteErr != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"status": -1,
+	// 		"msg":    "Can't delete event from group : " + deleteErr.Error(),
+	// 		"data":   nil,
+	// 	})
+	// 	return
+	// }
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": 0,
@@ -263,7 +311,7 @@ func (u GroupController) AddEventsToGroup(c *gin.Context) {
 	}
 
 	//get datas
-	var form addGroupEventFormat
+	var form groupEventFormat
 	bindErr := c.BindJSON(&form)
 	if bindErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -280,7 +328,7 @@ func (u GroupController) AddEventsToGroup(c *gin.Context) {
 		fmt.Println(event_id)
 		format_event_id := int64(event_id)
 		// SelectOneEvent
-		event, err := service.SelectOneEvent(format_event_id)
+		_, err := service.SelectOneEvent(format_event_id)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": -1,
@@ -289,14 +337,14 @@ func (u GroupController) AddEventsToGroup(c *gin.Context) {
 			})
 			return
 		}
-		if event.AdminId != userOne.UserId {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": -1,
-				"msg":    "The event doesn't belong to current user!",
-				"data":   nil,
-			})
-			return
-		}
+		// if event.AdminId != userOne.UserId {
+		// 	c.JSON(http.StatusBadRequest, gin.H{
+		// 		"status": -1,
+		// 		"msg":    "The event doesn't belong to current user!",
+		// 		"data":   nil,
+		// 	})
+		// 	return
+		// }
 		//add event into a list
 		temp_event = append(temp_event, format_event_id)
 	}
@@ -570,7 +618,7 @@ func (u GroupController) CreateGroup(c *gin.Context) {
 		fmt.Println(event_id)
 		format_event_id := int64(event_id)
 		// SelectOneEvent
-		event, err := service.SelectOneEvent(format_event_id)
+		_, err := service.SelectOneEvent(format_event_id)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": -1,
@@ -579,14 +627,14 @@ func (u GroupController) CreateGroup(c *gin.Context) {
 			})
 			return
 		}
-		if event.AdminId != userOne.UserId {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": -1,
-				"msg":    "The event doesn't belong to current user!",
-				"data":   nil,
-			})
-			return
-		}
+		// if event.AdminId != userOne.UserId {
+		// 	c.JSON(http.StatusBadRequest, gin.H{
+		// 		"status": -1,
+		// 		"msg":    "The event doesn't belong to current user!",
+		// 		"data":   nil,
+		// 	})
+		// 	return
+		// }
 		//add event into a list
 		temp_event = append(temp_event, format_event_id)
 	}
@@ -647,7 +695,19 @@ func (u GroupController) DeleteGroup(c *gin.Context) {
 		return
 	}
 
-	group_id, err := strconv.ParseInt(c.Param("group_id"), 10, 64)
+	// group_id, err := strconv.ParseInt(c.Param("group_id"), 10, 64)
+	//parse request body
+	var form deleteGroupFormat
+	bindErr := c.BindJSON(&form)
+	if bindErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "invalid input : " + bindErr.Error(),
+			"data":   nil,
+		})
+		return
+	}
+	group_id := form.Group_id
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

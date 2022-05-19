@@ -272,6 +272,46 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "group"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer eyJhbGcikDCEVLw0xRO8CzTg",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to delete an group",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/deleteGroupFormat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "/v1/groups/{group_id}": {
@@ -334,7 +374,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/addGroupEventFormat"
+                            "$ref": "#/definitions/groupEventFormat"
                         }
                     },
                     {
@@ -376,8 +416,17 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "description": "The body to delete event from an group",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/groupEventFormat"
+                        }
+                    },
+                    {
                         "type": "integer",
-                        "description": "7",
+                        "description": "4",
                         "name": "group_id",
                         "in": "path",
                         "required": true
@@ -426,53 +475,6 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "5",
                         "name": "group_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/groups/{group_id}/{event_id}": {
-            "delete": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "group"
-                ],
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer eyJhbGcikDCEVLw0xRO8CzTg",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "5",
-                        "name": "group_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "20",
-                        "name": "event_id",
                         "in": "path",
                         "required": true
                     }
@@ -1256,18 +1258,6 @@ const docTemplate = `{
                 }
             }
         },
-        "addGroupEventFormat": {
-            "type": "object",
-            "properties": {
-                "event_ids": {
-                    "description": "required",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                }
-            }
-        },
         "confirmTimeblockFormat": {
             "type": "object",
             "required": [
@@ -1330,6 +1320,31 @@ const docTemplate = `{
                     "description": "required",
                     "type": "string",
                     "example": "OR-related"
+                }
+            }
+        },
+        "deleteGroupFormat": {
+            "type": "object",
+            "required": [
+                "group_id"
+            ],
+            "properties": {
+                "group_id": {
+                    "description": "required",
+                    "type": "integer",
+                    "example": 4
+                }
+            }
+        },
+        "groupEventFormat": {
+            "type": "object",
+            "properties": {
+                "event_ids": {
+                    "description": "required",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

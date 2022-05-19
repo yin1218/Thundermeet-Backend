@@ -185,14 +185,6 @@ definitions:
     - dest_event_id
     - source_event_id
     type: object
-  addGroupEventFormat:
-    properties:
-      event_ids:
-        description: required
-        items:
-          type: integer
-        type: array
-    type: object
   confirmTimeblockFormat:
     properties:
       eventId:
@@ -238,6 +230,23 @@ definitions:
         type: string
     required:
     - group_name
+    type: object
+  deleteGroupFormat:
+    properties:
+      group_id:
+        description: required
+        example: 4
+        type: integer
+    required:
+    - group_id
+    type: object
+  groupEventFormat:
+    properties:
+      event_ids:
+        description: required
+        items:
+          type: integer
+        type: array
     type: object
   patchGroupFormat:
     properties:
@@ -376,6 +385,32 @@ paths:
       tags:
       - event
   /v1/groups/:
+    delete:
+      parameters:
+      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to delete an group
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/deleteGroupFormat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - group
     get:
       parameters:
       - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
@@ -430,7 +465,13 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: "7"
+      - description: The body to delete event from an group
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/groupEventFormat'
+      - description: "4"
         in: path
         name: group_id
         required: true
@@ -516,41 +557,10 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/addGroupEventFormat'
+          $ref: '#/definitions/groupEventFormat'
       - description: "5"
         in: path
         name: group_id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      tags:
-      - group
-  /v1/groups/{group_id}/{event_id}:
-    delete:
-      parameters:
-      - description: Bearer eyJhbGcikDCEVLw0xRO8CzTg
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: "5"
-        in: path
-        name: group_id
-        required: true
-        type: integer
-      - description: "20"
-        in: path
-        name: event_id
         required: true
         type: integer
       produces:

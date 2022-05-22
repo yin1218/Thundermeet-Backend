@@ -961,7 +961,12 @@ paths:
   /v1/users/resetPassword:
     patch:
       parameters:
-      - description: The body to create a user
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: The body to reset password
         in: body
         name: Body
         required: true

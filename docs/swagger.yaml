@@ -206,11 +206,8 @@ definitions:
     required:
     - eventId
     type: object
-  controller.ForgotInfo:
+  controller.CheckAnswer:
     properties:
-      password:
-        example: password
-        type: string
       passwordAnswer:
         example: NTU
         type: string
@@ -218,8 +215,19 @@ definitions:
         example: christine891225
         type: string
     required:
-    - password
     - passwordAnswer
+    - userId
+    type: object
+  controller.ForgotInfo:
+    properties:
+      password:
+        example: password
+        type: string
+      userId:
+        example: christine891225
+        type: string
+    required:
+    - password
     - userId
     type: object
   createGroupFormat:
@@ -894,6 +902,28 @@ paths:
             type: string
         "500":
           description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - user
+  /v1/users/checkAnswer:
+    post:
+      parameters:
+      - description: The body to check if the forgot password answer is correct
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.CheckAnswer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
           schema:
             type: string
       tags:

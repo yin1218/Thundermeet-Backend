@@ -115,8 +115,12 @@ type GetUserResponse struct {
 } // @name GetUserResponse
 
 type ForgotInfo struct {
+	User_id  string `json:"userId" binding:"required" example:"christine891225"`
+	Password string `json:"password" binding:"required" example:"password"`
+}
+
+type CheckAnswer struct {
 	User_id         string `json:"userId" binding:"required" example:"christine891225"`
-	Password        string `json:"password" binding:"required" example:"password"`
 	Password_answer string `json:"passwordAnswer" binding:"required" example:"NTU"`
 }
 
@@ -251,6 +255,42 @@ func (u UsersController) UpdateUserInfo(c *gin.Context) {
 
 }
 
+// CheckAnswer CheckAnswer @Summary
+// @Tags user
+// @version 1.0
+// @produce application/json
+// @Param Body body CheckAnswer true "The body to check if the forgot password answer is correct"
+// @Success 200 string string successful return data
+// @Failure 400 string string ErrorResponse
+// @Router /v1/users/checkAnswer [post]
+func (u UsersController) CheckAnswer(c *gin.Context) {
+	var form CheckAnswer
+	bindErr := c.BindJSON(&form)
+	if bindErr == nil {
+		err := service.CheckAnswer(form.User_id, form.Password_answer)
+		if err == nil {
+			fmt.Println("Answer is correct!")
+			c.JSON(http.StatusOK, gin.H{
+				"status": 1,
+				"msg":    "answer is correct",
+				"data":   nil,
+			})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": -1,
+				"msg":    "Answer is wrong : " + err.Error(),
+				"data":   nil,
+			})
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Failed to check answer : " + bindErr.Error(),
+			"data":   nil,
+		})
+	}
+}
+
 // ResetPassword ResetPassword @Summary
 // @Tags user
 // @version 1.0
@@ -264,12 +304,12 @@ func (u UsersController) ResetPassword(c *gin.Context) {
 	var form ForgotInfo
 	bindErr := c.BindJSON(&form)
 	if bindErr == nil {
-		err := service.ResetUserPassword(form.User_id, form.Password, form.Password_answer)
+		err := service.ResetUserPassword(form.User_id, form.Password)
 		if err == nil {
 			fmt.Println("Successfully reset password")
 			c.JSON(http.StatusOK, gin.H{
 				"status": 1,
-				"msg":    "success Update",
+				"msg":    "User password changed successfully!",
 				"data":   nil,
 			})
 		} else {

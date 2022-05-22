@@ -599,7 +599,7 @@ func (u GroupController) CreateGroup(c *gin.Context) {
 	}
 
 	//check group name
-	GroupNamrErr := service.GroupNameNotExist(form.Group_name)
+	GroupNamrErr := service.GroupNameNotExist(form.Group_name, userOne.UserId)
 	if GroupNamrErr {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": -1,

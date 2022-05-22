@@ -477,6 +477,18 @@ func (u EventController) DeleteEvent(c *gin.Context) {
 		return
 	}
 
+	//delete event group relationship
+	err = service.DeleteGroups(int(event_id))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": -1,
+			"msg":    "Fail to delete event-group relationship : " + err.Error(),
+			"data":   nil,
+		})
+		return
+
+	}
+
 	delErr := service.DeleteEvent(event_id)
 
 	if delErr != nil {

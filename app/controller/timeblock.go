@@ -76,8 +76,8 @@ func CreateManyTimeblocks(dateOrDays bool, startTime string, endTime string, sta
 	if s_hh < 0 || e_hh < 0 {
 		return fmt.Errorf("hour is smaller than 0")
 	}
-	if s_hh > 23 || e_hh > 23 {
-		return fmt.Errorf("hour is greater than 23")
+	if s_hh > 23 || e_hh > 24 {
+		return fmt.Errorf("hour is greater than 24")
 	}
 	if s_min < 0 || e_min < 0 {
 		return fmt.Errorf("minute is smaller than 0")

@@ -270,8 +270,18 @@ func (u UsersController) CheckAnswer(c *gin.Context) {
 		err := service.CheckAnswer(form.User_id, form.Password_answer)
 		if err == nil {
 			fmt.Println("Answer is correct!")
+
+			token, err := jwt.GenToken(form.User_id)
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, gin.H{
+					"error": err.Error(),
+				})
+				return
+			}
+
 			c.JSON(http.StatusOK, gin.H{
 				"status": 1,
+				"token":  token,
 				"msg":    "answer is correct",
 				"data":   nil,
 			})
@@ -283,6 +293,9 @@ func (u UsersController) CheckAnswer(c *gin.Context) {
 			})
 		}
 	} else {
+
+		//get token
+
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": -1,
 			"msg":    "Failed to check answer : " + bindErr.Error(),
@@ -295,12 +308,24 @@ func (u UsersController) CheckAnswer(c *gin.Context) {
 // @Tags user
 // @version 1.0
 // @produce application/json
-// @Param Body body ForgotInfo true "The body to create a user"
+// @Param Authorization header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param Body body ForgotInfo true "The body to reset password"
 // @Success 200 string string successful return data
 // @Failure 500 string string ErrorResponse
 // @Failure 400 string string ErrorResponse
 // @Router /v1/users/resetPassword [patch]
 func (u UsersController) ResetPassword(c *gin.Context) {
+
+	//check token
+	token := c.Request.Header.Get("Authorization")
+	_, err := jwt.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	var form ForgotInfo
 	bindErr := c.BindJSON(&form)
 	if bindErr == nil {

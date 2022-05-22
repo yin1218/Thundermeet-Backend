@@ -108,7 +108,7 @@ func UpdateOneUser(userId string, userName string, password string, passwordAnsw
 	return updateErr
 }
 
-func ResetUserPassword(userId string, password string, passwordAnswer string) error {
+func CheckAnswer(userId string, passwordAnswer string) error {
 	//Check whether user exist
 	if !CheckOneUser(userId) {
 		return fmt.Errorf("User Not exists.")
@@ -129,6 +129,16 @@ func ResetUserPassword(userId string, password string, passwordAnswer string) er
 
 	if userOne.PasswordAnswer != passwordAnswer {
 		return fmt.Errorf("Incorrect answer")
+	}
+
+	return nil
+
+}
+
+func ResetUserPassword(userId string, password string) error {
+	//Check whether user exist
+	if !CheckOneUser(userId) {
+		return fmt.Errorf("user Not exists")
 	}
 
 	//hash password

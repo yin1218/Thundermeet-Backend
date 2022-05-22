@@ -986,6 +986,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/users/checkAnswer": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "description": "The body to check if the forgot password answer is correct",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.CheckAnswer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users/login/": {
             "post": {
                 "produces": [
@@ -1359,21 +1394,33 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.CheckAnswer": {
+            "type": "object",
+            "required": [
+                "passwordAnswer",
+                "userId"
+            ],
+            "properties": {
+                "passwordAnswer": {
+                    "type": "string",
+                    "example": "NTU"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "christine891225"
+                }
+            }
+        },
         "controller.ForgotInfo": {
             "type": "object",
             "required": [
                 "password",
-                "passwordAnswer",
                 "userId"
             ],
             "properties": {
                 "password": {
                     "type": "string",
                     "example": "password"
-                },
-                "passwordAnswer": {
-                    "type": "string",
-                    "example": "NTU"
                 },
                 "userId": {
                     "type": "string",

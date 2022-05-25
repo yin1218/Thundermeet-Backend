@@ -41,21 +41,20 @@ func CreateOneTimeblock(timeblockId string, eventId int64, blockTime time.Time) 
 	}
 
 	insertErr := dao.SqlSession.Model(&model.Timeblock{}).Create(&timeblock).Error
+	// INSERT INTO "timeblocks" ("time_block_id","event_id","block_time") VALUES ('2021-01-01T09:30:00+08:00A290',290,'2021-01-01 09:30:00')
 	return insertErr
 }
 
 func CheckOneTimeblock(timeblockId string) bool {
 	result := false
 	var timeblock model.Timeblock
-	fmt.Print(result)
 	dbResult := dao.SqlSession.Where("time_block_id = ?", timeblockId).Find(&timeblock)
-	fmt.Print(dbResult)
+	// SELECT * FROM "timeblocks" WHERE time_block_id = '2021-01-01T09:30:00+08:00A290'
 	if dbResult.Error != nil {
-		fmt.Printf("Get timeblock info Failed:%v\n", dbResult.Error)
+		// fmt.Printf("Get timeblock info Failed:%v\n", dbResult.Error)
 	} else {
 		result = true
 	}
-	fmt.Print(result)
 	return result
 }
 

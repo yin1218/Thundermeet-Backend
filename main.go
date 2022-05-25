@@ -8,6 +8,7 @@ import (
 	"thundermeet_backend/app/dao"
 	"thundermeet_backend/app/model"
 
+	// "github.com/DATA-DOG/go-sqlmock"
 	// "github.com/gin-contrib/cors"
 	"thundermeet_backend/app/middleware/cors"
 

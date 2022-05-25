@@ -99,4 +99,9 @@ envErr := godotenv.Load()
 4. go to https://thundermeet-backend.herokuapp.com/swagger/index.html#/
 
 
+## How to run tests
+1. cd to ```test``` folder
+2. run ```go test```
+3. if you see ```ok      thundermeet_backend/test```in console, means that all tests have passed.
+
 

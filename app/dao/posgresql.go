@@ -17,3 +17,7 @@ func Initialize(dbConfig string) (*gorm.DB, error) {
 	SqlSession, err = gorm.Open(postgres.Open(dbConfig), &gorm.Config{})
 	return SqlSession, err
 }
+
+func InitializeTest(mock_db *gorm.DB) {
+	SqlSession = mock_db
+}

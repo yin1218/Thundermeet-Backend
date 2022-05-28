@@ -1,7 +1,6 @@
 package timeblock_test
 
 import (
-	"fmt"
 	"testing"
 	"thundermeet_backend/app/service"
 	"time"
@@ -44,7 +43,7 @@ func TestGet_status_for_timeblock_ok(t *testing.T) {
 
 	normal, priority, err := service.GetStatusForTimeblock("sherry", 294)
 
-	fmt.Print(priority)
+	// fmt.Print(priority)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, normal)

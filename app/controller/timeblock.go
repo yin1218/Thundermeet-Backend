@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 	helper "thundermeet_backend/app/helpers"
-	"thundermeet_backend/app/middleware/jwt"
+	"thundermeet_backend/app/helpers/jwt"
 	"thundermeet_backend/app/service"
 	"time"
 

@@ -10,7 +10,7 @@ import (
 
 	// "github.com/DATA-DOG/go-sqlmock"
 	// "github.com/gin-contrib/cors"
-	"thundermeet_backend/app/middleware/cors"
+	"thundermeet_backend/app/helpers/cors"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"

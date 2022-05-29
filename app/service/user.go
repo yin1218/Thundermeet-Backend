@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 	"thundermeet_backend/app/dao"
-	"thundermeet_backend/app/middleware/crypto"
+	"thundermeet_backend/app/helpers/crypto"
 	"thundermeet_backend/app/model"
 )
 

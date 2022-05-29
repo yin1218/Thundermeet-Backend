@@ -14,8 +14,8 @@ import (
 	"net/http"
 
 	// "strings"
-	"thundermeet_backend/app/middleware/crypto"
-	"thundermeet_backend/app/middleware/jwt"
+	"thundermeet_backend/app/helpers/crypto"
+	"thundermeet_backend/app/helpers/jwt"
 	"thundermeet_backend/app/service"
 
 	"github.com/gin-gonic/gin"

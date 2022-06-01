@@ -42,9 +42,9 @@ The backend for Thundermeet.
 ## Architecture
 
 ## How to use Swagger
-
+<!-- 
 ref. 
-  - https://pkg.go.dev/github.com/swaggo/gin-swagger@v1.4.3#section-sourcefiles
+  - https://pkg.go.dev/github.com/swaggo/gin-swagger@v1.4.3#section-sourcefiles -->
 
 To install (**check your version of Go first**):
 
@@ -86,13 +86,13 @@ After writing relevant documentation, do:
     }
     ```
 2. `swag init`
-3. Start the [deployment process](#How to publish new image to Heroku)
+3. Start the [deployment process](#How-to-publish-new-image-to-Heroku)
 4. go to https://thundermeet-backend.herokuapp.com/swagger/index.html#/
 
 
 
 ## How to run (in local env)
-make sure to do the process of the previous [Swagger localhost part](#How-to-use-Swagger
+make sure to do the process of [Swagger localhost part](#How-to-use-Swagger
 )
 
 1. `go mod tidy`

@@ -56,9 +56,6 @@ go install github.com/swaggo/swag/cmd/swag@latest
 ```
 
 After writing relevant documentation, do:
-1. `swag init` : to update swagger doc
-2. `go run main.go` : to run the backend
-
 
 ### Localhost
 1. change some code in `main.go`
@@ -95,7 +92,7 @@ After writing relevant documentation, do:
 
 
 ## How to run (in local env)
-make sure to do the process of the previous [Swagger localhost part](##How-to-use-Swagger
+make sure to do the process of the previous [Swagger localhost part](#How-to-use-Swagger
 )
 
 1. `go mod tidy`

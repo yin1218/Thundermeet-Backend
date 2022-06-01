@@ -66,7 +66,7 @@ After writing relevant documentation, do:
 2. `go run main.go` to run the backend
 
 
-Localhost
+#### Localhost
 1. change some code in `main.go`
     - `url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")`
     - `// @host localhost:8080/`
@@ -82,7 +82,7 @@ Localhost
 3. `go run main.go`
 4. go to http://localhost:8080/swagger/index.html# 
 
-Deployment
+#### Deployment
 1. change some code in `main.go`
     - `url := ginSwagger.URL("https://thundermeet-backend.herokuapp.com/swagger/doc.json")`
     - `// @host thundermeet-backend.herokuapp.com/`
@@ -104,4 +104,23 @@ envErr := godotenv.Load()
 2. run ```go test```
 3. if you see ```ok      thundermeet_backend/test```in console, means that all tests have passed.
 
+#### What we test:
+##### Events
+* createEvent：新增一項活動
+* selectOneEvent：根據 event id 查找活動
+* getEventParticipants：根據 event id 查找活動參與者
+* deleteEvent：刪除一項活動
+* deleteEventGroupRelation：刪除活動與群組之間的關聯
+##### Timeblocks
+* createTimeblock：新增一個時間區塊
+* createTimeblockParticipant：新增使用者填寫的時間區塊資料
+* getTimeblocksForEvent：取得活動所有的時間區塊
+* getStatusForTimeblock：取得該時間區塊使用者空閒狀況
+* deleteTimeblocksFromEvent：刪除活動特定時間區塊
+##### Users
+* registerOneUser：註冊一個使用者
+* selectOneUser：根據 user id 查找一個使用者
+##### Groups
+* createOneGroup：新增一個群組
+* selectOneGroup：根據 group id 查找一個群組
 

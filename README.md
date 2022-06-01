@@ -41,54 +41,6 @@ The backend for Thundermeet.
 
 ## Architecture
 
-
-## How to run (in local env)
-
-1. `go mod tidy`
-2. `go run main.go`
-
-## How to run (in docker)
-
-(Windows)
-Install docker and make sure docker desktop is running first!
-
-### Build docker image:
-
-- Note: only need to build if make any project edits
-  `docker build -t thundermeet-be .`
-
-### Run docker image:
-
-`docker run --rm -p 8080:8080 thundermeet-be`
-
-## How to publish new image to Heroku
-- Make sure to do the following processes for the first time
-  - download `heroku CLI`
-  - In your terminal, type `heroku login`
-- The whole deployment process 
-  1. remember to pull before editing!
-  1.  `git add .`
-  1. `git commit -m "message"`
-  1. `git push heroku heroku-deploy:main`
-
-  1. if we see "404 not found" at https://thundermeet-backend.herokuapp.com/, then the deployment is successful.
-
-- If you want to test your {test-branch} on heroku
-
-  `git push heroku {test-branch}:main`
-
-- If you want to publish main branch on heroku (not suggested)
-
-  `git push heroku main`
-
-- If there's any problem after deploying, do the following process
-  1. `heroku releases`
-  1. `heroku rollback vX`
-
-<!-- 理論上應該要有一個 fake server 測試所有 test branch，但我還沒做 QQ
-可以參考這篇，有寫 CI 方法><
-https://stackoverflow.com/questions/12756955/deploying-to-a-test-server-before-production-on-heroku -->
-
 ## How to use Swagger
 
 ref. 
@@ -139,6 +91,57 @@ After writing relevant documentation, do:
 2. `swag init`
 3. Start the deployment process
 4. go to https://thundermeet-backend.herokuapp.com/swagger/index.html#/
+
+
+
+## How to run (in local env)
+make sure to do the process of the previous [Swagger localhost part](##How-to-use-Swagger
+)
+
+1. `go mod tidy`
+2. `go run main.go`
+
+## How to run (in docker)
+
+(Windows)
+Install docker and make sure docker desktop is running first!
+
+### Build docker image:
+
+- Note: only need to build if make any project edits
+  `docker build -t thundermeet-be .`
+
+### Run docker image:
+
+`docker run --rm -p 8080:8080 thundermeet-be`
+
+## How to publish new image to Heroku
+- Make sure to do the following processes for the first time
+  - download `heroku CLI`
+  - In your terminal, type `heroku login`
+- The whole deployment process 
+  1. remember to pull before editing!
+  1.  `git add .`
+  1. `git commit -m "message"`
+  1. `git push heroku heroku-deploy:main`
+
+  1. if we see "404 not found" at https://thundermeet-backend.herokuapp.com/, then the deployment is successful.
+
+- If you want to test your {test-branch} on heroku
+
+  `git push heroku {test-branch}:main`
+
+- If you want to publish main branch on heroku (not suggested)
+
+  `git push heroku main`
+
+- If there's any problem after deploying, do the following process
+  1. `heroku releases`
+  1. `heroku rollback vX`
+
+<!-- 理論上應該要有一個 fake server 測試所有 test branch，但我還沒做 QQ
+可以參考這篇，有寫 CI 方法><
+https://stackoverflow.com/questions/12756955/deploying-to-a-test-server-before-production-on-heroku -->
 
 
 ## Tests

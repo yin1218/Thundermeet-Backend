@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Delete_groups_ok(t *testing.T) {
+func Delete_group_event_relation_ok(t *testing.T) {
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening database connection", err)

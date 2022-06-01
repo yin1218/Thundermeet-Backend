@@ -86,7 +86,7 @@ After writing relevant documentation, do:
     }
     ```
 2. `swag init`
-3. Start the deployment process
+3. Start the [deployment process](#How to publish new image to Heroku)
 4. go to https://thundermeet-backend.herokuapp.com/swagger/index.html#/
 
 

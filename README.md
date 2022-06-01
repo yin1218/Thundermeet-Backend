@@ -3,6 +3,45 @@
 ## Info
 The backend for Thundermeet. 
 
+## APIs
+### User
+- `PATCH /v1/users` : 修改使用者資料
+- `GET /v1/users` : 獲得使用者資訊
+- `POST /v1/users` : 新增使用者（註冊）
+- `POST /v1/users/checkAnswer` : 忘記密碼時，檢視提示問題之答案是否正確
+- `POST /v1/users/login` : 登入
+- `POST /v1/users/resetPassword` :　重置密碼（需驗證checkAnswer後得到jwt，方可修改） 
+
+### Event
+- `PATCH /v1/events` : 修改活動資料
+- `GET /v1/events` : 獲得用戶所有活動資料
+- `POST /v1/events` : 新增活動資料
+- `GET /v1/events/{event_id}` : 獲得單一活動資料
+- `DELETE v1/events/{event_id}` : 刪除單一活動
+
+### Timeblock
+- `PUT /v1/timeblocks` : 使用者更新有空時間，傳至後端
+- `POST /v1/timeblocks` : 使用者填寫有空時間，傳至後端
+- `POST /v1/timeblocks/confirm` : 使用者確認 event 最終時間
+- `PATCH /v1/timeblocks/export` : 使用者想從Thundermeet 匯出 timeblocks 時至其他event
+- `PATCH /v1/timeblocks/import` : 使用者想將Thundermeet 其他活動的資訊匯入當前event
+- `GET /v1/timeblocks/preview` : 
+- `GET /v1/timeblocks/{event_id}` : 依據 event id 獲取所有 timeblocks
+- `GET /v1/timeblocks/{event_id}/preview` : 
+
+### Group
+- `GET /v1/groups` : 獲得使用者所有群組資料
+- `POST /v1/groups` : 創建單一群組
+- `DELETE /v1/groups` : 刪除單一群組
+- `GET /v1/groups/{group_id}` : 獲得所有群組資訊
+- `POST /v1/groups/{group_id}` : 新增活動至單一群組
+- `DELETE /v1/groups/{group_id}` : 從單一群組刪除活動
+- `PATCH /v1/groups/{group_id}` : 修改單一群組名稱
+
+
+## Architecture
+
+
 ## How to run (in local env)
 
 1. `go mod tidy`
@@ -102,7 +141,9 @@ After writing relevant documentation, do:
 4. go to https://thundermeet-backend.herokuapp.com/swagger/index.html#/
 
 
-## How to run tests
+## Tests
+### How we run test:
+
 1. cd to ```test``` folder
 2. run ```go test```
 3. if you see ```ok      thundermeet_backend/test``` in console, means that all tests have passed.

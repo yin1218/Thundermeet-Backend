@@ -1,6 +1,7 @@
 # Thundermeet-Backend
 
 ## Info
+The backend for Thundermeet. 
 
 ## How to run (in local env)
 

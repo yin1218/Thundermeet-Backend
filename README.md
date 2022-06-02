@@ -36,9 +36,6 @@ The backend for Thundermeet.
 - `DELETE /v1/groups/{group_id}` : 從單一群組刪除活動
 - `PATCH /v1/groups/{group_id}` : 修改單一群組名稱
 
-
-## Architecture
-
 ## How to use Swagger
 <!-- 
 ref. 

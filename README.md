@@ -3,6 +3,13 @@
 ## Info
 Thundermeet 是針對有相約時間需求的用戶所設計的約時間平台，我們提供 Google 行事曆和內部活動間的匯入匯出、參與時間優先度區分、簡便篩選特定參與者或時間優先度、個人頁面活動整合等功能，透過 Thundermeet，我們希望能有效解決使用者在相約時間時會遇到的困擾，給用戶在過程中更好的使用者體驗。
 
+## Architecture
+我們利用 Heroku Posgres 雲端資料庫儲存資料，在本地開發測試後，部署至 Heroku 雲端上。  <br />
+以下是 Thundermeet 後端示意圖： <br />
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/71546959/171721113-3a5142d8-2a4e-4406-a402-a5e1b8cd1121.png" width="800">
+</p>
+
 ## APIs
 ### User
 - `PATCH /v1/users` : 修改使用者資料

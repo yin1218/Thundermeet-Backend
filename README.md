@@ -25,9 +25,7 @@ The backend for Thundermeet.
 - `POST /v1/timeblocks/confirm` : 使用者確認 event 最終時間
 - `PATCH /v1/timeblocks/export` : 使用者想從Thundermeet 匯出 timeblocks 時至其他event
 - `PATCH /v1/timeblocks/import` : 使用者想將Thundermeet 其他活動的資訊匯入當前event
-- `GET /v1/timeblocks/preview` : 
 - `GET /v1/timeblocks/{event_id}` : 依據 event id 獲取所有 timeblocks
-- `GET /v1/timeblocks/{event_id}/preview` : 
 
 ### Group
 - `GET /v1/groups` : 獲得使用者所有群組資料

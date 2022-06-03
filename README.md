@@ -6,7 +6,7 @@ Thundermeet 是針對有相約時間需求的用戶所設計的約時間平台�
 ## Architecture
 我們使用 golang 撰寫 APIs 與 unit test，主要包含 Model、Service、Controller 與 Routes 四大部分。 
 
-Model 定義存進 DB 的資料結構、Service 內含直接與 DB 進行連線、CRUD 的函數、Controller 為撰寫 Business Logic，進行 User Authentication 的地方，而 Routes 內則定義 APIs 的路徑。另外，我們利用 Heroku Posgres 雲端資料庫儲存資料，在本地開發測試後，部署至 Heroku 雲端上。
+Model 定義存進 DB 的資料結構、Service 內含直接與 DB 進行連線、CRUD 的函數、Controller 為撰寫 Business Logic，進行 User Authentication 的地方，而 Routes 內則定義 APIs 的路徑。另外，我們利用 Heroku Postgres 雲端資料庫儲存資料，在本地開發測試後，部署至 Heroku 雲端上。
 
 以下是 Thundermeet 後端示意圖：
 
